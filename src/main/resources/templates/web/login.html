@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login</title>
+	<link th:href="@{/css/custom-login.css}" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
+</head>
+	<body>
+		<div class="login-wrapper">
+			<div class="info-section login-info">
+				<div class="info-text">
+					<h1>WELCOME TO STORE!</h1>
+				</div>
+			</div>
+			<div class="form-section">
+				<div class="login-card">
+					<h2>Login</h2>
+					<form>
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="text" id="email" name="email">
+						</div>
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" id="password" name="password">
+						</div>
+						<button type="button" class="btn-primary" onclick="login()">Đăng nhập</button>
+						<div class="link">
+							<p>Not a member? <a th:href="@{/web/form_register}">Register</a></p>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+	<script th:src="@{/js/call_api/post_api/login.js}"></script>
+</html>
