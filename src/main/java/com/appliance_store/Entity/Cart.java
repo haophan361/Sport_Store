@@ -8,15 +8,18 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "images")
-public class Image {
+@Table(name = "carts")
+public class Cart {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int imageId;
+    private String cartId;
 
     @ManyToOne
     @JoinColumn(name = "product_option_id")
     private ProductOption productOption;
 
-    private String imageUrl;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    private int cartQuantity;
 }

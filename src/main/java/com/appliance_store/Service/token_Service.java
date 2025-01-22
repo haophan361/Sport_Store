@@ -12,28 +12,25 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class token_Service
-{
+public class token_Service {
     private final token_Repository token_repository;
-    public void createToken(Token token)
-    {
+    public void createToken(Token token) {
         token_repository.save(token);
     }
-    public Token findTokenByID(String tokenID)
-    {
+
+    public Token findTokenByID(String tokenID) {
         return token_repository.findTokenByID(tokenID);
     }
-    public boolean deleteToken(Token token)
-    {
+
+    public boolean deleteToken(Token token) {
         token_repository.delete(token);
         return true;
     }
+
     @Scheduled(fixedRate = 300000)
-    public void cleanUpExpiredToken()
-    {
+    public void cleanUpExpiredToken() {
         List<Token> token_expired=token_repository.findTokenByExpirationTime(LocalDateTime.now());
-        for(Token token:token_expired)
-        {
+        for(Token token:token_expired) {
             deleteToken(token);
         }
     }

@@ -1,5 +1,6 @@
 package com.appliance_store.DTO.request;
-import com.appliance_store.Entity.Users;
+
+import com.appliance_store.Entity.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -12,8 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class add_infoReceiver_request
-{
+public class add_infoReceiver_request {
     private String receiver_id;
     @NotBlank (message = "Họ và tên không được để trống")
     private String name;
@@ -28,5 +28,5 @@ public class add_infoReceiver_request
     private String ward;
     @Size(max = 100,message = "Chỉ được nhập tối 100 kí tự")
     private String street;
-    private Users user;
+    private User user;
 }

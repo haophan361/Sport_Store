@@ -2,15 +2,13 @@ package com.appliance_store.DTO.request;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
-
 import java.time.LocalDate;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class register_account
-{
+public class register_account {
     private String ID;
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Phải nhập email theo đúng định dạng")

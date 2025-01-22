@@ -1,6 +1,6 @@
 package com.appliance_store.DTO.response;
 
-import com.appliance_store.Entity.Info_Receiver;
+import com.appliance_store.Entity.ReceiverInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -11,8 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class user_response
-{
+public class user_response {
     private String ID;
     private String name;
     private String email;
@@ -23,5 +22,5 @@ public class user_response
     private boolean active;
     private String role;
     @JsonIgnore
-    private List<Info_Receiver> infoReceivers;
+    private List<ReceiverInfo> infoReceivers;
 }
