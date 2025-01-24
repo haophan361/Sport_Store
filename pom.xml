@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.appliance_Store</groupId>
-    <artifactId>Appliance_Store</artifactId>
+    <artifactId>Sport_Store</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Appliance_Store</name>
@@ -76,6 +76,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
         <dependency>

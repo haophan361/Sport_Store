@@ -1,13 +1,3 @@
-function changeInfoUser()
-{
-    const form_changeInfoUser=
-    {
-        name:document.getElementById("name").value,
-        date_of_birth:document.getElementById("date_of_birth").value,
-        gender: document.querySelector('input[name="gender"]:checked')?.value || null,
-        phone:document.getElementById("phone").value,
-    }
-}
 document.addEventListener("DOMContentLoaded", function()
 {
     flatpickr("#date_of_birth",
@@ -17,6 +7,75 @@ document.addEventListener("DOMContentLoaded", function()
             dateFormat: "Y-m-d",
         });
 });
+function changeInfoUser()
+{
+    const form_changeInfoUser=
+    {
+        user_name:document.getElementById("name").value,
+        user_date_of_birth:document.getElementById("date_of_birth").value,
+        user_gender: document.querySelector('input[name="gender"]:checked')?.value || null,
+        user_phone:document.getElementById("phone").value,
+    }
+    fetch("/user/changeInfoUser",{
+        method: "POST",
+        headers:
+        {
+            'Content-type' : 'application/json',
+            Authorization: "Bearer "+localStorage.getItem("token")
+        },body: JSON.stringify(form_changeInfoUser)
+    })
+    .then(response=>
+    {
+        if(!response.ok)
+        {
+            return response.text().then(error=>
+            {
+                throw new Error(error);
+            });
+        }
+        return response.text()
+    })
+    .then(message=>
+    {
+        bootbox.alert(
+        {
+            title: "Thông báo",
+            message: message,
+            callback: function ()
+            {
+                bootbox.confirm(
+                {
+                    title: "Xác nhận trở về trang chủ",
+                    message: "Bạn có muốn quay trở về trang chủ hay không",
+                    buttons:
+                    {
+                        confirm:
+                            {
+                                label: 'Xác nhận',
+                                className: 'btn-success'
+                            },
+                        cancel:
+                            {
+                                label: 'Không',
+                                className: 'btn-dark'
+                            }
+                    },
+                    callback:function (result)
+                    {
+                        if(result)
+                        {
+                            window.location.href="/"
+                        }
+                        else
+                        {
+                            location.reload()
+                        }
+                    }
+                })
+            }
+        })
+    })
+}
 document.getElementById('addReceiverModal').addEventListener('show.bs.modal', function()
 {
     var cities = document.getElementById("cities");
@@ -151,11 +210,11 @@ function add_infoReceiver()
             }
             return response.text();
         })
-        .then(data =>
+        .then(message =>
         {
             bootbox.alert({
                 title: "Thông báo",
-                message: "Thêm thành công",
+                message: message,
                 callback: function ()
                 {
                     location.reload()
@@ -217,11 +276,11 @@ function update_infoReceiver()
             }
             return response.text();
         })
-        .then(data =>
+        .then(message =>
         {
             bootbox.alert({
                 title: "Thông báo",
-                message: "Cập nhật thành công",
+                message: message,
                 callback: function ()
                 {
                     location.reload()
@@ -235,4 +294,61 @@ function update_infoReceiver()
                 message: "Có lỗi xảy ra: " + error.message
             });
         });
+}
+function delete_infoReceiver(receiver_id)
+{
+    bootbox.confirm(
+        {
+            title: "Xác nhận xóa thông tin",
+            message: "Bạn có muốn xóa thông tin nhận hàng này không",
+            buttons:
+            {
+                confirm:
+                {
+                    label: 'Xác nhận',
+                    className: 'btn-success '
+                },
+                cancel:
+                {
+                    label: 'Không',
+                    className: 'btn-dark'
+                }
+            },
+            callback:function (result)
+            {
+                if(result)
+                {
+                    fetch("/user/delete_infoReceiver", {
+                        method: "POST",
+                        headers:
+                            {
+                                'Content-type': 'application/json',
+                                Authorization: "Bearer "+localStorage.getItem("token")
+                            },
+                        body:receiver_id
+                    })
+                        .then(response=>
+                        {
+                            if(!response.ok)
+                            {
+                                return response.text().then(error =>
+                                {
+                                    throw new Error(error);
+                                });
+                            }
+                            return response.text();
+                        }).then(message=>
+                    {
+                        bootbox.alert({
+                            title: "Thông báo",
+                            message: message,
+                            callback: function ()
+                            {
+                                location.reload()
+                            }
+                        });
+                    })
+                }
+            }
+        })
 }

@@ -1,33 +1,26 @@
-function logout()
-{
+function logout() {
     fetch("/logout",
         {
             method: "POST",
-            headers:{
+            headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer "+localStorage.getItem("token")
+                Authorization: "Bearer " + localStorage.getItem("token")
             },
         })
-        .then(response =>
-        {
-            if (response.ok)
-            {
+        .then(response => {
+            if (response.ok) {
                 bootbox.alert(
                     {
-                        title:"Thông báo",
-                        message:" Đăng xuất thành công",
+                        title: "Thông báo",
+                        message: " Đăng xuất thành công",
                         backdrop: true,
-                        callback: function ()
-                        {
-                            localStorage.clear()
-                            sessionStorage.clear()
+                        callback: function () {
+                            localStorage.removeItem("token")
                             window.location.href = "/";
                         }
                     }
                 )
-            }
-            else
-            {
+            } else {
                 bootbox.alert(
                     {
                         title: "Thông báo",

@@ -1,44 +1,38 @@
-function login()
-{
-    const formLogin=
+function login() {
+    const formLogin =
         {
-            email:document.getElementById("email").value,
-            password:document.getElementById("password").value
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
         }
     fetch("/login",
         {
-            method:"POST",
-            headers:{
+            method: "POST",
+            headers: {
                 'Content-type': 'application/json',
             },
             body: JSON.stringify(formLogin)
         })
-        .then(response =>
-        {
-            if (response.ok)
-            {
+        .then(response => {
+            if (response.ok) {
                 return response.json();
-            }
-            else
-            {
-                return response.text().then(text => { throw new Error(text); });
+            } else {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
             }
         })
-        .then(data =>
-        {
-            localStorage.setItem("token",data.token);
+        .then(data => {
+            // localStorage.setItem("token", data.token);
             bootbox.alert({
                 title: "Thông báo",
                 message: "Đăng nhập thành công",
                 backdrop: true,
-                callback: function ()
-                {
+                callback: function () {
                     window.location.href = "/";
                 }
             });
         })
-        .catch(error =>
-        {
+        .catch(error => {
             bootbox.alert({
                 title: "Thông báo lỗi",
                 message: error.message,
