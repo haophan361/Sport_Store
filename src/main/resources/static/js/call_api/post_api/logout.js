@@ -4,8 +4,8 @@ function logout() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("token")
             },
+            credentials: "include"
         })
         .then(response => {
             if (response.ok) {
@@ -15,7 +15,6 @@ function logout() {
                         message: " Đăng xuất thành công",
                         backdrop: true,
                         callback: function () {
-                            localStorage.removeItem("token")
                             window.location.href = "/";
                         }
                     }

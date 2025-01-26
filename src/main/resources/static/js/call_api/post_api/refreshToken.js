@@ -10,15 +10,15 @@ window.addEventListener("mousemove", resetLastActivityTime);
 window.addEventListener("click", resetLastActivityTime);
 window.addEventListener("scroll", resetLastActivityTime);
 window.addEventListener("keydown", resetLastActivityTime);
-
 setInterval(() => {
     const current_time = Date.now()
     if (current_time - last_activityTime < inactivity_timeout) {
-        if (localStorage.getItem("token") !== null) {
-            refreshToken()
-        }
+        checkIsLoggedIn().then(isLoggedIn => {
+            if (isLoggedIn) {
+                refreshToken()
+            }
+        })
     } else {
-        localStorage.removeItem("token")
         bootbox.alert(
             {
                 title: "Thông báo",
@@ -38,7 +38,6 @@ function refreshToken() {
             headers:
                 {
                     "Content-Type": "application/json",
-                    // Authorization: "Bearer " + localStorage.getItem("token")
                 },
             credentials: "include"
         })
@@ -46,15 +45,7 @@ function refreshToken() {
             if (!response.ok) {
                 throw new Error("Không thể gia hạn token. Bạn sẽ bị đăng xuất.");
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.refresh_token) {
-                // localStorage.setItem("token", data.refresh_token);
-                console.log("Token đã được gia hạn thành công.");
-            } else {
-                throw new Error("Phản hồi không hợp lệ từ server.");
-            }
+            console.log("Token đã được gia hạn thành công.");
         })
         .catch(error => {
             console.error(error);
@@ -66,5 +57,20 @@ function refreshToken() {
                     logout()
                 }
             });
+        });
+}
+
+function checkIsLoggedIn() {
+    return fetch("/check_login", {
+        method: "GET",
+        credentials: "include"
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            console.error("Lỗi khi kiểm tra trạng thái đăng nhập:", error);
+            return false;
         });
 }

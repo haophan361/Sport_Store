@@ -22,7 +22,7 @@ public class info_receiverAPI {
     @PostMapping("/user/add_infoReceiver")
     public ResponseEntity<String> add_infoReceiver(@RequestBody change_infoReceiver_request request) {
         Users user = user_service.get_myInfo();
-        Receiver_Info _receiverInfo = Receiver_Info
+        Receiver_Info receiver_info = Receiver_Info
                 .builder()
                 .receiver_id(UUID.randomUUID().toString())
                 .receiver_name(request.getName())
@@ -33,7 +33,7 @@ public class info_receiverAPI {
                 .receiver_street(request.getStreet())
                 .users(user)
                 .build();
-        info_receiver_service.add_infoReceiver(_receiverInfo);
+        info_receiver_service.add_infoReceiver(receiver_info);
         return ResponseEntity.ok("Thêm thông tin người nhận thành công");
     }
 
