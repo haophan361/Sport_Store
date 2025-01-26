@@ -22,7 +22,6 @@ function login() {
             }
         })
         .then(data => {
-            // localStorage.setItem("token", data.token);
             bootbox.alert({
                 title: "Thông báo",
                 message: "Đăng nhập thành công",

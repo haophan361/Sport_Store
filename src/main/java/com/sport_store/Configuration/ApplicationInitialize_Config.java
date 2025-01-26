@@ -1,7 +1,7 @@
 package com.sport_store.Configuration;
 
 import com.sport_store.Entity.Users;
-import com.sport_store.Repository.user_Repository;
+import com.sport_store.Service.user_Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
@@ -18,17 +18,17 @@ public class ApplicationInitialize_Config {
     private final PasswordEncoder passwordEncoder;
 
     @Bean
-    ApplicationRunner applicationRunner(user_Repository user_repository) {
+    ApplicationRunner applicationRunner(user_Service user_service) {
         return args ->
         {
-            if (user_repository.findByEmail("admin@gmail.com") == null) {
+            if (!user_service.existByEmail("admin@gmail.com")) {
                 Users user = Users.builder()
                         .user_id(UUID.randomUUID().toString())
                         .user_email("admin@gmail.com")
                         .user_password(passwordEncoder.encode("admin"))
                         .user_role(Users.Role.ADMIN)
                         .build();
-                user_repository.save(user);
+                user_service.create_user(user);
                 log.warn("Người dùng ADMIN đã được tạo tự động");
             }
         };

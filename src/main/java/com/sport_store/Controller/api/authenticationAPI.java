@@ -7,6 +7,7 @@ import com.sport_store.DTO.request.register_account;
 import com.sport_store.DTO.response.authentication_response;
 import com.sport_store.DTO.response.refreshToken_response;
 import com.sport_store.Entity.Tokens;
+import com.sport_store.Entity.Users;
 import com.sport_store.Service.authentication_Service;
 import com.sport_store.Service.token_Service;
 import com.sport_store.Service.user_Service;
@@ -20,10 +21,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,11 +37,22 @@ public class authenticationAPI {
     private final authentication_Service authentication_service;
     private final LoadUser loadUser;
     private final token_Service token_service;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<String> Register(@RequestBody @Valid register_account request) {
         try {
-            user_service.create_user(request);
+            Users user = Users.builder()
+                    .user_id(UUID.randomUUID().toString())
+                    .user_name(request.getName())
+                    .user_date_of_birth(request.getDate_of_birth())
+                    .user_gender(request.isGender())
+                    .user_email(request.getEmail())
+                    .user_password(passwordEncoder.encode(request.getPassword()))
+                    .user_phone(request.getPhone())
+                    .user_role(Users.Role.CUSTOMER)
+                    .is_active(true).build();
+            user_service.create_user(user);
             return ResponseEntity.ok("Bạn đã đăng kí thành công");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -68,8 +82,7 @@ public class authenticationAPI {
     }
 
     @PostMapping("/logout")
-    public void Logout(@RequestHeader("Authorization") String tokenBearer, HttpServletRequest httpServletRequest) throws ParseException, JOSEException {
-        String token = tokenBearer.substring(7);
+    public void Logout(@CookieValue(value = "token") String token, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
         SignedJWT signedJWT = authentication_service.verifyToken(token, false);
         String tokenID = signedJWT.getJWTClaimsSet().getJWTID();
         Tokens tokens_localStorage = token_service.findTokenByID(tokenID);
@@ -79,17 +92,28 @@ public class authenticationAPI {
                 HttpSession session = httpServletRequest.getSession(false);
                 if (session != null) {
                     session.invalidate();
+                    Cookie cookie = new Cookie("token", null);
+                    cookie.setHttpOnly(true);
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
+                    httpServletResponse.addCookie(cookie);
                 }
             }
         }
     }
 
-//    @PostMapping("/refresh")
-//    public ResponseEntity<refreshToken_response> refreshToken(@RequestHeader("Authorization") String bearerToken) throws ParseException, JOSEException {
-//        String token = bearerToken.substring(7);
-//        String new_token = authentication_service.refreshToken(token);
-//        return ResponseEntity.ok(new refreshToken_response(new_token));
-//    }
+    @GetMapping("/check_login")
+    public ResponseEntity<Boolean> checkLoginStatus(@CookieValue(value = "token", required = false) String token) {
+        try {
+            if (token == null) {
+                return ResponseEntity.ok(false);
+            }
+            authentication_service.verifyToken(token, false);
+            return ResponseEntity.ok(true);
+        } catch (ParseException | JOSEException e) {
+            return ResponseEntity.ok(false);
+        }
+    }
 
     @PostMapping("/refresh")
     public ResponseEntity<refreshToken_response> refreshToken(@CookieValue("token") String token, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
