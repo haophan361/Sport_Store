@@ -1,4 +1,4 @@
-package com.sport_store.DTO.request;
+package com.sport_store.DTO.request.Info_ReceiverDTO;
 
 import com.sport_store.Entity.Users;
 import jakarta.validation.constraints.NotBlank;

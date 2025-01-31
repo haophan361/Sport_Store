@@ -1,4 +1,4 @@
-package com.sport_store.DTO.request;
+package com.sport_store.DTO.request.ProductDTO;
 
 import com.sport_store.Entity.Brands;
 import com.sport_store.Entity.Categories;

@@ -5,8 +5,8 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.authentication_request;
-import com.sport_store.DTO.request.register_account;
+import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
+import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.response.authentication_response;
 import com.sport_store.DTO.response.user_response;
 import com.sport_store.Entity.Tokens;
@@ -65,7 +65,7 @@ public class authentication_Service {
                 .build();
 
         user_repository.save(user);
-        String token = generateToken(user);
+        String token = generateToken(user, "sport_store.com");
         user_response userResponse = user_response.builder()
                 .ID(user.getUser_id())
                 .name(user.getUser_name())
@@ -95,7 +95,7 @@ public class authentication_Service {
                     throw new Exception("Mật khẩu không hợp lệ");
                 }
             }
-            String token = generateToken(user);
+            String token = generateToken(user, "sport_store.com");
             user_response userResponse = user_response.builder()
                     .ID(user.getUser_id())
                     .name(user.getUser_name())
@@ -114,11 +114,11 @@ public class authentication_Service {
         }
     }
 
-    private String generateToken(Users user) {
+    public String generateToken(Users user, String issuer) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUser_email())
-                .issuer("sport_store.com")
+                .issuer(issuer)
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(validDuration, ChronoUnit.HOURS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
@@ -141,7 +141,7 @@ public class authentication_Service {
 
         Tokens tokensEntity = token_repository.findTokenByID(signedJWT.getJWTClaimsSet().getJWTID());
         token_repository.delete(tokensEntity);
-        String new_token = generateToken(user);
+        String new_token = generateToken(user, "sport_store.com");
         SignedJWT newSignedJWT = SignedJWT.parse(new_token);
         Tokens newTokensEntity = Tokens.builder()
                 .token_id(newSignedJWT.getJWTClaimsSet().getJWTID())
@@ -151,5 +151,12 @@ public class authentication_Service {
                 .build();
         token_repository.save(newTokensEntity);
         return new_token;
+    }
+
+    public boolean isValidTokenRestPassword(String token_resetPassword) throws ParseException, JOSEException {
+        SignedJWT signedJWT = verifyToken(token_resetPassword, false);
+        String email = signedJWT.getJWTClaimsSet().getSubject();
+        Users user = user_service.getUserByEmail(email);
+        return user != null && signedJWT.getJWTClaimsSet().getIssuer().equals("resetPassword");
     }
 }

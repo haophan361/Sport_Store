@@ -1,4 +1,4 @@
-package com.sport_store.DTO.request;
+package com.sport_store.DTO.request.UserDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

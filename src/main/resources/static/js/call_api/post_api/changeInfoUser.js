@@ -65,7 +65,13 @@ function changeInfoUser() {
                             })
                     }
                 })
-        })
+        }).catch(error => {
+        bootbox.alert({
+            title: "Lỗi",
+            message: error.message,
+            backdrop: true
+        });
+    });
 }
 
 document.getElementById('addReceiverModal').addEventListener('show.bs.modal', function () {
@@ -305,7 +311,13 @@ function delete_infoReceiver(receiver_id) {
                                 location.reload()
                             }
                         });
-                    })
+                    }).catch(error => {
+                        bootbox.alert({
+                            title: "Lỗi",
+                            message: error.message,
+                            backdrop: true
+                        });
+                    });
                 }
             }
         })

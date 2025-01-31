@@ -1,5 +1,6 @@
 package com.sport_store.Configuration;
 
+import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.Entity.Users;
 import com.sport_store.Service.user_Service;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
@@ -15,20 +15,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class ApplicationInitialize_Config {
-    private final PasswordEncoder passwordEncoder;
 
     @Bean
     ApplicationRunner applicationRunner(user_Service user_service) {
         return args ->
         {
             if (!user_service.existByEmail("admin@gmail.com")) {
-                Users user = Users.builder()
-                        .user_id(UUID.randomUUID().toString())
-                        .user_email("admin@gmail.com")
-                        .user_password(passwordEncoder.encode("admin"))
-                        .user_role(Users.Role.ADMIN)
+                register_account request = register_account.builder()
+                        .ID(UUID.randomUUID().toString())
+                        .email("admin@gmail.com")
+                        .password("admin")
+                        .role(Users.Role.ADMIN.toString())
                         .build();
-                user_service.create_user(user);
+                user_service.create_user(request);
                 log.warn("Người dùng ADMIN đã được tạo tự động");
             }
         };

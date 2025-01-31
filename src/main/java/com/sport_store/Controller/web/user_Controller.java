@@ -2,15 +2,14 @@ package com.sport_store.Controller.web;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.authentication_request;
-import com.sport_store.DTO.request.register_account;
+import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
+import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.response.authentication_response;
 import com.sport_store.Entity.Tokens;
 import com.sport_store.Entity.Users;
-import com.sport_store.Service.authentication_Service;
-import com.sport_store.Service.token_Service;
-import com.sport_store.Service.user_Service;
+import com.sport_store.Service.*;
 import com.sport_store.Util.LoadUser;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,13 +26,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Controller
 public class user_Controller {
     private final user_Service user_service;
     private final token_Service token_service;
+    private final mail_Service mail_service;
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String client_id;
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
@@ -42,6 +46,7 @@ public class user_Controller {
     private long validDuration;
     private final authentication_Service authentication_service;
     private final LoadUser load_user;
+    private final cookie_Service cookie_service;
 
     @GetMapping("/web/form_register")
     public String getForm_Register() {
@@ -55,8 +60,26 @@ public class user_Controller {
 
     @GetMapping("/form/changePassword")
     public String getForm_changePassword() {
-        return "web/changePassword";
+        return "user/changePassword";
     }
+
+    @GetMapping("/form/mail_forgetPassword")
+    public String getForm_mail_forgetPassword() {
+        return "user/forgetPassword";
+    }
+
+    @GetMapping("/web/setToken_forgetPassword")
+    public String setToken_ForgetPassword(@RequestParam("token_resetPassword") String token_resetPassword, HttpServletResponse httpServletResponse, Model model) throws ParseException, JOSEException {
+        if (!authentication_service.isValidTokenRestPassword(token_resetPassword)) {
+            List<String> messageError = new ArrayList<>();
+            messageError.add("Token không hợp lệ");
+            model.addAttribute("error_message", messageError);
+            return "web/error";
+        }
+        httpServletResponse.addCookie(cookie_service.create_tokenResetPasswordCookie(token_resetPassword));
+        return "user/setTokenResetPassword";
+    }
+
 
     @GetMapping("/form/changeInfoUser")
     public String getForm_UpdateInfoUser(Model model, HttpServletRequest request) {
@@ -67,11 +90,12 @@ public class user_Controller {
         String email = (String) session.getAttribute("email");
         Users user = user_service.getUserByEmail(email);
         model.addAttribute("user", user);
-        return "web/changeInfoUser";
+        return "user/changeInfoUser";
     }
 
     @GetMapping("/login/oauth2/google")
-    public String authenticationGoogle(@RequestParam String code, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public String authenticationGoogle(@RequestParam String code, HttpServletRequest httpServletRequest,
+                                       HttpServletResponse httpServletResponse) {
         try {
             String accessToken = getAccessToken(code);
             Users user = getUserInfo(accessToken);
@@ -88,11 +112,14 @@ public class user_Controller {
                 register_account registerAccount = register_account.builder()
                         .email(user.getUser_email())
                         .name(user.getUser_name())
-                        .password("haophan")
+                        .password(UUID.randomUUID().toString())
                         .phone(null)
                         .date_of_birth(null)
                         .build();
                 response = authentication_service.authenticate_LoginOAuth2(registerAccount);
+                mail_service.SendEmailRandomPassword(registerAccount.getEmail(), registerAccount.getPassword());
+                Cookie firstLoginGoogle = load_user.firstLogin_WithGoogle();
+                httpServletResponse.addCookie(firstLoginGoogle);
             }
             SignedJWT signedJWT = authentication_service.verifyToken(response.getToken(), false);
             Tokens tokensEntity = Tokens.builder()
@@ -104,7 +131,7 @@ public class user_Controller {
             token_service.createToken(tokensEntity);
             HttpSession session = httpServletRequest.getSession();
             load_user.userSession(session, response);
-            Cookie cookie = load_user.tokenCookie(response.getToken());
+            Cookie cookie = cookie_service.create_tokenCookie(response.getToken());
             httpServletResponse.addCookie(cookie);
             return "redirect:/";
         } catch (Exception e) {

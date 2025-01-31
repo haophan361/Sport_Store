@@ -1,6 +1,6 @@
 package com.sport_store.Service;
 
-import com.sport_store.DTO.request.change_infoReceiver_request;
+import com.sport_store.DTO.request.Info_ReceiverDTO.change_infoReceiver_request;
 import com.sport_store.Entity.Receiver_Info;
 import com.sport_store.Repository.infoReceiver_Repository;
 import lombok.RequiredArgsConstructor;

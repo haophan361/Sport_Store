@@ -35,11 +35,11 @@ public class LoadUser {
         session.setAttribute("role", user.getUser_role());
     }
 
-    public Cookie tokenCookie(String token) {
-        Cookie cookie = new Cookie("token", token);
+
+    public Cookie firstLogin_WithGoogle() {
+        Cookie cookie = new Cookie("firstLogin_WithGoogle", "true");
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(3600);
+        cookie.setMaxAge(1);
         return cookie;
     }
 }

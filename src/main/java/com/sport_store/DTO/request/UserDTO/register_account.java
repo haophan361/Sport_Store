@@ -1,4 +1,4 @@
-package com.sport_store.DTO.request;
+package com.sport_store.DTO.request.UserDTO;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

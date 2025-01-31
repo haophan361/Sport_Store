@@ -59,7 +59,6 @@ body {
 }
 
 
-
 .info-text h1 {
     font-size: 32px;
     margin-bottom: 10px;
@@ -335,6 +334,7 @@ a:hover {
     .info-text h1 {
         font-size: 24px;
     }
+
     .info-text p {
         font-size: 14px;
     }
@@ -343,6 +343,7 @@ a:hover {
         padding: 20px;
         max-width: 80%;
     }
+
     input {
         box-sizing: border-box;
     }
@@ -368,7 +369,7 @@ a:hover {
 
     /* Phần màu đen */
     .login-info {
-        flex: 0.5 ;
+        flex: 0.5;
         height: 33.33%;
         background: #000;
         color: #fff;
@@ -380,6 +381,7 @@ a:hover {
 
 
     }
+
     .login-info {
         margin: 0;
         padding: 0;
@@ -393,7 +395,7 @@ a:hover {
 
     /* Phần form login */
     .form-section {
-        flex: 2 ;
+        flex: 2;
         height: calc(66.66% - 10px);
         background: #fff;
         padding: 20px;
@@ -564,6 +566,7 @@ a:hover {
 .custom-radio .radio-item label {
     margin-left: 5px;
 }
+
 .ellipsis {
     width: 100%;
     overflow: hidden;
@@ -572,4 +575,30 @@ a:hover {
     border: 1px solid #ccc;
     padding: 5px;
     box-sizing: border-box;
+}
+
+/*Chờ tải thông tin*/
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Spinner */
+.spinner {
+    text-align: center;
+    color: white;
+    font-size: 20px;
+}
+
+.spinner i {
+    font-size: 50px;
+    margin-bottom: 10px;
 }
