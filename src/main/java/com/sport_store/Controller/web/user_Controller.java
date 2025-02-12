@@ -69,7 +69,7 @@ public class user_Controller {
         return "user/verify_Email";
     }
 
-    @GetMapping("/form/mail_forgetPassword")
+    @GetMapping("/form/request_forgetPassword")
     public String getForm_mail_forgetPassword() {
         return "user/request_forgetPassword";
     }

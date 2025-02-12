@@ -1,6 +1,5 @@
 package com.sport_store.Configuration;
 
-import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.Entity.Users;
 import com.sport_store.Service.user_Service;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +20,14 @@ public class ApplicationInitialize_Config {
         return args ->
         {
             if (!user_service.existByEmail("admin@gmail.com")) {
-                register_account request = register_account.builder()
-                        .ID(UUID.randomUUID().toString())
-                        .email("admin@gmail.com")
-                        .password("admin")
-                        .role(Users.Role.ADMIN.toString())
+                Users user = Users.builder()
+                        .user_id(UUID.randomUUID().toString())
+                        .user_email("admin@gmail.com")
+                        .user_password("admin")
+                        .user_role(Users.Role.ADMIN)
+                        .is_active(true)
                         .build();
-                user_service.create_user(request);
+                user_service.create_user(user);
                 log.warn("Người dùng ADMIN đã được tạo tự động");
             }
         };

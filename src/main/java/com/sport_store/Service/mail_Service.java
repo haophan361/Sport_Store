@@ -18,7 +18,7 @@ public class mail_Service {
         helper.setTo(email);
         helper.setFrom("phanphuchao361@gmail.com");
         helper.setSubject("Reset mật khẩu");
-        String content = "<p>Đây là mã để thay đổi mật khẩu:</p>" +
+        String content = "<p>Đây là mã để xác minh tài khoản gmail của bạn:</p>" +
                 "<h2 style='color: #007bff; text-align: center;'>" + forgetPassword_code + "</h2>" +
                 "<p>Mã này sẽ hết hạn sau <strong>5 phút</strong>.</p>";
         helper.setText(content, true);

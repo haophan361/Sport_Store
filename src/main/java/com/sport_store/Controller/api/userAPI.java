@@ -41,8 +41,8 @@ public class userAPI {
         return ResponseEntity.ok("Cập nhật thông tin người dùng thành công");
     }
 
-    @PostMapping("/web/sendCode_VerifyEmail")
-    public ResponseEntity<String> sendCode_verifyEmail(@RequestParam String email, HttpServletResponse httpServletResponse) {
+    @PostMapping("/web/sendCode_VerifyEmail_forgetPassword")
+    public ResponseEntity<String> sendCode_verifyEmail_forgetPassword(@RequestParam String email, HttpServletResponse httpServletResponse) {
         Users user = user_service.getUserByEmail(email);
         if (user == null) {
             throw new RuntimeException("Tài khoản sử dụng Email này hiện chưa có trên hệ thống");
@@ -59,11 +59,21 @@ public class userAPI {
     }
 
     @PostMapping("/web/resendCode_VerifyEmail")
-    public ResponseEntity<String> ResendCode_verifyEmail(@CookieValue(value = "token_verifyEmail") String token_verifyEmail, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<String> ResendCode_verifyEmail(@CookieValue(value = "token_verifyEmail") String token_verifyEmail, @RequestBody String typeVerify, HttpServletResponse httpServletResponse) {
         try {
             SignedJWT signedJWT = authentication_service.verifyToken(token_verifyEmail, false);
             String email = signedJWT.getJWTClaimsSet().getSubject();
-            Users user = user_service.getUserByEmail(email);
+            Users user;
+            if (typeVerify.equals("forgetPassword")) {
+                user = user_service.getUserByEmail(email);
+            } else {
+                user = Users
+                        .builder()
+                        .user_email(email)
+                        .user_role(Users.Role.EMPLOYEE)
+                        .build();
+            }
+
             String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
             String new_token_verifyEmail = authentication_service.generateToken(user, code_verifyEmail);
             httpServletResponse.addCookie(cookie_service.create_verfityEmailCookie(new_token_verifyEmail));
@@ -86,6 +96,23 @@ public class userAPI {
                 httpServletResponse.addCookie(cookie_service.create_ResetPasswordCookie(token_resetPassword));
                 response.put("message", "Xác nhận thành công");
                 response.put("redirectUrl", "/form/forgetPassword");
+                return ResponseEntity.ok(response);
+            } else {
+                throw new RuntimeException("Mã xác nhận sai vui lòng nhập lại");
+            }
+        } catch (JOSEException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/web/checkCode_Register")
+    public ResponseEntity<Map<String, String>> checkCode_Register(@CookieValue(value = "token_verifyEmail") String token_verifyEmail, @RequestBody String code) {
+        try {
+            SignedJWT signedJWT = authentication_service.verifyToken(token_verifyEmail, false);
+            String issuer = signedJWT.getJWTClaimsSet().getIssuer();
+            Map<String, String> response = new HashMap<>();
+            if (issuer.equals(code)) {
+                response.put("message", "Xác nhận thành công");
                 return ResponseEntity.ok(response);
             } else {
                 throw new RuntimeException("Mã xác nhận sai vui lòng nhập lại");

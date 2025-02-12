@@ -7,11 +7,10 @@ import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.response.authentication_response;
 import com.sport_store.DTO.response.refreshToken_response;
 import com.sport_store.Entity.Tokens;
-import com.sport_store.Service.authentication_Service;
-import com.sport_store.Service.cookie_Service;
-import com.sport_store.Service.token_Service;
-import com.sport_store.Service.user_Service;
+import com.sport_store.Entity.Users;
+import com.sport_store.Service.*;
 import com.sport_store.Util.LoadUser;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,10 +19,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,15 +36,42 @@ public class authenticationAPI {
     private final LoadUser loadUser;
     private final token_Service token_service;
     private final cookie_Service cookie_service;
+    private final mail_Service mail_service;
+    private final PasswordEncoder passwordEncoder;
+
+    @PostMapping("/web/sendCode_VerifyEmail_Register")
+    public ResponseEntity<String> sendCode_verifyEmail_Register(@RequestBody @Valid register_account request,
+                                                                HttpServletResponse httpServletResponse, HttpSession httpSession) {
+        Users user = Users
+                .builder()
+                .user_id(UUID.randomUUID().toString())
+                .user_name(request.getName())
+                .user_gender(request.isGender())
+                .user_date_of_birth(request.getDate_of_birth())
+                .user_phone(request.getPhone())
+                .user_email(request.getEmail())
+                .user_password(passwordEncoder.encode(request.getPassword()))
+                .user_role(Users.Role.CUSTOMER)
+                .is_active(true)
+                .build();
+        httpSession.setAttribute("user", user);
+        String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
+        String token_verifyEmail = authentication_service.generateToken(user, code_verifyEmail);
+        httpServletResponse.addCookie(cookie_service.create_verfityEmailCookie(token_verifyEmail));
+        try {
+            mail_service.Send_codeVerifyEmail(user.getUser_email(), code_verifyEmail);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok("Hãy kiểm tra Email: " + request.getEmail() + " để lấy mã xác nhận");
+    }
 
     @PostMapping("/register")
-    public ResponseEntity<String> Register(@RequestBody @Valid register_account request) {
-        try {
-            user_service.create_user(request);
-            return ResponseEntity.ok("Bạn đã đăng kí thành công");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> Register(HttpSession httpSession) {
+        Users user = (Users) httpSession.getAttribute("user");
+        user_service.create_user(user);
+        httpSession.removeAttribute("user");
+        return ResponseEntity.ok("Bạn đã đăng kí thành công");
     }
 
     @PostMapping("/login")

@@ -1,6 +1,5 @@
 package com.sport_store.Service;
 
-import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.request.UserDTO.updateUser_request;
 import com.sport_store.Entity.Users;
 import com.sport_store.Repository.user_Repository;
@@ -12,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,24 +18,14 @@ public class user_Service {
     private final user_Repository user_repository;
     private final PasswordEncoder passwordEncoder;
 
-    public void create_user(register_account request) {
+    public void create_user(Users user) {
 
-        if (user_repository.findByEmail(request.getEmail()) != null) {
+        if (user_repository.findByEmail(user.getUser_email()) != null) {
             throw new RuntimeException("Email đã tồn tại");
         }
-        if (user_repository.findByPhone(request.getPhone()) != null) {
+        if (user_repository.findByPhone(user.getUser_phone()) != null) {
             throw new RuntimeException("Số điện thoại đã tồn tại");
         }
-        Users user = Users.builder()
-                .user_id(UUID.randomUUID().toString())
-                .user_name(request.getName())
-                .user_date_of_birth(request.getDate_of_birth())
-                .user_gender(request.isGender())
-                .user_email(request.getEmail())
-                .user_password(passwordEncoder.encode(request.getPassword()))
-                .user_phone(request.getPhone())
-                .user_role(Users.Role.CUSTOMER)
-                .is_active(true).build();
         user_repository.save(user);
     }
 

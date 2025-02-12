@@ -9,7 +9,7 @@ function getCode_VerifyEmail() {
         return
     }
     document.getElementById("loading-overlay").style.display = "flex";
-    fetch(`/web/sendCode_VerifyEmail?email=${encodeURIComponent(email)}`, {
+    fetch(`/web/sendCode_VerifyEmail_forgetPassword?email=${encodeURIComponent(email)}`, {
         method: "POST",
     }).then(response => {
         if (!response.ok) {
@@ -27,6 +27,7 @@ function getCode_VerifyEmail() {
                 if (localStorage.getItem("verify_startTime") !== null) {
                     localStorage.removeItem("verify_startTime")
                 }
+                sessionStorage.setItem("typeVerify", "forgetPassword")
                 window.location.href = "/form/check_codeVerifyEmail"
             }
         })

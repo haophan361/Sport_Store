@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: {
                     'Content-type': 'application/json'
                 },
+                body: sessionStorage.getItem("typeVerify"),
                 credentials: "include"
             }).then(response => {
                 if (!response.ok) {
@@ -136,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-function checkCodeResetPassword() {
+function checkCode_verifyEmail() {
     let input = document.querySelectorAll(".code-email-input")
     let code = "";
     input.forEach(inputField => {
@@ -150,7 +151,14 @@ function checkCodeResetPassword() {
         })
         return
     }
-    fetch("/web/checkCode_ForgetPassword", {
+    let typeVerify = sessionStorage.getItem("typeVerify")
+    let url;
+    if (typeVerify === "forgetPassword") {
+        url = "/web/checkCode_ForgetPassword"
+    } else if (typeVerify === "register") {
+        url = "/web/checkCode_Register"
+    }
+    fetch(url, {
         method: "POST",
         headers: {
             'Content-type': 'text/plain',
@@ -172,6 +180,9 @@ function checkCodeResetPassword() {
             callback: function () {
                 localStorage.removeItem("verify_startTime");
                 localStorage.removeItem("resend_startTime");
+                if (typeVerify === "register") {
+                    fetchRegister()
+                }
                 if (data.redirectUrl) {
                     window.location.href = data.redirectUrl
                 }
@@ -184,4 +195,37 @@ function checkCodeResetPassword() {
             backdrop: true
         });
     });
+}
+
+function fetchRegister() {
+    fetch("/register",
+        {
+            method: "POST",
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+        })
+        .then(message => {
+            bootbox.alert({
+                title: "Thông báo",
+                message: message,
+                backdrop: true,
+                callback: function () {
+                    window.location.href = "/web/form_login"
+                }
+            });
+        })
+        .catch(error => {
+            bootbox.alert({
+                title: "Thông báo lỗi",
+                message: error.message,
+                backdrop: true
+            });
+        });
 }
