@@ -577,7 +577,6 @@ a:hover {
     box-sizing: border-box;
 }
 
-/*Chờ tải thông tin*/
 #loading-overlay {
     position: fixed;
     top: 0;

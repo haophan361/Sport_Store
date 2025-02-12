@@ -34,6 +34,8 @@ public class authentication_Service {
     private long validDuration;
     @Value("${jwt.refreshable-duration}")
     private long refreshDuration;
+    @Value("${valid-token.resetPassword}")
+    private long validResetPasswordDuration;
     private final user_Repository user_repository;
     private final PasswordEncoder passwordEncoder;
     private final user_Service user_service;
@@ -116,11 +118,17 @@ public class authentication_Service {
 
     public String generateToken(Users user, String issuer) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        Date expirationTime;
+        if (issuer.equals("sport_store.com")) {
+            expirationTime = new Date(Instant.now().plus(validDuration, ChronoUnit.MINUTES).toEpochMilli());
+        } else {
+            expirationTime = new Date(Instant.now().plus(validResetPasswordDuration, ChronoUnit.MINUTES).toEpochMilli());
+        }
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUser_email())
                 .issuer(issuer)
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(validDuration, ChronoUnit.HOURS).toEpochMilli()))
+                .expirationTime(expirationTime)
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope", user.getUser_role().toString())
                 .build();
@@ -153,10 +161,4 @@ public class authentication_Service {
         return new_token;
     }
 
-    public boolean isValidTokenRestPassword(String token_resetPassword) throws ParseException, JOSEException {
-        SignedJWT signedJWT = verifyToken(token_resetPassword, false);
-        String email = signedJWT.getJWTClaimsSet().getSubject();
-        Users user = user_service.getUserByEmail(email);
-        return user != null && signedJWT.getJWTClaimsSet().getIssuer().equals("resetPassword");
-    }
 }

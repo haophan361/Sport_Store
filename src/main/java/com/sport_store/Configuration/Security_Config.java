@@ -40,7 +40,7 @@ public class Security_Config {
                                 "/",
                                 "/register",
                                 "/login",
-                                "/login/oauth2/google",
+                                "/login/oauth2/**",
                                 "/check_login",
                                 "/refresh",
                                 "/web/**",

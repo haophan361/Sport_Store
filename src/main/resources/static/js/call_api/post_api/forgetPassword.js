@@ -1,16 +1,16 @@
-function changePassword() {
-    const form_changePassword = {
+function forgetPassword() {
+    const token_resetPassword = getCookie("token_resetPassword")
+    const form_forgetPassword = {
         new_password: document.getElementById("new_password").value,
         confirm_password: document.getElementById("confirm_password").value,
-        old_password: document.getElementById("old_password").value
     }
-    fetch("/user/changePassword", {
+    fetch("/web/forgetPassword", {
         method: "POST",
         headers:
             {
                 'Content-type': 'application/json'
             },
-        body: JSON.stringify(form_changePassword),
+        body: JSON.stringify(form_forgetPassword),
         credentials: 'include'
     }).then(response => {
         if (!response.ok) {
@@ -25,6 +25,9 @@ function changePassword() {
             message: message,
             backdrop: true,
             callback: function () {
+                if (token_resetPassword !== undefined) {
+                    deleteCookie("token_resetPassword")
+                }
                 window.location.href = "/"
             }
         })
@@ -35,4 +38,5 @@ function changePassword() {
             backdrop: true
         });
     });
+
 }

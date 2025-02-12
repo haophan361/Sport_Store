@@ -13,10 +13,19 @@ public class cookie_Service {
         return cookie;
     }
 
-    public Cookie create_tokenResetPasswordCookie(String token_resetPassword) {
-        Cookie cookie = new Cookie("token_resetPassword", token_resetPassword);
+    public Cookie create_verfityEmailCookie(String token_verifyEmail) {
+        Cookie cookie = new Cookie("token_verifyEmail", token_verifyEmail);
         cookie.setPath("/");
-        cookie.setMaxAge(900);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(600);
+        return cookie;
+    }
+
+    public Cookie create_ResetPasswordCookie(String token_resetPassword) {
+        Cookie cookie = new Cookie("token_resetPassword", token_resetPassword);
+        cookie.setPath("/web/forgetPassword");
+        cookie.setMaxAge(300);
+        cookie.setHttpOnly(true);
         return cookie;
     }
 }

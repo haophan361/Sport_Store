@@ -39,7 +39,6 @@ public class authenticationAPI {
     @PostMapping("/register")
     public ResponseEntity<String> Register(@RequestBody @Valid register_account request) {
         try {
-
             user_service.create_user(request);
             return ResponseEntity.ok("Bạn đã đăng kí thành công");
         } catch (RuntimeException e) {

@@ -12,14 +12,15 @@ import org.springframework.stereotype.Service;
 public class mail_Service {
     private final JavaMailSender mailSender;
 
-    public void SendEmailForgotPassword(String email, String resetPasswordLink) throws MessagingException {
+    public void Send_codeVerifyEmail(String email, String forgetPassword_code) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setTo(email);
         helper.setFrom("phanphuchao361@gmail.com");
         helper.setSubject("Reset mật khẩu");
-        String content = "<p>Để thay đổi mật khẩu, vui lòng <a href=\"" + resetPasswordLink + "\">Nhấn vào đây</a>.</p>"
-                + "<p>Liên kết này sẽ hết hạn sau 15 phút.</p>";
+        String content = "<p>Đây là mã để thay đổi mật khẩu:</p>" +
+                "<h2 style='color: #007bff; text-align: center;'>" + forgetPassword_code + "</h2>" +
+                "<p>Mã này sẽ hết hạn sau <strong>5 phút</strong>.</p>";
         helper.setText(content, true);
         mailSender.send(message);
     }

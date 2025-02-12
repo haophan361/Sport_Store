@@ -7,18 +7,22 @@ import com.sport_store.DTO.request.UserDTO.forgetPassword_request;
 import com.sport_store.DTO.request.UserDTO.updateUser_request;
 import com.sport_store.Entity.Users;
 import com.sport_store.Service.authentication_Service;
+import com.sport_store.Service.cookie_Service;
 import com.sport_store.Service.mail_Service;
 import com.sport_store.Service.user_Service;
 import com.sport_store.Util.LoadUser;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +32,7 @@ public class userAPI {
     private final mail_Service mail_service;
     private final authentication_Service authentication_service;
     private final PasswordEncoder passwordEncoder;
+    private final cookie_Service cookie_service;
 
     @PostMapping("/user/changeInfoUser")
     public ResponseEntity<String> changeInfoUser(@RequestBody updateUser_request request, HttpServletRequest httpServletRequest) {
@@ -36,24 +41,57 @@ public class userAPI {
         return ResponseEntity.ok("Cập nhật thông tin người dùng thành công");
     }
 
-    @GetMapping("/web/sendLink_ForgetPassword")
-    public ResponseEntity<String> sendLinkForgetPassword(@RequestParam String email) throws MessagingException {
+    @PostMapping("/web/sendCode_VerifyEmail")
+    public ResponseEntity<String> sendCode_verifyEmail(@RequestParam String email, HttpServletResponse httpServletResponse) {
         Users user = user_service.getUserByEmail(email);
         if (user == null) {
             throw new RuntimeException("Tài khoản sử dụng Email này hiện chưa có trên hệ thống");
         }
-        String token_resetPassword = authentication_service.generateToken(user, "resetPassword");
-        String resetPasswordLink = "http://localhost:8080/web/setToken_forgetPassword?token_resetPassword=" + token_resetPassword;
-        mail_service.SendEmailForgotPassword(user.getUser_email(), resetPasswordLink);
-        return ResponseEntity.ok("Hãy kiểm tra Email: " + email + " để lấy đường link và reset mật khẩu");
+        String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
+        String token_verifyEmail = authentication_service.generateToken(user, code_verifyEmail);
+        httpServletResponse.addCookie(cookie_service.create_verfityEmailCookie(token_verifyEmail));
+        try {
+            mail_service.Send_codeVerifyEmail(user.getUser_email(), code_verifyEmail);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok("Hãy kiểm tra Email: " + email + " để lấy mã xác nhận");
     }
 
-    @GetMapping("/web/check_token_resetPassword")
-    public ResponseEntity<Void> getForm_changePassword(@CookieValue(value = "token_resetPassword") String token_resetPassword) throws ParseException, JOSEException {
-        if (authentication_service.isValidTokenRestPassword(token_resetPassword)) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    @PostMapping("/web/resendCode_VerifyEmail")
+    public ResponseEntity<String> ResendCode_verifyEmail(@CookieValue(value = "token_verifyEmail") String token_verifyEmail, HttpServletResponse httpServletResponse) {
+        try {
+            SignedJWT signedJWT = authentication_service.verifyToken(token_verifyEmail, false);
+            String email = signedJWT.getJWTClaimsSet().getSubject();
+            Users user = user_service.getUserByEmail(email);
+            String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
+            String new_token_verifyEmail = authentication_service.generateToken(user, code_verifyEmail);
+            httpServletResponse.addCookie(cookie_service.create_verfityEmailCookie(new_token_verifyEmail));
+            mail_service.Send_codeVerifyEmail(user.getUser_email(), code_verifyEmail);
+        } catch (JOSEException | ParseException | MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok("Đã gửi lại mã xác nhận thành công");
+    }
+
+    @PostMapping("/web/checkCode_ForgetPassword")
+    public ResponseEntity<Map<String, String>> checkCode_ForgetPassword(@CookieValue(value = "token_verifyEmail") String token_verifyEmail, @RequestBody String code, HttpServletResponse httpServletResponse) {
+        try {
+            SignedJWT signedJWT = authentication_service.verifyToken(token_verifyEmail, false);
+            String issuer = signedJWT.getJWTClaimsSet().getIssuer();
+            Users user = user_service.getUserByEmail(signedJWT.getJWTClaimsSet().getSubject());
+            Map<String, String> response = new HashMap<>();
+            if (issuer.equals(code)) {
+                String token_resetPassword = authentication_service.generateToken(user, "reset_password");
+                httpServletResponse.addCookie(cookie_service.create_ResetPasswordCookie(token_resetPassword));
+                response.put("message", "Xác nhận thành công");
+                response.put("redirectUrl", "/form/forgetPassword");
+                return ResponseEntity.ok(response);
+            } else {
+                throw new RuntimeException("Mã xác nhận sai vui lòng nhập lại");
+            }
+        } catch (JOSEException | ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -84,5 +122,4 @@ public class userAPI {
         user_service.changePassword(user, request.getNew_password());
         return ResponseEntity.ok("Cập nhật mật khẩu mới thành công");
     }
-
 }
