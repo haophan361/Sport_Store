@@ -3,14 +3,12 @@ package com.sport_store.Controller.web;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.authentication_request;
-import com.sport_store.DTO.request.register_account;
+import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
+import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.response.authentication_response;
 import com.sport_store.Entity.Tokens;
 import com.sport_store.Entity.Users;
-import com.sport_store.Service.authentication_Service;
-import com.sport_store.Service.token_Service;
-import com.sport_store.Service.user_Service;
+import com.sport_store.Service.*;
 import com.sport_store.Util.LoadUser;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,20 +26,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Controller
 public class user_Controller {
     private final user_Service user_service;
     private final token_Service token_service;
+    private final mail_Service mail_service;
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String client_id;
+    private String google_client_id;
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String client_secret;
+    private String google_client_secret;
     @Value("${jwt.valid-duration}")
     private long validDuration;
     private final authentication_Service authentication_service;
     private final LoadUser load_user;
+    private final cookie_Service cookie_service;
 
     @GetMapping("/web/form_register")
     public String getForm_Register() {
@@ -55,7 +56,22 @@ public class user_Controller {
 
     @GetMapping("/form/changePassword")
     public String getForm_changePassword() {
-        return "web/changePassword";
+        return "user/changePassword";
+    }
+
+    @GetMapping("/form/forgetPassword")
+    public String getForm_ForgetPassword() {
+        return "user/forgetPassword";
+    }
+
+    @GetMapping("/form/check_codeVerifyEmail")
+    public String getForm_checkCodeResetPassword() {
+        return "user/verify_Email";
+    }
+
+    @GetMapping("/form/request_forgetPassword")
+    public String getForm_mail_forgetPassword() {
+        return "user/request_forgetPassword";
     }
 
     @GetMapping("/form/changeInfoUser")
@@ -67,14 +83,20 @@ public class user_Controller {
         String email = (String) session.getAttribute("email");
         Users user = user_service.getUserByEmail(email);
         model.addAttribute("user", user);
-        return "web/changeInfoUser";
+        return "user/changeInfoUser";
     }
 
     @GetMapping("/login/oauth2/google")
-    public String authenticationGoogle(@RequestParam String code, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public String authenticationGoogle(@RequestParam String code, HttpServletRequest httpServletRequest,
+                                       HttpServletResponse httpServletResponse) {
+        return authenticationOAuth2(code, "Google", httpServletRequest, httpServletResponse);
+    }
+
+    public String authenticationOAuth2(String code, String provider, HttpServletRequest httpServletRequest,
+                                       HttpServletResponse httpServletResponse) {
         try {
-            String accessToken = getAccessToken(code);
-            Users user = getUserInfo(accessToken);
+            String accessToken = getAccessToken(code, provider);
+            Users user = getUserInfo(accessToken, provider);
             Users userEntity;
             authentication_response response;
             if (user_service.existByEmail(user.getUser_email())) {
@@ -88,11 +110,14 @@ public class user_Controller {
                 register_account registerAccount = register_account.builder()
                         .email(user.getUser_email())
                         .name(user.getUser_name())
-                        .password("haophan")
+                        .password(UUID.randomUUID().toString())
                         .phone(null)
                         .date_of_birth(null)
                         .build();
                 response = authentication_service.authenticate_LoginOAuth2(registerAccount);
+                mail_service.SendEmailRandomPassword(registerAccount.getEmail(), registerAccount.getPassword());
+                Cookie firstLoginGoogle = load_user.firstLogin_WithGoogle();
+                httpServletResponse.addCookie(firstLoginGoogle);
             }
             SignedJWT signedJWT = authentication_service.verifyToken(response.getToken(), false);
             Tokens tokensEntity = Tokens.builder()
@@ -104,7 +129,7 @@ public class user_Controller {
             token_service.createToken(tokensEntity);
             HttpSession session = httpServletRequest.getSession();
             load_user.userSession(session, response);
-            Cookie cookie = load_user.tokenCookie(response.getToken());
+            Cookie cookie = cookie_service.create_tokenCookie(response.getToken());
             httpServletResponse.addCookie(cookie);
             return "redirect:/";
         } catch (Exception e) {
@@ -112,20 +137,23 @@ public class user_Controller {
         }
     }
 
-    public String getAccessToken(String authorizationCode) {
-        String tokenUrl = "https://oauth2.googleapis.com/token";
+    public String getAccessToken(String authorizationCode, String provider) {
+        String tokenUrl = "";
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("code", authorizationCode);
-        body.add("client_id", client_id);
-        body.add("client_secret", client_secret);
-        body.add("redirect_uri", "http://localhost:8080/login/oauth2/google");
-        body.add("grant_type", "authorization_code");
 
+        body.add("code", authorizationCode);
+        if (provider.equals("Google")) {
+            tokenUrl = "https://oauth2.googleapis.com/token";
+            body.add("client_id", google_client_id);
+            body.add("client_secret", google_client_secret);
+            body.add("redirect_uri", "http://localhost:8080/login/oauth2/google");
+            body.add("grant_type", "authorization_code");
+        }
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.exchange(tokenUrl, HttpMethod.POST, request, String.class);
 
@@ -139,8 +167,12 @@ public class user_Controller {
         }
     }
 
-    public Users getUserInfo(String accessToken) {
-        String userInfoUrl = "https://www.googleapis.com/oauth2/v3/userinfo";
+    public Users getUserInfo(String accessToken, String provider) {
+
+        String userInfoUrl = "";
+        if (provider.equals("Google")) {
+            userInfoUrl = "https://www.googleapis.com/oauth2/v3/userinfo";
+        }
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);

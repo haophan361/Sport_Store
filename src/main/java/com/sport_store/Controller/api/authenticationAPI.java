@@ -2,16 +2,15 @@ package com.sport_store.Controller.api;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.authentication_request;
-import com.sport_store.DTO.request.register_account;
+import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
+import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.response.authentication_response;
 import com.sport_store.DTO.response.refreshToken_response;
 import com.sport_store.Entity.Tokens;
 import com.sport_store.Entity.Users;
-import com.sport_store.Service.authentication_Service;
-import com.sport_store.Service.token_Service;
-import com.sport_store.Service.user_Service;
+import com.sport_store.Service.*;
 import com.sport_store.Util.LoadUser;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +18,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -37,26 +35,43 @@ public class authenticationAPI {
     private final authentication_Service authentication_service;
     private final LoadUser loadUser;
     private final token_Service token_service;
+    private final cookie_Service cookie_service;
+    private final mail_Service mail_service;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> Register(@RequestBody @Valid register_account request) {
+    @PostMapping("/web/sendCode_VerifyEmail_Register")
+    public ResponseEntity<String> sendCode_verifyEmail_Register(@RequestBody @Valid register_account request,
+                                                                HttpServletResponse httpServletResponse, HttpSession httpSession) {
+        Users user = Users
+                .builder()
+                .user_id(UUID.randomUUID().toString())
+                .user_name(request.getName())
+                .user_gender(request.isGender())
+                .user_date_of_birth(request.getDate_of_birth())
+                .user_phone(request.getPhone())
+                .user_email(request.getEmail())
+                .user_password(passwordEncoder.encode(request.getPassword()))
+                .user_role(Users.Role.CUSTOMER)
+                .is_active(true)
+                .build();
+        httpSession.setAttribute("user", user);
+        String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
+        String token_verifyEmail = authentication_service.generateToken(user, code_verifyEmail);
+        httpServletResponse.addCookie(cookie_service.create_verfityEmailCookie(token_verifyEmail));
         try {
-            Users user = Users.builder()
-                    .user_id(UUID.randomUUID().toString())
-                    .user_name(request.getName())
-                    .user_date_of_birth(request.getDate_of_birth())
-                    .user_gender(request.isGender())
-                    .user_email(request.getEmail())
-                    .user_password(passwordEncoder.encode(request.getPassword()))
-                    .user_phone(request.getPhone())
-                    .user_role(Users.Role.CUSTOMER)
-                    .is_active(true).build();
-            user_service.create_user(user);
-            return ResponseEntity.ok("Bạn đã đăng kí thành công");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            mail_service.Send_codeVerifyEmail(user.getUser_email(), code_verifyEmail);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
+        return ResponseEntity.ok("Hãy kiểm tra Email: " + request.getEmail() + " để lấy mã xác nhận");
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> Register(HttpSession httpSession) {
+        Users user = (Users) httpSession.getAttribute("user");
+        user_service.create_user(user);
+        httpSession.removeAttribute("user");
+        return ResponseEntity.ok("Bạn đã đăng kí thành công");
     }
 
     @PostMapping("/login")
@@ -74,11 +89,9 @@ public class authenticationAPI {
                 .user_email(request.getEmail())
                 .build();
         token_service.createToken(tokensEntity);
-        Cookie cookie = loadUser.tokenCookie(response.getToken());
+        Cookie cookie = cookie_service.create_tokenCookie(response.getToken());
         httpServletResponse.addCookie(cookie);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + response.getToken())
-                .body(response);
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/logout")
@@ -118,7 +131,7 @@ public class authenticationAPI {
     @PostMapping("/refresh")
     public ResponseEntity<refreshToken_response> refreshToken(@CookieValue("token") String token, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
         String new_token = authentication_service.refreshToken(token);
-        Cookie new_cookie = loadUser.tokenCookie(new_token);
+        Cookie new_cookie = cookie_service.create_tokenCookie(new_token);
         httpServletResponse.addCookie(new_cookie);
         return ResponseEntity.ok(new refreshToken_response(new_token));
     }

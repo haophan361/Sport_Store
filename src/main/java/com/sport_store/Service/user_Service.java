@@ -1,12 +1,13 @@
 package com.sport_store.Service;
 
-import com.sport_store.DTO.request.updateUser_request;
+import com.sport_store.DTO.request.UserDTO.updateUser_request;
 import com.sport_store.Entity.Users;
 import com.sport_store.Repository.user_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class user_Service {
     private final user_Repository user_repository;
+    private final PasswordEncoder passwordEncoder;
 
     public void create_user(Users user) {
 
@@ -27,6 +29,10 @@ public class user_Service {
         user_repository.save(user);
     }
 
+    public void changePassword(Users user, String new_password) {
+        user.setUser_password(passwordEncoder.encode(new_password));
+        user_repository.save(user);
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     public List<Users> getListUser() {

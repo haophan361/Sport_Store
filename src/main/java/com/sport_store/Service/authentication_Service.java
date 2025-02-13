@@ -5,8 +5,8 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.authentication_request;
-import com.sport_store.DTO.request.register_account;
+import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
+import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.response.authentication_response;
 import com.sport_store.DTO.response.user_response;
 import com.sport_store.Entity.Tokens;
@@ -34,6 +34,8 @@ public class authentication_Service {
     private long validDuration;
     @Value("${jwt.refreshable-duration}")
     private long refreshDuration;
+    @Value("${valid-token.resetPassword}")
+    private long validResetPasswordDuration;
     private final user_Repository user_repository;
     private final PasswordEncoder passwordEncoder;
     private final user_Service user_service;
@@ -65,7 +67,7 @@ public class authentication_Service {
                 .build();
 
         user_repository.save(user);
-        String token = generateToken(user);
+        String token = generateToken(user, "sport_store.com");
         user_response userResponse = user_response.builder()
                 .ID(user.getUser_id())
                 .name(user.getUser_name())
@@ -95,7 +97,7 @@ public class authentication_Service {
                     throw new Exception("Mật khẩu không hợp lệ");
                 }
             }
-            String token = generateToken(user);
+            String token = generateToken(user, "sport_store.com");
             user_response userResponse = user_response.builder()
                     .ID(user.getUser_id())
                     .name(user.getUser_name())
@@ -114,13 +116,19 @@ public class authentication_Service {
         }
     }
 
-    private String generateToken(Users user) {
+    public String generateToken(Users user, String issuer) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        Date expirationTime;
+        if (issuer.equals("sport_store.com")) {
+            expirationTime = new Date(Instant.now().plus(validDuration, ChronoUnit.MINUTES).toEpochMilli());
+        } else {
+            expirationTime = new Date(Instant.now().plus(validResetPasswordDuration, ChronoUnit.MINUTES).toEpochMilli());
+        }
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUser_email())
-                .issuer("sport_store.com")
+                .issuer(issuer)
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(validDuration, ChronoUnit.HOURS).toEpochMilli()))
+                .expirationTime(expirationTime)
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope", user.getUser_role().toString())
                 .build();
@@ -141,7 +149,7 @@ public class authentication_Service {
 
         Tokens tokensEntity = token_repository.findTokenByID(signedJWT.getJWTClaimsSet().getJWTID());
         token_repository.delete(tokensEntity);
-        String new_token = generateToken(user);
+        String new_token = generateToken(user, "sport_store.com");
         SignedJWT newSignedJWT = SignedJWT.parse(new_token);
         Tokens newTokensEntity = Tokens.builder()
                 .token_id(newSignedJWT.getJWTClaimsSet().getJWTID())
@@ -152,4 +160,5 @@ public class authentication_Service {
         token_repository.save(newTokensEntity);
         return new_token;
     }
+
 }

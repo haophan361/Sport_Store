@@ -150,13 +150,13 @@
                     <div class="navbar-nav mr-auto py-0">
                         <a href="index.html" class="nav-item nav-link active">Home</a>
                         <a href="shop.html" class="nav-item nav-link">Shop</a>
-                        <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
+                        <a href="../customer/detail.html" class="nav-item nav-link">Shop Detail</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages <i
                                     class="fa fa-angle-down mt-1"></i></a>
                             <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
                                 <a th:href="@{/customer/cart}" class="dropdown-item">Shopping Cart</a>
-                                <a href="checkout.html" class="dropdown-item">Checkout</a>
+                                <a href="../customer/checkout.html" class="dropdown-item">Checkout</a>
                             </div>
                         </div>
                     </div>
@@ -1038,5 +1038,7 @@
 <script th:src="@{/js/main.js}"></script>
 <script th:src="@{/js/call_api/post_api/logout.js}"></script>
 <script th:src="@{/js/call_api/post_api/refreshToken.js}"></script>
+<script th:src="@{/js/call_api/get_api/cookie_Service.js}"></script>
+<script th:src="@{/js/call_api/post_api/checkFirstLogInGoogle.js}"></script>
 </body>
 </html>

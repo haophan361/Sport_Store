@@ -10,11 +10,7 @@ public class home_Controller {
     @GetMapping("/")
     public String home() {
 
-        return "index";
+        return "web/index";
     }
-
-    @GetMapping("/customer/cart")
-    public String cart() {
-        return "cart";
-    }
+    
 }

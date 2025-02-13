@@ -40,7 +40,7 @@ public class Security_Config {
                                 "/",
                                 "/register",
                                 "/login",
-                                "/login/oauth2/google",
+                                "/login/oauth2/**",
                                 "/check_login",
                                 "/refresh",
                                 "/web/**",
@@ -55,6 +55,8 @@ public class Security_Config {
                 )
                 .addFilterBefore(cookieAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) ->
+                        response.sendError(403, "Quyền truy cập bị từ chối")))
                 .oauth2Login(Customizer.withDefaults())
                 .logout(AbstractHttpConfigurer::disable);
 
