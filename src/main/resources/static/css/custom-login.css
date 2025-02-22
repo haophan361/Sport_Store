@@ -5,6 +5,7 @@
     --gradient: linear-gradient(135deg, #6a11cb, #2575fc);
 }
 
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -12,7 +13,6 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: var(--gradient);
 }
 
 /* Wrapper tổng thể */
@@ -600,4 +600,77 @@ a:hover {
 .spinner i {
     font-size: 50px;
     margin-bottom: 10px;
+}
+
+
+
+
+body[data-bg="gradient"] {
+    background: var(--gradient);
+}
+
+body[data-bg="image"] {
+    background: url('../img/store_background.jpg') no-repeat center center/cover;
+}
+
+.wrapper-new {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    width: 350px;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.form-card-new {
+    background: rgba(255, 255, 255, 0.2); /* Làm mờ nền form */
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 350px;
+}
+
+.form-card-new h2 {
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.form-group-new {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.2) !important; /* Làm mờ nền input */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Viền mờ nhẹ */
+    color: black !important; /* Màu chữ */
+    border-radius: 15px; /* Bo tròn */
+    padding: 10px;
+    font-size: 16px;
+    height: 45px;
+    backdrop-filter: blur(10px); /* Làm mờ nền phía sau */
+}
+
+.form-control::placeholder {
+    color: rgba(0, 0, 0, 0.7); /* Màu placeholder */
+    font-size: 14px;
+}
+
+/* Đổi màu chữ khi nhập */
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.3) !important;
+    outline: none;
+    box-shadow: none;
+}
+
+.btn {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 20px;
+    font-size: 16px;
+    padding: 10px;
 }
