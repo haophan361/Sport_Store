@@ -8,24 +8,46 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link th:href="@{/css/custom-login.css}" rel="stylesheet">
 </head>
-<body class="gradient-bg">
+<body>
 <div class="register-wrapper">
-    <div class="info-section register-info">
-        <div class="info-content">
-            <h1>Chào mừng bạn đến vời cửa hàng của chúng tôi!</h1>
-            <p>Hãy tham gia ngay để có được đơn hàng giảm giá cực sốc</p>
-        </div>
-    </div>
-
-    <div class="form-card">
+    <div class="register-card">
         <h2 class="text-center mb-4">Register</h2>
         <form id="registerForm" method="POST">
-            <div class="form-group">
-                <label for="name">Họ và tên</label>
-                <input type="text" id="name" name="name" class="form-control" placeholder="Nhập họ và tên">
+
+            <div class="row">
+                <div class="form-group half-width">
+                    <label for="name">Họ và tên</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Nhập họ và tên">
+                </div>
+
+                <div class="form-group half-width">
+                    <label for="date_of_birth">Ngày sinh</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" class="form-control">
+                </div>
+
+                <div class="form-group half-width">
+                    <label for="phone">Số điện thoại</label>
+                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Nhập số điện thoại">
+                </div>
+
+                <div class="form-group half-width">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Nhập email">
+                </div>
+
+                <div class="form-group half-width">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu">
+                </div>
+
+                <div class="form-group half-width">
+                    <label for="confirmPassword">Xác nhận mật khẩu</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control"
+                           placeholder="Nhập lại mật khẩu">
+                </div>
             </div>
 
-            <div class="custom-radio" style="margin-bottom: 5px;">
+            <div class="custom-radio" style="margin-bottom: 10px; text-align: left;">
                 <strong>Giới tính</strong>
                 <div class="radio-group col-md-12" style="display: flex; align-items: center;">
                     <div class="radio-item col-md-4">
@@ -38,36 +60,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <input type="text" id="date_of_birth" name="date_of_birth" placeholder="Ngày sinh">
-                <label for="date_of_birth">Ngày sinh</label>
-            </div>
-
-            <div class="form-group">
-                <label for="phone">Số điện thoại</label>
-                <input type="text" id="phone" name="phone" class="form-control" placeholder="Nhập số điện thoại">
-            </div>
-
-            <div class="row">
-                <div class="form-group half-width">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="Nhập email">
-                </div>
-
-                <div class="form-group half-width">
-                    <label for="password">Mật khẩu</label>
-                    <input type="password" id="password" name="password" class="form-control"
-                           placeholder="Nhập mật khẩu">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Xác nhận mật khẩu</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control"
-                       placeholder="Nhập lại mật khẩu">
-            </div>
-
             <button type="button" class="btn btn-primary btn-lg btn-block" onclick="register()">Register</button>
             <p class="text-center mt-3">Already a member? <a th:href="@{/web/form_login}">Login</a></p>
         </form>

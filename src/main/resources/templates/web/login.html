@@ -8,26 +8,20 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body data-bg="gradient">
+<body>
 <div class="login-wrapper">
-    <div class="info-section login-info">
-        <div class="info-text">
-            <h1>WELCOME TO STORE!</h1>
-        </div>
-    </div>
-    <div class="form-section">
-        <div class="login-card">
-            <h2>Login</h2>
-            <form>
+    <div class="login-card">
+        <h2>Login</h2>
+        <form id="loginForm" method="POST">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="text" id="email" name="email">
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Nhập email" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
                 </div>
-                <button type="button" class="btn-primary" onclick="login()">Đăng nhập</button>
+                <button type="button" class="btn btn-primary" onclick="login()">Đăng nhập</button>
                 <div class="d-flex justify-content-center text-center mt-4 pt-1">
                     <a class="text-black-50" href="/oauth2/authorization/google">
                         <i class="fa fa-google fa-lg"></i>
@@ -40,7 +34,6 @@
                     <p>Bạn chưa có tài khoản? <a th:href="@{/web/form_register}">Đăng ký</a></p>
                 </div>
             </form>
-        </div>
     </div>
 </div>
 </body>
