@@ -22,10 +22,10 @@ public class Receiver_Info {
     private String receiver_ward;
     private String receiver_street;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "customer_id")
     @JsonIgnore
     @ToString.Exclude
-    private Users users;
+    private Customers customers;
     @OneToMany(mappedBy = "receiver")
     private List<Bills> bill;
 }

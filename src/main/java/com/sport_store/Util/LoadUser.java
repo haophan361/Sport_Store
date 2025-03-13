@@ -1,8 +1,8 @@
 package com.sport_store.Util;
 
 import com.sport_store.DTO.response.authentication_response;
-import com.sport_store.Entity.Users;
-import com.sport_store.Service.user_Service;
+import com.sport_store.Entity.Customers;
+import com.sport_store.Service.customer_Service;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -11,17 +11,15 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class LoadUser {
-    private final user_Service user_service;
+    private final customer_Service customer_service;
 
-    public void userSession(HttpSession session, authentication_response response) {
+    public void CustomerSession(HttpSession session, authentication_response response) {
         if (response != null) {
-            Users user = user_service.getUserByEmail(response.getUser_response().getEmail());
-            if (user != null) {
-                session.setAttribute("email", user.getUser_email());
-                session.setAttribute("name", user.getUser_name());
-                session.setAttribute("role", user.getUser_role());
+            Customers customer = customer_service.getUserByEmail(response.getAccount_response().getEmail());
+            if (customer != null) {
+                session.setAttribute("email", customer.getCustomer_email());
+                session.setAttribute("name", customer.getCustomer_name());
                 session.setAttribute("isLoggedIn", 1);
-                session.setAttribute("token", response.getToken());
             } else {
                 session.setAttribute("isLoggedIn", 0);
             }
@@ -30,9 +28,8 @@ public class LoadUser {
 
     public void refreshUser(HttpSession session) {
         String email = session.getAttribute("email").toString();
-        Users user = user_service.getUserByEmail(email);
-        session.setAttribute("name", user.getUser_name());
-        session.setAttribute("role", user.getUser_role());
+        Customers customer = customer_service.getUserByEmail(email);
+        session.setAttribute("name", customer.getCustomer_name());
     }
 
 

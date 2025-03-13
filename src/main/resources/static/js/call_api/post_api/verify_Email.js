@@ -58,6 +58,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function resendCode_callback() {
+        localStorage.setItem("verify_startTime", Date.now());
+        timer = setInterval(updateCountdown, 1000);
+        window.location.reload()
+    }
+
     let timer, resendTimer;
     if (verifyTimeLeft > 0) {
         timer = setInterval(updateCountdown, 1000);
@@ -81,38 +87,11 @@ document.addEventListener("DOMContentLoaded", function () {
             resendButton.classList.add("disabled");
             resendButton.innerHTML = `Gửi lại (<span id="resendCountdown">${resendTimeLeft}</span>s)`;
             resendTimer = setInterval(updateResendCountdown, 1000);
-            fetch("/web/resendCode_VerifyEmail", {
-                method: "POST",
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: sessionStorage.getItem("typeVerify"),
-                credentials: "include"
-            }).then(response => {
-                if (!response.ok) {
-                    return response.text().then(error => {
-                        throw new Error(error)
-                    })
-                }
-                return response.text()
-            }).then(message => {
-                bootbox.alert({
-                    title: "Thông báo",
-                    message: message,
-                    backdrop: true,
-                    callback: function () {
-                        localStorage.setItem("verify_startTime", Date.now());
-                        timer = setInterval(updateCountdown, 1000);
-                        window.location.reload()
-                    }
-                })
-            }).catch(error => {
-                bootbox.alert({
-                    title: "Lỗi",
-                    message: error.message,
-                    backdrop: true
-                });
-            });
+
+
+            apiRequest("/web/resendCode_VerifyEmail", "POST", {'Content-type': 'application/json'},
+                sessionStorage.getItem("typeVerify"), null,
+                null, "include", resendCode_callback, null)
         }
     });
     inputs.forEach((input, index) => {
@@ -158,74 +137,28 @@ function checkCode_verifyEmail() {
     } else if (typeVerify === "register") {
         url = "/web/checkCode_Register"
     }
-    fetch(url, {
-        method: "POST",
-        headers: {
-            'Content-type': 'text/plain',
-        },
-        credentials: "include",
-        body: code
-    }).then(response => {
-        if (!response.ok) {
-            return response.text().then(error => {
-                throw new Error(error)
-            })
-        }
-        return response.json()
-    }).then(data => {
-        bootbox.alert({
-            title: "Thông báo",
-            message: data.message,
-            backdrop: true,
-            callback: function () {
-                localStorage.removeItem("verify_startTime");
-                localStorage.removeItem("resend_startTime");
-                if (typeVerify === "register") {
-                    fetchRegister()
-                }
-                if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl
-                }
-            }
-        })
-    }).catch(error => {
-        bootbox.alert({
-            title: "Lỗi",
-            message: error.message,
-            backdrop: true
-        });
-    });
+
+
+    apiRequest(url, "POST", {'Content-type': 'text/plain'}, code,
+        null, null, "include", checkCode_callback)
 }
 
+function checkCode_callback() {
+    {
+        let typeVerify = sessionStorage.getItem("typeVerify")
+        localStorage.removeItem("verify_startTime");
+        localStorage.removeItem("resend_startTime");
+        if (typeVerify === "register") {
+            fetchRegister()
+        }
+        if (typeVerify === "forgetPassword") {
+            window.location.href = "/form/forgetPassword"
+        }
+    }
+}
+
+
 function fetchRegister() {
-    fetch("/register",
-        {
-            method: "POST",
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.text();
-            } else {
-                return response.text().then(text => {
-                    throw new Error(text);
-                });
-            }
-        })
-        .then(message => {
-            bootbox.alert({
-                title: "Thông báo",
-                message: message,
-                backdrop: true,
-                callback: function () {
-                    window.location.href = "/web/form_login"
-                }
-            });
-        })
-        .catch(error => {
-            bootbox.alert({
-                title: "Thông báo lỗi",
-                message: error.message,
-                backdrop: true
-            });
-        });
+    apiRequest("/register", "POST", {}, null,
+        "/web/form_login", null, "include")
 }

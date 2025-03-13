@@ -1,6 +1,6 @@
 package com.sport_store.DTO.request.Info_ReceiverDTO;
 
-import com.sport_store.Entity.Users;
+import com.sport_store.Entity.Customers;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -28,5 +28,5 @@ public class change_infoReceiver_request {
     private String ward;
     @Size(max = 100, message = "Chỉ được nhập tối 100 kí tự")
     private String street;
-    private Users user;
+    private Customers customer;
 }

@@ -6,8 +6,9 @@ import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
 import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.response.authentication_response;
 import com.sport_store.DTO.response.refreshToken_response;
+import com.sport_store.Entity.Accounts;
+import com.sport_store.Entity.Customers;
 import com.sport_store.Entity.Tokens;
-import com.sport_store.Entity.Users;
 import com.sport_store.Service.*;
 import com.sport_store.Util.LoadUser;
 import jakarta.mail.MessagingException;
@@ -24,62 +25,76 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-public class authenticationAPI {
+public class authentication_API {
     @Value("${jwt.valid-duration}")
     private long validDuration;
-    private final user_Service user_service;
+    private final customer_Service customer_service;
     private final authentication_Service authentication_service;
     private final LoadUser loadUser;
     private final token_Service token_service;
     private final cookie_Service cookie_service;
     private final mail_Service mail_service;
     private final PasswordEncoder passwordEncoder;
+    private final account_Service account_service;
 
     @PostMapping("/web/sendCode_VerifyEmail_Register")
-    public ResponseEntity<String> sendCode_verifyEmail_Register(@RequestBody @Valid register_account request,
-                                                                HttpServletResponse httpServletResponse, HttpSession httpSession) {
-        Users user = Users
+    public ResponseEntity<?> sendCode_verifyEmail_Register(@RequestBody @Valid register_account request,
+                                                           HttpServletResponse httpServletResponse, HttpSession httpSession) {
+        Customers customer = Customers
                 .builder()
-                .user_id(UUID.randomUUID().toString())
-                .user_name(request.getName())
-                .user_gender(request.isGender())
-                .user_date_of_birth(request.getDate_of_birth())
-                .user_phone(request.getPhone())
-                .user_email(request.getEmail())
-                .user_password(passwordEncoder.encode(request.getPassword()))
-                .user_role(Users.Role.CUSTOMER)
+                .customer_id(UUID.randomUUID().toString())
+                .customer_name(request.getName())
+                .customer_date_of_birth(request.getDate_of_birth())
+                .customer_phone(request.getPhone())
+                .customer_email(request.getEmail())
                 .is_active(true)
                 .build();
-        httpSession.setAttribute("user", user);
+        Accounts account = Accounts
+                .builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Accounts.Role.CUSTOMER)
+                .is_active(true)
+                .build();
+        httpSession.setAttribute("customer", customer);
+        httpSession.setAttribute("account", account);
+        httpSession.setAttribute("email", request.getEmail());
         String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
-        String token_verifyEmail = authentication_service.generateToken(user, code_verifyEmail);
-        httpServletResponse.addCookie(cookie_service.create_verfityEmailCookie(token_verifyEmail));
+        String token_verifyEmail = authentication_service.generateToken(account, code_verifyEmail);
+        Cookie cookie_verifyEmail = cookie_service.create_tokenCookie(token_verifyEmail, "token_verifyEmail",
+                "/web/checkCode_Register", 300, true);
+        httpServletResponse.addCookie(cookie_verifyEmail);
         try {
-            mail_service.Send_codeVerifyEmail(user.getUser_email(), code_verifyEmail);
+            mail_service.Send_codeVerifyEmail(account.getEmail(), code_verifyEmail);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.ok("Hãy kiểm tra Email: " + request.getEmail() + " để lấy mã xác nhận");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Hãy kiểm tra Email: " + request.getEmail() + " để lấy mã xác nhận"));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> Register(HttpSession httpSession) {
-        Users user = (Users) httpSession.getAttribute("user");
-        user_service.create_user(user);
-        httpSession.removeAttribute("user");
-        return ResponseEntity.ok("Bạn đã đăng kí thành công");
+    public ResponseEntity<?> Register(HttpSession httpSession) {
+        Customers customer = (Customers) httpSession.getAttribute("customer");
+        Accounts accounts = (Accounts) httpSession.getAttribute("account");
+        customer_service.create_customer(customer);
+        account_service.create_account(accounts);
+        httpSession.removeAttribute("customer");
+        httpSession.removeAttribute("account");
+        httpSession.removeAttribute("email");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Bạn đã đăng ký thành công"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> Login(@RequestBody @Valid authentication_request request, HttpServletRequest httpServletRequest,
                                    HttpServletResponse httpServletResponse) throws Exception {
         authentication_response response = authentication_service.authenticate(request, false);
-        HttpSession session = httpServletRequest.getSession(true);
-        loadUser.userSession(session, response);
+        HttpSession session = httpServletRequest.getSession();
+        loadUser.CustomerSession(session, response);
 
         SignedJWT signedJWT = authentication_service.verifyToken(response.getToken(), false);
         Tokens tokensEntity = Tokens.builder()
@@ -89,13 +104,13 @@ public class authenticationAPI {
                 .user_email(request.getEmail())
                 .build();
         token_service.createToken(tokensEntity);
-        Cookie cookie = cookie_service.create_tokenCookie(response.getToken());
+        Cookie cookie = cookie_service.create_tokenCookie(response.getToken(), "token", "/", 3600, true);
         httpServletResponse.addCookie(cookie);
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Đăng nhập thành công"));
     }
 
     @PostMapping("/logout")
-    public void Logout(@CookieValue(value = "token") String token, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
+    public ResponseEntity<?> Logout(@CookieValue(value = "token") String token, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
         SignedJWT signedJWT = authentication_service.verifyToken(token, false);
         String tokenID = signedJWT.getJWTClaimsSet().getJWTID();
         Tokens tokens_localStorage = token_service.findTokenByID(tokenID);
@@ -110,8 +125,15 @@ public class authenticationAPI {
                     cookie.setPath("/");
                     cookie.setMaxAge(0);
                     httpServletResponse.addCookie(cookie);
+                    return ResponseEntity.ok(Collections.singletonMap("message", "Đăng xuất thành công"));
+                } else {
+                    throw new RuntimeException("Phiên đăng nhập đã hết hạn");
                 }
+            } else {
+                throw new RuntimeException("Token đã hết hạn");
             }
+        } else {
+            throw new RuntimeException("Không tìm thấy token");
         }
     }
 
@@ -131,7 +153,7 @@ public class authenticationAPI {
     @PostMapping("/refresh")
     public ResponseEntity<refreshToken_response> refreshToken(@CookieValue("token") String token, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
         String new_token = authentication_service.refreshToken(token);
-        Cookie new_cookie = cookie_service.create_tokenCookie(new_token);
+        Cookie new_cookie = cookie_service.create_tokenCookie(new_token, "token", "/", 3600, true);
         httpServletResponse.addCookie(new_cookie);
         return ResponseEntity.ok(new refreshToken_response(new_token));
     }

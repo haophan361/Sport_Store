@@ -26,7 +26,8 @@
             <button type="button" class="btn btn-primary w-100 mt-3" onclick="checkCode_verifyEmail()">Xác nhận</button>
         </form>
         <p class="text-center text-muted mt-3">
-            Không nhận được mã? <a href="#" id="resendCode" class="text-decoration-none disabled">Gửi lại<span id="resendCountdown"></span></a>
+            Không nhận được mã? <a href="#" id="resendCode" class="text-decoration-none disabled">Gửi lại<span
+                id="resendCountdown"></span></a>
             <br>
             <span id="countdownVerify" class="text-danger"></span>
         </p>
@@ -39,5 +40,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script th:src="@{/js/call_api/post_api/verify_Email.js}"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
 </body>
 </html>

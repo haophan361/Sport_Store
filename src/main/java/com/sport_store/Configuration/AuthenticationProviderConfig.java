@@ -1,7 +1,7 @@
 package com.sport_store.Configuration;
 
-import com.sport_store.Entity.Users;
-import com.sport_store.Repository.user_Repository;
+import com.sport_store.Entity.Accounts;
+import com.sport_store.Repository.account_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class AuthenticationProviderConfig {
-    private final user_Repository user_repository;
+    private final account_Repository account_repository;
 
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
@@ -28,12 +28,12 @@ public class AuthenticationProviderConfig {
     @Bean
     public UserDetailsService getUserDetailsService() {
         return email -> {
-            Users user = user_repository.findByUsername(email)
+            Accounts account = account_repository.findAccountsByEmail_Optional(email)
                     .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng có Email: " + email));
             return User.builder()
-                    .username(user.getUser_email())
-                    .password(user.getUser_password())
-                    .roles(user.getUser_role().toString())
+                    .username(account.getEmail())
+                    .password(account.getPassword())
+                    .roles(account.getRole().toString())
                     .build();
         };
     }

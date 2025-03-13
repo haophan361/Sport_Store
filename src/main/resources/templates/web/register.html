@@ -37,7 +37,8 @@
 
                 <div class="form-group half-width">
                     <label for="password">Mật khẩu</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu">
+                    <input type="password" id="password" name="password" class="form-control"
+                           placeholder="Nhập mật khẩu">
                 </div>
 
                 <div class="form-group half-width">
@@ -46,20 +47,7 @@
                            placeholder="Nhập lại mật khẩu">
                 </div>
             </div>
-
-            <div class="custom-radio" style="margin-bottom: 10px; text-align: left;">
-                <strong>Giới tính</strong>
-                <div class="radio-group col-md-12" style="display: flex; align-items: center;">
-                    <div class="radio-item col-md-4">
-                        <input type="radio" id="male" name="gender" value="true">
-                        <label for="male">Nam</label>
-                    </div>
-                    <div class="radio-item col-md-6">
-                        <input type="radio" id="female" name="gender" value="false">
-                        <label for="female">Nữ</label>
-                    </div>
-                </div>
-            </div>
+            
             <button type="button" class="btn btn-primary btn-lg btn-block" onclick="register()">Register</button>
             <p class="text-center mt-3">Already a member? <a th:href="@{/web/form_login}">Login</a></p>
         </form>
@@ -71,6 +59,7 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
 <script th:src="@{/js/call_api/post_api/register.js}"></script>
 </body>
 </html>

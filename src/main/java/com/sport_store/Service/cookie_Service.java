@@ -5,26 +5,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class cookie_Service {
-    public Cookie create_tokenCookie(String token) {
-        Cookie cookie = new Cookie("token", token);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(3600);
+    public Cookie create_tokenCookie(String token_value, String token_name, String path, int maxAge, boolean isHttpOnly) {
+        Cookie cookie = new Cookie(token_name, token_value);
+        cookie.setPath(path);
+        cookie.setHttpOnly(isHttpOnly);
+        cookie.setMaxAge(maxAge);
         return cookie;
     }
+    
 
-    public Cookie create_verfityEmailCookie(String token_verifyEmail) {
-        Cookie cookie = new Cookie("token_verifyEmail", token_verifyEmail);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(600);
-        return cookie;
-    }
-
-    public Cookie create_ResetPasswordCookie(String token_resetPassword) {
-        Cookie cookie = new Cookie("token_resetPassword", token_resetPassword);
-        cookie.setPath("/web/forgetPassword");
-        cookie.setMaxAge(300);
+    public Cookie deleteCookie(String cookie_name, String path) {
+        Cookie cookie = new Cookie(cookie_name, "");
+        cookie.setPath(path);
+        cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
         return cookie;
     }

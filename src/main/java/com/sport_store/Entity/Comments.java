@@ -24,6 +24,6 @@ public class Comments {
     @JoinColumn(name = "product_id")
     private Products products;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users users;
+    @JoinColumn(name = "customer_id")
+    private Customers customers;
 }

@@ -12,7 +12,6 @@ function register() {
         {
             name: document.getElementById("name").value,
             date_of_birth: document.getElementById("date_of_birth").value,
-            gender: document.querySelector('input[name="gender"]:checked')?.value || null,
             phone: document.getElementById("phone").value,
             email: document.getElementById("email").value,
             password: document.getElementById("password").value,
@@ -28,38 +27,18 @@ function register() {
         )
         return
     }
-    fetch("/web/sendCode_VerifyEmail_Register", {
-        method: "POST",
-        headers: {
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify(formRegister)
-    }).then(response => {
-        if (!response.ok) {
-            return response.text().then(error => {
-                throw new Error(error);
-            });
+
+    apiRequest("/web/sendCode_VerifyEmail_Register", "POST", {'Content-type': 'application/json'},
+        JSON.stringify(formRegister), "/form/check_codeVerifyEmail", null, "include",
+        callback_remove_time_register)
+}
+
+function callback_remove_time_register() {
+    {
+        if (localStorage.getItem("verify_startTime") !== null) {
+            localStorage.removeItem("verify_startTime")
         }
-        return response.text();
-    }).then(message => {
-        bootbox.alert({
-            title: "Thông báo",
-            message: message,
-            backdrop: true,
-            callback: function () {
-                if (localStorage.getItem("verify_startTime") !== null) {
-                    localStorage.removeItem("verify_startTime")
-                }
-                sessionStorage.setItem("typeVerify", "register")
-                window.location.href = "/form/check_codeVerifyEmail"
-            }
-        })
-    }).catch(error => {
-        bootbox.alert({
-            title: "Lỗi",
-            message: error.message,
-            backdrop: true
-        });
-    });
+        sessionStorage.setItem("typeVerify", "register")
+    }
 }
 
