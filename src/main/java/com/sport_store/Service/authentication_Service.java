@@ -7,12 +7,14 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
 import com.sport_store.DTO.request.UserDTO.register_account;
+import com.sport_store.DTO.response.account_response;
 import com.sport_store.DTO.response.authentication_response;
-import com.sport_store.DTO.response.user_response;
+import com.sport_store.Entity.Accounts;
+import com.sport_store.Entity.Customers;
 import com.sport_store.Entity.Tokens;
-import com.sport_store.Entity.Users;
+import com.sport_store.Repository.account_Repository;
+import com.sport_store.Repository.customer_Repository;
 import com.sport_store.Repository.token_Repository;
-import com.sport_store.Repository.user_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,10 +38,11 @@ public class authentication_Service {
     private long refreshDuration;
     @Value("${valid-token.resetPassword}")
     private long validResetPasswordDuration;
-    private final user_Repository user_repository;
+    private final customer_Repository customer_repository;
     private final PasswordEncoder passwordEncoder;
-    private final user_Service user_service;
+    private final account_Service account_service;
     private final token_Repository token_repository;
+    private final account_Repository account_repository;
 
     public SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
@@ -58,65 +61,64 @@ public class authentication_Service {
     }
 
     public authentication_response authenticate_LoginOAuth2(register_account request) {
-        Users user = Users.builder()
-                .user_id(UUID.randomUUID().toString())
-                .user_email(request.getEmail())
-                .user_password(request.getPassword())
-                .user_name(request.getName())
-                .user_role(Users.Role.CUSTOMER)
+        Customers customer = Customers
+                .builder()
+                .customer_id(UUID.randomUUID().toString())
+                .customer_email(request.getEmail())
+                .customer_name(request.getName())
                 .build();
+        customer_repository.save(customer);
 
-        user_repository.save(user);
-        String token = generateToken(user, "sport_store.com");
-        user_response userResponse = user_response.builder()
-                .ID(user.getUser_id())
-                .name(user.getUser_name())
-                .gender(user.isUser_gender())
-                .date_of_birth(user.getUser_date_of_birth())
-                .phone(user.getUser_phone())
-                .infoReceivers(user.getReceiver_Info())
-                .email(user.getUser_email())
-                .password(user.getUser_password())
-                .role(user.getUser_role().toString())
+        Accounts account = Accounts
+                .builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(Accounts.Role.valueOf(request.getRole()))
+                .build();
+        account_repository.save(account);
+
+        String token = generateToken(account, "sport_store.com");
+        account_response userResponse = account_response.builder()
+                .email(account.getEmail())
+                .password(account.getPassword())
+                .role(account.getRole().toString())
+                .active(account.is_active())
                 .build();
 
         return authentication_response.builder()
                 .token(token)
-                .user_response(userResponse)
+                .account_response(userResponse)
                 .build();
     }
 
     public authentication_response authenticate(authentication_request request, boolean loginOAuth2) throws Exception {
-        Users user = user_repository.findByEmail(request.getEmail());
-        if (user == null) {
+        Accounts account = account_service.getAccountByEmail(request.getEmail());
+        if (account == null) {
             throw new Exception("Tài khoản không tồn tại");
         } else {
             if (!loginOAuth2) {
-                boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getUser_password());
+                boolean authenticated = passwordEncoder.matches(request.getPassword(), account.getPassword());
                 if (!authenticated) {
                     throw new Exception("Mật khẩu không hợp lệ");
                 }
             }
-            String token = generateToken(user, "sport_store.com");
-            user_response userResponse = user_response.builder()
-                    .ID(user.getUser_id())
-                    .name(user.getUser_name())
-                    .gender(user.isUser_gender())
-                    .date_of_birth(user.getUser_date_of_birth())
-                    .phone(user.getUser_phone())
-                    .infoReceivers(user.getReceiver_Info())
-                    .email(user.getUser_email())
-                    .password(user.getUser_password())
-                    .role(user.getUser_role().toString())
+            String token = generateToken(account, "sport_store.com");
+            account_response accountResponse = account_response
+                    .builder()
+                    .email(account.getEmail())
+                    .password(account.getPassword())
+                    .role(account.getRole().toString())
+                    .active(account.is_active())
                     .build();
+
             return authentication_response.builder()
                     .token(token)
-                    .user_response(userResponse)
+                    .account_response(accountResponse)
                     .build();
         }
     }
 
-    public String generateToken(Users user, String issuer) {
+    public String generateToken(Accounts account, String issuer) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         Date expirationTime;
         if (issuer.equals("sport_store.com")) {
@@ -125,12 +127,12 @@ public class authentication_Service {
             expirationTime = new Date(Instant.now().plus(validResetPasswordDuration, ChronoUnit.MINUTES).toEpochMilli());
         }
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUser_email())
+                .subject(account.getEmail())
                 .issuer(issuer)
                 .issueTime(new Date())
                 .expirationTime(expirationTime)
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scope", user.getUser_role().toString())
+                .claim("scope", account.getRole().toString())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(header, payload);
@@ -145,11 +147,11 @@ public class authentication_Service {
     public String refreshToken(String token) throws ParseException, JOSEException {
         SignedJWT signedJWT = verifyToken(token, true);
         String email = signedJWT.getJWTClaimsSet().getSubject();
-        Users user = user_service.getUserByEmail(email);
+        Accounts account = account_service.getAccountByEmail(email);
 
         Tokens tokensEntity = token_repository.findTokenByID(signedJWT.getJWTClaimsSet().getJWTID());
         token_repository.delete(tokensEntity);
-        String new_token = generateToken(user, "sport_store.com");
+        String new_token = generateToken(account, "sport_store.com");
         SignedJWT newSignedJWT = SignedJWT.parse(new_token);
         Tokens newTokensEntity = Tokens.builder()
                 .token_id(newSignedJWT.getJWTClaimsSet().getJWTID())

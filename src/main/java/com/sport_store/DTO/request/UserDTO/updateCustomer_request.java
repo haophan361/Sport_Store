@@ -11,9 +11,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class updateUser_request {
-    private String user_name;
-    private LocalDate user_date_of_birth;
-    private boolean user_gender;
-    private String user_phone;
+public class updateCustomer_request {
+    private String customer_name;
+    private LocalDate customer_date_of_birth;
+    private String customer_phone;
 }

@@ -7,71 +7,39 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 });
 
-function changeInfoUser() {
-    const form_changeInfoUser =
+function callback_changeInfoUser() {
+    bootbox.confirm(
         {
-            user_name: document.getElementById("name").value,
-            user_date_of_birth: document.getElementById("date_of_birth").value,
-            user_gender: document.querySelector('input[name="gender"]:checked')?.value || null,
-            user_phone: document.getElementById("phone").value,
-        }
-    fetch("/user/changeInfoUser", {
-        method: "POST",
-        headers:
-            {
-                'Content-type': 'application/json',
-            },
-        credentials: "include",
-        body: JSON.stringify(form_changeInfoUser)
-    })
-        .then(response => {
-            if (!response.ok) {
-                return response.text().then(error => {
-                    throw new Error(error);
-                });
-            }
-            return response.text()
-        })
-        .then(message => {
-            bootbox.alert(
+            title: "Xác nhận trở về trang chủ",
+            message: "Bạn có muốn quay trở về trang chủ hay không",
+            buttons:
                 {
-                    title: "Thông báo",
-                    message: message,
-                    callback: function () {
-                        bootbox.confirm(
-                            {
-                                title: "Xác nhận trở về trang chủ",
-                                message: "Bạn có muốn quay trở về trang chủ hay không",
-                                buttons:
-                                    {
-                                        confirm:
-                                            {
-                                                label: 'Xác nhận',
-                                                className: 'btn-success'
-                                            },
-                                        cancel:
-                                            {
-                                                label: 'Không',
-                                                className: 'btn-dark'
-                                            }
-                                    },
-                                callback: function (result) {
-                                    if (result) {
-                                        window.location.href = "/"
-                                    } else {
-                                        location.reload()
-                                    }
-                                }
-                            })
-                    }
-                })
-        }).catch(error => {
-        bootbox.alert({
-            title: "Lỗi",
-            message: error.message,
-            backdrop: true
-        });
-    });
+                    confirm:
+                        {
+                            label: 'Xác nhận',
+                        },
+                    cancel:
+                        {
+                            label: 'Không',
+                        }
+                },
+            callback: function (result) {
+                if (result) {
+                    window.location.href = "/"
+                }
+            }
+        })
+}
+
+function changeInfoCustomer() {
+    const form_changeInfoCustomer =
+        {
+            customer_name: document.getElementById("name").value,
+            customer_date_of_birth: document.getElementById("date_of_birth").value,
+            customer_phone: document.getElementById("phone").value,
+        }
+    apiRequest("/user/changeInfoCustomer", "POST", {'Content-type': 'application/json'},
+        JSON.stringify(form_changeInfoCustomer), null, null, "include", callback_changeInfoUser)
 }
 
 document.getElementById('addReceiverModal').addEventListener('show.bs.modal', function () {
@@ -172,39 +140,11 @@ function add_infoReceiver() {
             ward: document.getElementById("wardName").value,
             street: document.getElementById("street").value
         }
-    fetch("/user/add_infoReceiver",
-        {
-            method: "POST",
-            headers:
-                {
-                    'Content-type': 'application/json',
-                },
-            credentials: "include",
-            body: JSON.stringify(form_infoReceiver),
+    apiRequest("/user/add_infoReceiver", "POST", {'Content-type': 'application/json'},
+        JSON.stringify(form_infoReceiver), null, null, "include",
+        function () {
+            window.location.reload();
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.text().then(error => {
-                    throw new Error(error);
-                });
-            }
-            return response.text();
-        })
-        .then(message => {
-            bootbox.alert({
-                title: "Thông báo",
-                message: message,
-                callback: function () {
-                    location.reload()
-                }
-            });
-        })
-        .catch(error => {
-            bootbox.alert({
-                title: "Cảnh báo lỗi",
-                message: "Có lỗi xảy ra: " + error.message
-            });
-        });
 }
 
 function form_updateInfo_Receiver(receiver_id, name, phone, city, district, ward, street) {
@@ -232,39 +172,11 @@ function update_infoReceiver() {
             ward: document.getElementById("wardName").value,
             street: document.getElementById("street").value
         }
-    fetch("/user/update_infoReceiver",
-        {
-            method: "POST",
-            headers:
-                {
-                    'Content-type': 'application/json',
-                },
-            credentials: "include",
-            body: JSON.stringify(form_infoReceiver),
+    apiRequest("/user/update_infoReceiver", "POST", {'Content-type': 'application/json'},
+        JSON.stringify(form_infoReceiver), null, null, "include",
+        function () {
+            window.location.reload();
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.text().then(error => {
-                    throw new Error(error);
-                });
-            }
-            return response.text();
-        })
-        .then(message => {
-            bootbox.alert({
-                title: "Thông báo",
-                message: message,
-                callback: function () {
-                    location.reload()
-                }
-            });
-        })
-        .catch(error => {
-            bootbox.alert({
-                title: "Cảnh báo lỗi",
-                message: "Có lỗi xảy ra: " + error.message
-            });
-        });
 }
 
 function delete_infoReceiver(receiver_id) {
@@ -287,37 +199,11 @@ function delete_infoReceiver(receiver_id) {
                 },
             callback: function (result) {
                 if (result) {
-                    fetch("/user/delete_infoReceiver", {
-                        method: "POST",
-                        headers:
-                            {
-                                'Content-type': 'application/json',
-                            },
-                        credentials: "include",
-                        body: receiver_id
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.text().then(error => {
-                                    throw new Error(error);
-                                });
-                            }
-                            return response.text();
-                        }).then(message => {
-                        bootbox.alert({
-                            title: "Thông báo",
-                            message: message,
-                            callback: function () {
-                                location.reload()
-                            }
-                        });
-                    }).catch(error => {
-                        bootbox.alert({
-                            title: "Lỗi",
-                            message: error.message,
-                            backdrop: true
-                        });
-                    });
+                    apiRequest("/user/delete_infoReceiver", "POST", {'Content-type': 'application/json'},
+                        receiver_id, null, null, "include",
+                        function () {
+                            window.location.reload();
+                        })
                 }
             }
         })

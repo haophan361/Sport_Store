@@ -6,8 +6,9 @@ import com.nimbusds.jwt.SignedJWT;
 import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
 import com.sport_store.DTO.request.UserDTO.register_account;
 import com.sport_store.DTO.response.authentication_response;
+import com.sport_store.Entity.Accounts;
+import com.sport_store.Entity.Customers;
 import com.sport_store.Entity.Tokens;
-import com.sport_store.Entity.Users;
 import com.sport_store.Service.*;
 import com.sport_store.Util.LoadUser;
 import jakarta.servlet.http.Cookie;
@@ -30,8 +31,8 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Controller
-public class user_Controller {
-    private final user_Service user_service;
+public class customer_Controller {
+    private final customer_Service customer_service;
     private final token_Service token_service;
     private final mail_Service mail_service;
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
@@ -43,6 +44,7 @@ public class user_Controller {
     private final authentication_Service authentication_service;
     private final LoadUser load_user;
     private final cookie_Service cookie_service;
+    private final account_Service account_service;
 
     @GetMapping("/web/form_register")
     public String getForm_Register() {
@@ -74,15 +76,15 @@ public class user_Controller {
         return "user/request_forgetPassword";
     }
 
-    @GetMapping("/form/changeInfoUser")
+    @GetMapping("/form/changeInfoCustomer")
     public String getForm_UpdateInfoUser(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (session == null) {
             return "web/login";
         }
         String email = (String) session.getAttribute("email");
-        Users user = user_service.getUserByEmail(email);
-        model.addAttribute("user", user);
+        Customers customer = customer_service.getUserByEmail(email);
+        model.addAttribute("customer", customer);
         return "user/changeInfoUser";
     }
 
@@ -96,20 +98,20 @@ public class user_Controller {
                                        HttpServletResponse httpServletResponse) {
         try {
             String accessToken = getAccessToken(code, provider);
-            Users user = getUserInfo(accessToken, provider);
-            Users userEntity;
+            Customers customer = getUserInfo(accessToken, provider);
+            Accounts account;
             authentication_response response;
-            if (user_service.existByEmail(user.getUser_email())) {
-                userEntity = user_service.getUserByEmail(user.getUser_email());
+            if (customer_service.existByEmail(customer.getCustomer_email())) {
+                account = account_service.getAccountByEmail(customer.getCustomer_email());
                 authentication_request request = authentication_request.builder()
-                        .email(userEntity.getUser_email())
-                        .password(userEntity.getUser_password())
+                        .email(account.getEmail())
+                        .password(account.getPassword())
                         .build();
                 response = authentication_service.authenticate(request, true);
             } else {
                 register_account registerAccount = register_account.builder()
-                        .email(user.getUser_email())
-                        .name(user.getUser_name())
+                        .email(customer.getCustomer_email())
+                        .name(customer.getCustomer_name())
                         .password(UUID.randomUUID().toString())
                         .phone(null)
                         .date_of_birth(null)
@@ -124,12 +126,12 @@ public class user_Controller {
                     .token_id(signedJWT.getJWTClaimsSet().getJWTID())
                     .user_token(response.getToken())
                     .token_expiration_time(LocalDateTime.now().plusHours(validDuration))
-                    .user_email(user.getUser_email())
+                    .user_email(customer.getCustomer_email())
                     .build();
             token_service.createToken(tokensEntity);
             HttpSession session = httpServletRequest.getSession();
-            load_user.userSession(session, response);
-            Cookie cookie = cookie_service.create_tokenCookie(response.getToken());
+            load_user.CustomerSession(session, response);
+            Cookie cookie = cookie_service.create_tokenCookie(response.getToken(), "token", "/", 3600, true);
             httpServletResponse.addCookie(cookie);
             return "redirect:/";
         } catch (Exception e) {
@@ -167,7 +169,7 @@ public class user_Controller {
         }
     }
 
-    public Users getUserInfo(String accessToken, String provider) {
+    public Customers getUserInfo(String accessToken, String provider) {
 
         String userInfoUrl = "";
         if (provider.equals("Google")) {
@@ -181,9 +183,9 @@ public class user_Controller {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
-            return Users.builder()
-                    .user_name(jsonNode.get("name").asText())
-                    .user_email(jsonNode.get("email").asText())
+            return Customers.builder()
+                    .customer_name(jsonNode.get("name").asText())
+                    .customer_email(jsonNode.get("email").asText())
                     .build();
         } catch (Exception e) {
             return null;

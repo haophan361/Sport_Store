@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -24,14 +23,12 @@ public class Product_Options {
     private int option_quantity;
     private BigDecimal option_cost;
     private boolean is_active;
-    private LocalDateTime create_date;
+    private String option_image_url;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Products products;
     @OneToMany(mappedBy = "product_options")
     private List<Carts> carts;
-    @OneToMany(mappedBy = "product_options")
-    private List<Images> images;
     @OneToMany(mappedBy = "product_options")
     private List<Bill_Details> bill_details;
 }

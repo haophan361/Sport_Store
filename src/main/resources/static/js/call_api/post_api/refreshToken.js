@@ -1,9 +1,23 @@
 let refresh_interval = 300000;
 let inactivity_timeout = 900000;
+
 let last_activityTime = Date.now();
 
 function resetLastActivityTime() {
     last_activityTime = Date.now();
+}
+
+function callback_logout() {
+    bootbox.alert(
+        {
+            title: "Thông báo",
+            message: "Bạn đã bị đăng xuất do không hoạt động không một khoảng thời gian",
+            backdrop: true,
+            callback: function () {
+                window.location.href = "/";
+            }
+        }
+    )
 }
 
 window.addEventListener("mousemove", resetLastActivityTime);
@@ -12,33 +26,22 @@ window.addEventListener("scroll", resetLastActivityTime);
 window.addEventListener("keydown", resetLastActivityTime);
 setInterval(() => {
     const current_time = Date.now()
-    if (current_time - last_activityTime < inactivity_timeout) {
-        checkIsLoggedIn().then(isLoggedIn => {
-            if (isLoggedIn) {
+    checkIsLoggedIn().then(isLoggedIn => {
+        if (isLoggedIn) {
+            if (current_time - last_activityTime < inactivity_timeout) {
                 refreshToken()
+            } else {
+                apiRequest("/logout", "POST", {}, null, null, null,
+                    "include", callback_logout, null)
             }
-        })
-    } else {
-        bootbox.alert(
-            {
-                title: "Thông báo",
-                message: "Bạn đã bị đăng xuất do không hoạt động trong một khoảng thời gian",
-                backdrop: true,
-                callback: function () {
-                    logout()
-                }
-            })
-    }
+        }
+    })
 }, refresh_interval)
 
 function refreshToken() {
     fetch("/refresh",
         {
             method: "POST",
-            headers:
-                {
-                    "Content-Type": "application/json",
-                },
             credentials: "include"
         })
         .then(response => {
@@ -70,7 +73,6 @@ function checkIsLoggedIn() {
             return data;
         })
         .catch(error => {
-            console.error("Lỗi khi kiểm tra trạng thái đăng nhập:", error);
             return false;
         });
 }

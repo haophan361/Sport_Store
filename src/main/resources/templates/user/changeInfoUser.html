@@ -16,34 +16,22 @@
         <form id="changeInfoUserForm" method="POST">
             <div class="form-group">
                 <label for="name">Họ và tên</label>
-                <input type="text" id="name" name="name" th:value="${user.user_name}" class="form-control"
+                <input type="text" id="name" name="name" th:value="${customer.customer_name}" class="form-control"
                        placeholder="Nhập họ và tên" required>
             </div>
 
-            <div class="custom-radio" style="margin-bottom: 5px;">
-                <strong>Giới tính</strong>
-                <div class="radio-group row">
-                    <div class="radio-item half-width">
-                        <input type="radio" id="male" name="gender" value="true" th:checked="${user.user_gender==true}">
-                        <label for="male">Nam</label>
-                    </div>
-                    <div class="radio-item half-width">
-                        <input type="radio" id="female" name="gender" value="false"
-                               th:checked="${user.user_gender==false}">
-                        <label for="female">Nữ</label>
-                    </div>
-                </div>
-            </div>
             <div class="row">
                 <div class="form-group half-width">
                     <label for="date_of_birth">Ngày sinh</label>
-                    <input type="text" id="date_of_birth" name="date_of_birth" th:value="${user.user_date_of_birth}"
+                    <input type="text" id="date_of_birth" name="date_of_birth"
+                           th:value="${customer.customer_date_of_birth}"
                            placeholder="Ngày sinh" required>
                 </div>
 
                 <div class="form-group half-width">
                     <label for="phone">Số điện thoại</label>
-                    <input type="text" id="phone" name="phone" th:value="${user.user_phone}" class="form-control"
+                    <input type="text" id="phone" name="phone" th:value="${customer.customer_phone}"
+                           class="form-control"
                            placeholder="Nhập số điện thoại" required>
                 </div>
             </div>
@@ -51,12 +39,13 @@
                 <h4>Thông tin nhận hàng</h4>
             </div>
             <hr>
-            <div th:if="${user.receiver_Info.size()==0}">
+            <div th:if="${customer.receiver_Info.size()==0}">
                 <span>Chưa có thông tin nhận hàng nào, hãy thêm thông tin nhận hàng</span>
                 <hr>
             </div>
             <div class="card-deck-container">
-                <div th:if="${user.receiver_Info.size()>0}" class="card-deck" th:each="info,i: ${user.receiver_Info}">
+                <div th:if="${customer.receiver_Info.size()>0}" class="card-deck"
+                     th:each="info,i: ${customer.receiver_Info}">
                     <div class="form-group row">
                         <div class="half-width">
                             <label th:for="'receiver_name_'+${i}">Họ và tên</label>
@@ -165,7 +154,7 @@
                     <button type="button" class="btn btn-danger" onclick="history.back()">Hủy</button>
                 </div>
                 <div class="col-3">
-                    <button type="button" class="btn btn-primary" onclick="changeInfoUser()">Lưu</button>
+                    <button type="button" class="btn btn-primary" onclick="changeInfoCustomer()">Lưu</button>
                 </div>
             </div>
         </form>
@@ -179,5 +168,6 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script th:src="@{/js/call_api/post_api/changeInfoUser.js}"></script>
 <script th:src="@{/js/call_api/post_api/refreshToken.js}"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
 </body>
 </html>

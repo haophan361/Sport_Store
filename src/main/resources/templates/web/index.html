@@ -57,7 +57,7 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
                         <button class="dropdown-item" type="button"
-                                onclick="window.location.href='/form/changeInfoUser'">Cập nhật thông tin cá nhân
+                                onclick="window.location.href='/form/changeInfoCustomer'">Cập nhật thông tin cá nhân
                         </button>
                         <button class="dropdown-item" type="button"
                                 onclick="window.location.href='/form/changePassword'">Đổi mật khẩu
@@ -1036,6 +1036,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 <!-- Template Javascript -->
 <script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
 <script th:src="@{/js/call_api/post_api/logout.js}"></script>
 <script th:src="@{/js/call_api/post_api/refreshToken.js}"></script>
 <script th:src="@{/js/call_api/get_api/cookie_Service.js}"></script>

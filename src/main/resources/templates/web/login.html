@@ -10,37 +10,31 @@
 </head>
 <body>
 <div class="login-wrapper">
-    <div class="info-section login-info">
-        <div class="info-text">
-            <h1>WELCOME TO STORE!</h1>
-        </div>
-    </div>
-    <div class="form-section">
-        <div class="login-card">
-            <h2>Login</h2>
-            <form>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" id="email" name="email">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password">
-                </div>
-                <button type="button" class="btn-primary" onclick="login()">Đăng nhập</button>
-                <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                    <a class="text-black-50" href="/oauth2/authorization/google">
-                        <i class="fa fa-google fa-lg"></i>
-                    </a>
-                </div>
-                <div class="link">
-                    <a th:href="@{/form/request_forgetPassword}">Quên mật khẩu</a>
-                </div>
-                <div class="link">
-                    <p>Bạn chưa có tài khoản? <a th:href="@{/web/form_register}">Đăng ký</a></p>
-                </div>
-            </form>
-        </div>
+    <div class="login-card">
+        <h2>Login</h2>
+        <form id="loginForm" method="POST">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" class="form-control" placeholder="Nhập email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu"
+                       required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="login()">Đăng nhập</button>
+            <div class="d-flex justify-content-center text-center mt-4 pt-1">
+                <a class="text-black-50" href="/oauth2/authorization/google">
+                    <i class="fa fa-google fa-lg"></i>
+                </a>
+            </div>
+            <div class="link">
+                <a th:href="@{/form/request_forgetPassword}">Quên mật khẩu</a>
+            </div>
+            <div class="link">
+                <p>Bạn chưa có tài khoản? <a th:href="@{/web/form_register}">Đăng ký</a></p>
+            </div>
+        </form>
     </div>
 </div>
 </body>
@@ -48,4 +42,5 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 <script th:src="@{/js/call_api/post_api/login.js}"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
 </html>

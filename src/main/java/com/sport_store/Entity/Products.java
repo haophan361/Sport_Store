@@ -32,4 +32,6 @@ public class Products {
     private List<Comments> comments;
     @OneToMany(mappedBy = "products")
     private List<Product_Options> product_options;
+    @OneToMany(mappedBy = "products")
+    private List<Images> images;
 }

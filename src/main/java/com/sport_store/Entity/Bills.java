@@ -22,12 +22,12 @@ public class Bills {
     private BigDecimal bill_total_cost;
     private LocalDateTime bill_purchase_date;
     private LocalDateTime bill_confirm_date;
-    private boolean bill_status;
+    private boolean bill_status_payment;
     private LocalDateTime bill_receive_date;
     private boolean is_active;
     @ManyToOne
     @JoinColumn(name = "employee_id")
-    private Users employee;
+    private Employees employee;
     @OneToMany(mappedBy = "bills")
     private List<Bill_Details> bill_details;
     @ManyToOne
