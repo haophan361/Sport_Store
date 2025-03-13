@@ -13,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class token_Service {
     private final token_Repository token_repository;
+    private final account_Service account_service;
 
     public void createToken(Tokens tokens) {
         token_repository.save(tokens);
@@ -27,7 +28,7 @@ public class token_Service {
         return true;
     }
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 30000)
     public void cleanUpExpiredToken() {
         List<Tokens> tokens_expired = token_repository.findTokenByExpirationTime(LocalDateTime.now());
         for (Tokens tokens : tokens_expired) {

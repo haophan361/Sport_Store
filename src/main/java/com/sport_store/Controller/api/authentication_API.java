@@ -20,7 +20,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -39,7 +38,6 @@ public class authentication_API {
     private final token_Service token_service;
     private final cookie_Service cookie_service;
     private final mail_Service mail_service;
-    private final PasswordEncoder passwordEncoder;
     private final account_Service account_service;
 
     @PostMapping("/web/sendCode_VerifyEmail_Register")
@@ -57,7 +55,7 @@ public class authentication_API {
         Accounts account = Accounts
                 .builder()
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(request.getPassword())
                 .role(Accounts.Role.CUSTOMER)
                 .is_active(true)
                 .build();
@@ -106,6 +104,7 @@ public class authentication_API {
         token_service.createToken(tokensEntity);
         Cookie cookie = cookie_service.create_tokenCookie(response.getToken(), "token", "/", 3600, true);
         httpServletResponse.addCookie(cookie);
+        account_service.Update_isOnline(request.getEmail(), true);
         return ResponseEntity.ok(Collections.singletonMap("message", "Đăng nhập thành công"));
     }
 
@@ -125,6 +124,7 @@ public class authentication_API {
                     cookie.setPath("/");
                     cookie.setMaxAge(0);
                     httpServletResponse.addCookie(cookie);
+                    account_service.Update_isOnline(signedJWT.getJWTClaimsSet().getSubject(), false);
                     return ResponseEntity.ok(Collections.singletonMap("message", "Đăng xuất thành công"));
                 } else {
                     throw new RuntimeException("Phiên đăng nhập đã hết hạn");
