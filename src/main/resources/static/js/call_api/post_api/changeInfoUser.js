@@ -114,6 +114,7 @@ document.getElementById('addReceiverModal').addEventListener('show.bs.modal', fu
 });
 
 function form_addInfo_Receiver() {
+    document.getElementById("addReceiverModalLabel").innerText = "Thêm thông tin nhận hàng";
     document.getElementById("receiver_name").value = "";
     document.getElementById("receiver_phone").value = "";
     document.getElementById("cityName").value = "";
@@ -129,10 +130,10 @@ function form_addInfo_Receiver() {
     const modal = new bootstrap.Modal(document.getElementById('addReceiverModal'));
     modal.show();
     document.getElementById('addReceiverModal').addEventListener('shown.bs.modal', function () {
-        setTimeout(function() {
+        setTimeout(function () {
             document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
             document.body.style.overflow = 'auto';
-        }, 500);
+        }, 5);
     });
 }
 
@@ -154,6 +155,7 @@ function add_infoReceiver() {
 }
 
 function form_updateInfo_Receiver(receiver_id, name, phone, city, district, ward, street) {
+    document.getElementById("addReceiverModalLabel").innerText = "Cập nhật thông tin nhận hàng";
     document.getElementById("receiver_id").value = receiver_id;
     document.getElementById("receiver_name").value = name;
     document.getElementById("receiver_phone").value = phone;
@@ -165,6 +167,12 @@ function form_updateInfo_Receiver(receiver_id, name, phone, city, district, ward
     document.getElementById("update_button").style.display = "block";
     const modal = new bootstrap.Modal(document.getElementById('addReceiverModal'));
     modal.show();
+    document.getElementById('addReceiverModal').addEventListener('shown.bs.modal', function () {
+        setTimeout(function () {
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.style.overflow = 'auto';
+        }, 5);
+    });
 }
 
 
@@ -196,7 +204,7 @@ function delete_infoReceiver(receiver_id) {
                     confirm:
                         {
                             label: 'Xác nhận',
-                            className: 'btn-success '
+                            className: 'btn-success'
                         },
                     cancel:
                         {
