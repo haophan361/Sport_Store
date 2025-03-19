@@ -128,6 +128,12 @@ function form_addInfo_Receiver() {
 
     const modal = new bootstrap.Modal(document.getElementById('addReceiverModal'));
     modal.show();
+    document.getElementById('addReceiverModal').addEventListener('shown.bs.modal', function () {
+        setTimeout(function() {
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.style.overflow = 'auto';
+        }, 500);
+    });
 }
 
 function add_infoReceiver() {
@@ -160,6 +166,7 @@ function form_updateInfo_Receiver(receiver_id, name, phone, city, district, ward
     const modal = new bootstrap.Modal(document.getElementById('addReceiverModal'));
     modal.show();
 }
+
 
 function update_infoReceiver() {
     const form_infoReceiver =
