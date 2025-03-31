@@ -122,7 +122,7 @@ public class authentication_Service {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         Date expirationTime;
         if (issuer.equals("sport_store.com")) {
-            expirationTime = new Date(Instant.now().plus(validDuration, ChronoUnit.MINUTES).toEpochMilli());
+            expirationTime = new Date(Instant.now().plus(validDuration, ChronoUnit.HOURS).toEpochMilli());
         } else {
             expirationTime = new Date(Instant.now().plus(validResetPasswordDuration, ChronoUnit.MINUTES).toEpochMilli());
         }

@@ -10,9 +10,9 @@
     <link th:href="@{/css/custom-login.css}" rel="stylesheet">
 </head>
 <body>
-<div class="register-wrapper">
-    <div class="form-card">
-        <h2 class="text-center mb-4">Thông tin cá nhân</h2>
+<div class="login-wrapper">
+    <div class="login-card">
+        <h2 class="text-center mb-4">Thông tin cá nhân </h2>
         <form id="changeInfoUserForm" method="POST">
             <div class="form-group">
                 <label for="name">Họ và tên</label>
@@ -21,14 +21,14 @@
             </div>
 
             <div class="row">
-                <div class="form-group half-width">
+                <div class="form-group">
                     <label for="date_of_birth">Ngày sinh</label>
                     <input type="text" id="date_of_birth" name="date_of_birth"
                            th:value="${customer.customer_date_of_birth}"
                            placeholder="Ngày sinh" required>
                 </div>
 
-                <div class="form-group half-width">
+                <div class="form-group">
                     <label for="phone">Số điện thoại</label>
                     <input type="text" id="phone" name="phone" th:value="${customer.customer_phone}"
                            class="form-control"
@@ -70,7 +70,7 @@
                             </button>
                         </div>
                         <div class="col-3">
-                            <button type="button" class="btn btn-primary"
+                            <button type="button" class="btn btn-primary" style="white-space: nowrap"
                                     th:attr="onclick=|form_updateInfo_Receiver('${info.receiver_id}', '${info.receiver_name}', '${info.receiver_phone}', '${info.receiver_city}', '${info.receiver_district}', '${info.receiver_ward}', '${info.receiver_street}')|">
                                 Cập nhật
                             </button>
@@ -86,7 +86,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addReceiverModalLabel">Thêm thông tin nhận hàng</h5>
+                            <strong class="modal-title" id="addReceiverModalLabel"></strong>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
