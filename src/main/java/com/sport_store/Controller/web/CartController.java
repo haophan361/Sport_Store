@@ -15,6 +15,6 @@ public class CartController {
 
     @GetMapping("/customer/cart")
     public String shop(Model model, HttpSession session) {
-        return "/customer/cart";
+        return "customer/cart";
     }
 }
