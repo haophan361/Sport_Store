@@ -20,6 +20,7 @@ public class LoadUser {
         if (response != null) {
             Customers customer = customer_service.getUserByEmail(response.getAccount_response().getEmail());
             if (customer != null) {
+                session.setAttribute("CustomerLogin", customer);
                 session.setAttribute("email", customer.getCustomer_email());
                 session.setAttribute("name", customer.getCustomer_name());
                 session.setAttribute("isLoggedIn", 1);

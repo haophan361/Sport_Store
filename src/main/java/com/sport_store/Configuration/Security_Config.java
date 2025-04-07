@@ -55,8 +55,14 @@ public class Security_Config {
                 )
                 .addFilterBefore(cookieAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) ->
-                        response.sendError(403, "Quyền truy cập bị từ chối")))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> {
+                    String accept = request.getHeader("accept");
+                    if (accept != null && accept.contains("text/html")) {
+                        response.sendRedirect("/web/form_login");
+                    } else {
+                        response.sendError(403, "Quyền truy cập bị từ chối");
+                    }
+                }))
                 .oauth2Login(Customizer.withDefaults())
                 .logout(AbstractHttpConfigurer::disable);
 
