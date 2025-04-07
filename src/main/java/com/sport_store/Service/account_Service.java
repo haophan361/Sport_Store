@@ -32,7 +32,18 @@ public class account_Service {
         return account_repository.existsByEmail(email);
     }
 
-    public void create_account(Accounts account) {
+    public void Update_isOnline(String email, boolean isOnline) {
+        Accounts account = account_repository.findAccountsByEmail(email);
+        account.set_online(isOnline);
         account_repository.save(account);
+    }
+
+    public void create_account(Accounts account) {
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account_repository.save(account);
+    }
+
+    public void updateOnline() {
+        account_repository.updateIsOnline();
     }
 }

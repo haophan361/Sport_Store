@@ -1,5 +1,6 @@
-let refresh_interval = 300000;
-let inactivity_timeout = 900000;
+let refresh_interval = 120000;
+let inactivity_timeout = 600000;
+
 
 let last_activityTime = Date.now();
 

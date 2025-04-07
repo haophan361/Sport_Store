@@ -17,6 +17,7 @@ public class ApplicationInitialize_Config {
     ApplicationRunner applicationRunner(account_Service account_service) {
         return args ->
         {
+            account_service.updateOnline();
             if (!account_service.existByEmail("admin@gmail.com")) {
                 Accounts account = Accounts.builder()
                         .email("admin@gmail.com")

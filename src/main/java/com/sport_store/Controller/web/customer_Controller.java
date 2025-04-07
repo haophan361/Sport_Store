@@ -133,6 +133,7 @@ public class customer_Controller {
             load_user.CustomerSession(session, response);
             Cookie cookie = cookie_service.create_tokenCookie(response.getToken(), "token", "/", 3600, true);
             httpServletResponse.addCookie(cookie);
+            account_service.Update_isOnline(customer.getCustomer_email(), true);
             return "redirect:/";
         } catch (Exception e) {
             return "redirect:/web/form_login";

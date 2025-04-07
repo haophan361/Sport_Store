@@ -70,7 +70,7 @@
                             </button>
                         </div>
                         <div class="col-3">
-                            <button type="button" class="btn btn-primary"
+                            <button type="button" class="btn btn-primary" style="white-space: nowrap"
                                     th:attr="onclick=|form_updateInfo_Receiver('${info.receiver_id}', '${info.receiver_name}', '${info.receiver_phone}', '${info.receiver_city}', '${info.receiver_district}', '${info.receiver_ward}', '${info.receiver_street}')|">
                                 Cập nhật
                             </button>
@@ -86,7 +86,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addReceiverModalLabel">Thêm thông tin nhận hàng</h5>
+                            <strong class="modal-title" id="addReceiverModalLabel"></strong>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
