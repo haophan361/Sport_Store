@@ -15,6 +15,10 @@ public class CartController {
 
     @GetMapping("/web/cart")
     public String shop(Model model, HttpSession session) {
-        return "/customer/cart";
+        if (session.getAttribute("CustomerLogin") != null) {
+            login.refreshUser(session);
+            return "customer/cart";
+        }
+        return "redirect:/web/form_login";
     }
 }
