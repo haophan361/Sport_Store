@@ -2,7 +2,7 @@ package com.sport_store.Controller.api;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.UserDTO.updateCustomer_request;
+import com.sport_store.DTO.request.customer_Request.updateCustomer_request;
 import com.sport_store.Service.authentication_Service;
 import com.sport_store.Service.cookie_Service;
 import com.sport_store.Service.customer_Service;
@@ -30,7 +30,7 @@ public class customer_API {
     private final authentication_Service authentication_service;
     private final cookie_Service cookie_service;
 
-    @PostMapping("/user/changeInfoCustomer")
+    @PostMapping("/customer/changeInfoCustomer")
     public ResponseEntity<?> changeInfoUser(@RequestBody updateCustomer_request request, HttpServletRequest httpServletRequest) {
         customer_service.updateCustomer(request);
         load_user_session.refreshUser(httpServletRequest.getSession());

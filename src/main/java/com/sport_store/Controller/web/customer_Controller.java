@@ -3,9 +3,9 @@ package com.sport_store.Controller.web;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
-import com.sport_store.DTO.request.UserDTO.register_account;
-import com.sport_store.DTO.response.authentication_response;
+import com.sport_store.DTO.request.authentication_Request.authentication_request;
+import com.sport_store.DTO.request.customer_Request.register_account;
+import com.sport_store.DTO.response.account_Response.authentication_response;
 import com.sport_store.Entity.Accounts;
 import com.sport_store.Entity.Customers;
 import com.sport_store.Entity.Tokens;
@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -94,15 +95,15 @@ public class customer_Controller {
         return authenticationOAuth2(code, "Google", httpServletRequest, httpServletResponse);
     }
 
+    @Transactional
     public String authenticationOAuth2(String code, String provider, HttpServletRequest httpServletRequest,
                                        HttpServletResponse httpServletResponse) {
         try {
             String accessToken = getAccessToken(code, provider);
-            Customers customer = getUserInfo(accessToken, provider);
-            Accounts account;
+            JsonNode jsonNode = getUserInfo(accessToken, provider);
             authentication_response response;
-            if (customer_service.existByEmail(customer.getCustomer_email())) {
-                account = account_service.getAccountByEmail(customer.getCustomer_email());
+            if (account_service.existByEmail(jsonNode.get("email").asText())) {
+                Accounts account = account_service.getAccountByEmail(jsonNode.get("email").asText());
                 authentication_request request = authentication_request.builder()
                         .email(account.getEmail())
                         .password(account.getPassword())
@@ -110,30 +111,31 @@ public class customer_Controller {
                 response = authentication_service.authenticate(request, true);
             } else {
                 register_account registerAccount = register_account.builder()
-                        .email(customer.getCustomer_email())
-                        .name(customer.getCustomer_name())
+                        .email(jsonNode.get("email").asText())
+                        .name(jsonNode.get("name").asText())
                         .password(UUID.randomUUID().toString())
                         .phone(null)
                         .date_of_birth(null)
                         .build();
                 response = authentication_service.authenticate_LoginOAuth2(registerAccount);
                 mail_service.SendEmailRandomPassword(registerAccount.getEmail(), registerAccount.getPassword());
-                Cookie firstLoginGoogle = load_user.firstLogin_WithGoogle();
-                httpServletResponse.addCookie(firstLoginGoogle);
+
+                Cookie register_Google = cookie_service.create_Cookie("true", "register_Google", "/", -1, false);
+                httpServletResponse.addCookie(register_Google);
             }
             SignedJWT signedJWT = authentication_service.verifyToken(response.getToken(), false);
             Tokens tokensEntity = Tokens.builder()
                     .token_id(signedJWT.getJWTClaimsSet().getJWTID())
                     .user_token(response.getToken())
                     .token_expiration_time(LocalDateTime.now().plusHours(validDuration))
-                    .user_email(customer.getCustomer_email())
+                    .user_email(jsonNode.get("email").asText())
                     .build();
             token_service.createToken(tokensEntity);
             HttpSession session = httpServletRequest.getSession();
             load_user.CustomerSession(session, response);
-            Cookie cookie = cookie_service.create_tokenCookie(response.getToken(), "token", "/", 3600, true);
+            Cookie cookie = cookie_service.create_Cookie(response.getToken(), "token", "/", 3600, true);
             httpServletResponse.addCookie(cookie);
-            account_service.Update_isOnline(customer.getCustomer_email(), true);
+            account_service.Update_isOnline(jsonNode.get("email").asText(), true);
             return "redirect:/";
         } catch (Exception e) {
             return "redirect:/web/form_login";
@@ -170,7 +172,7 @@ public class customer_Controller {
         }
     }
 
-    public Customers getUserInfo(String accessToken, String provider) {
+    public JsonNode getUserInfo(String accessToken, String provider) {
 
         String userInfoUrl = "";
         if (provider.equals("Google")) {
@@ -183,11 +185,7 @@ public class customer_Controller {
         ResponseEntity<String> response = restTemplate.exchange(userInfoUrl, HttpMethod.GET, entity, String.class);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            JsonNode jsonNode = objectMapper.readTree(response.getBody());
-            return Customers.builder()
-                    .customer_name(jsonNode.get("name").asText())
-                    .customer_email(jsonNode.get("email").asText())
-                    .build();
+            return objectMapper.readTree(response.getBody());
         } catch (Exception e) {
             return null;
         }

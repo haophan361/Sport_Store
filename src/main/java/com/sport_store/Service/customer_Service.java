@@ -1,6 +1,6 @@
 package com.sport_store.Service;
 
-import com.sport_store.DTO.request.UserDTO.updateCustomer_request;
+import com.sport_store.DTO.request.customer_Request.updateCustomer_request;
 import com.sport_store.Entity.Customers;
 import com.sport_store.Repository.customer_Repository;
 import lombok.RequiredArgsConstructor;

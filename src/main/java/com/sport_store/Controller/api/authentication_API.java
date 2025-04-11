@@ -2,10 +2,10 @@ package com.sport_store.Controller.api;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
-import com.sport_store.DTO.request.UserDTO.register_account;
-import com.sport_store.DTO.response.authentication_response;
-import com.sport_store.DTO.response.refreshToken_response;
+import com.sport_store.DTO.request.authentication_Request.authentication_request;
+import com.sport_store.DTO.request.customer_Request.register_account;
+import com.sport_store.DTO.response.account_Response.authentication_response;
+import com.sport_store.DTO.response.account_Response.refreshToken_response;
 import com.sport_store.Entity.Accounts;
 import com.sport_store.Entity.Customers;
 import com.sport_store.Entity.Tokens;
@@ -64,7 +64,7 @@ public class authentication_API {
         httpSession.setAttribute("email", request.getEmail());
         String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
         String token_verifyEmail = authentication_service.generateToken(account, code_verifyEmail);
-        Cookie cookie_verifyEmail = cookie_service.create_tokenCookie(token_verifyEmail, "token_verifyEmail",
+        Cookie cookie_verifyEmail = cookie_service.create_Cookie(token_verifyEmail, "token_verifyEmail",
                 "/web/checkCode_Register", 300, true);
         httpServletResponse.addCookie(cookie_verifyEmail);
         try {
@@ -102,7 +102,7 @@ public class authentication_API {
                 .user_email(request.getEmail())
                 .build();
         token_service.createToken(tokensEntity);
-        Cookie cookie = cookie_service.create_tokenCookie(response.getToken(), "token", "/", 3600, true);
+        Cookie cookie = cookie_service.create_Cookie(response.getToken(), "token", "/", 3600, true);
         httpServletResponse.addCookie(cookie);
         account_service.Update_isOnline(request.getEmail(), true);
         return ResponseEntity.ok(Collections.singletonMap("message", "Đăng nhập thành công"));
@@ -153,7 +153,7 @@ public class authentication_API {
     @PostMapping("/refresh")
     public ResponseEntity<refreshToken_response> refreshToken(@CookieValue("token") String token, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
         String new_token = authentication_service.refreshToken(token);
-        Cookie new_cookie = cookie_service.create_tokenCookie(new_token, "token", "/", 3600, true);
+        Cookie new_cookie = cookie_service.create_Cookie(new_token, "token", "/", 3600, true);
         httpServletResponse.addCookie(new_cookie);
         return ResponseEntity.ok(new refreshToken_response(new_token));
     }

@@ -5,10 +5,10 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.AuthenticationDTO.authentication_request;
-import com.sport_store.DTO.request.UserDTO.register_account;
-import com.sport_store.DTO.response.account_response;
-import com.sport_store.DTO.response.authentication_response;
+import com.sport_store.DTO.request.authentication_Request.authentication_request;
+import com.sport_store.DTO.request.customer_Request.register_account;
+import com.sport_store.DTO.response.account_Response.account_response;
+import com.sport_store.DTO.response.account_Response.authentication_response;
 import com.sport_store.Entity.Accounts;
 import com.sport_store.Entity.Customers;
 import com.sport_store.Entity.Tokens;
@@ -72,8 +72,8 @@ public class authentication_Service {
         Accounts account = Accounts
                 .builder()
                 .email(request.getEmail())
-                .password(request.getPassword())
-                .role(Accounts.Role.valueOf(request.getRole()))
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Accounts.Role.CUSTOMER)
                 .build();
         account_repository.save(account);
 

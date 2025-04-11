@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class CartController {
     private final LoadUser login;
 
-    @GetMapping("/customer/cart")
+    @GetMapping("/web/cart")
     public String shop(Model model, HttpSession session) {
         return "/customer/cart";
     }
