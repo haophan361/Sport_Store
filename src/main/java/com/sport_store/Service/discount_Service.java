@@ -1,0 +1,45 @@
+package com.sport_store.Service;
+
+import com.sport_store.Entity.Discounts;
+import com.sport_store.Repository.discount_Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class discount_Service {
+    private final discount_Repository discount_repository;
+
+    public void saveDiscount(int discount, LocalDateTime time_start, LocalDateTime time_end) {
+        Discounts discounts = Discounts
+                .builder()
+                .discount_percentage(discount)
+                .discount_start_date(time_start)
+                .discount_end_date(time_end)
+                .is_active(true)
+                .build();
+        discount_repository.save(discounts);
+    }
+
+    public void deleteDiscount(int discount_id) {
+        discount_repository.deleteById(discount_id);
+    }
+
+    public List<Discounts> getAllDiscounts() {
+        return discount_repository.findAll();
+    }
+
+    public Discounts getDiscount(int discount_id) {
+        return discount_repository.findById(discount_id).orElse(null);
+    }
+
+    public boolean validateDiscount(Discounts discount) {
+        LocalDateTime now = LocalDateTime.now();
+        return discount.getDiscount_start_date().isBefore(now)
+                || discount.getDiscount_end_date().isAfter(now)
+                || !discount.is_active();
+    }
+}

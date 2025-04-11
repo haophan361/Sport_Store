@@ -1,13 +1,7 @@
 package com.sport_store.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,11 +14,13 @@ import java.util.List;
 @Table(name = "discounts")
 public class Discounts {
     @Id
-    private String discount_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int discount_id;
     private int discount_percentage;
     private LocalDateTime discount_start_date;
     private LocalDateTime discount_end_date;
     private boolean is_active;
+    @ToString.Exclude
     @OneToMany(mappedBy = "discounts")
-    List<Products> products;
+    List<Product_Options> product_options;
 }

@@ -1,10 +1,7 @@
 package com.sport_store.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -19,19 +16,21 @@ public class Products {
     private String product_id;
     private String product_name;
     private String product_detail;
+    private boolean is_active;
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brands brands;
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Categories categories;
-    @ManyToOne
-    @JoinColumn(name = "discount_id")
-    private Discounts discounts;
     @OneToMany(mappedBy = "products")
     private List<Comments> comments;
-    @OneToMany(mappedBy = "products")
+    @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<Product_Options> product_options;
-    @OneToMany(mappedBy = "products")
-    private List<Images> images;
+    @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Product_Img> product_img;
 }

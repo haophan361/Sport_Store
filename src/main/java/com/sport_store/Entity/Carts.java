@@ -20,6 +20,6 @@ public class Carts {
     @JoinColumn(name = "customer_id")
     private Customers customers;
     @ManyToOne
-    @JoinColumn(name = "product_option_id")
+    @JoinColumn(name = "option_id")
     private Product_Options product_options;
 }

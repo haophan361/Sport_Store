@@ -1,0 +1,22 @@
+package com.sport_store.DTO.request.product_Request;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class product_request {
+    @NotNull(message = "Mã sản phẩm không được để trống")
+    private String product_id;
+    @NotBlank(message = "Tên sản phẩm không được để trống")
+    private String product_name;
+    private String description;
+    private String category_id;
+    private String brand_id;
+}
