@@ -50,7 +50,6 @@ public class authentication_API {
                 .customer_date_of_birth(request.getDate_of_birth())
                 .customer_phone(request.getPhone())
                 .customer_email(request.getEmail())
-                .is_active(true)
                 .build();
         Accounts account = Accounts
                 .builder()
