@@ -12,17 +12,20 @@
   <div class="container-fluid main-content" id="sanpham-content">
     <h1 class="h4 mb-4 text-success font-weight-bold">Danh sách sản phẩm</h1>
     <div class="row mb-3">
-      <div class="col-md-6">
-        <input type="text" class="form-control" id="search-product-keyword" placeholder="Tìm theo mã hoặc tên sản phẩm...">
+      <div class="col-md-5">
+        <div class="input-group">
+          <input type="text" id="search-keyword" class="form-control" placeholder="Tìm theo mã hoặc tên sản phẩm...">
+          <div class="input-group-append">
+            <button class="btn btn-primary" onclick="searchProduct()">Tìm kiếm</button>
+          </div>
+        </div>
       </div>
-      <div class="col-md-2">
-        <button class="btn btn-primary" onclick="searchProduct()">Tìm kiếm</button>
+      <div class="col-md-7 text-right">
+        <button class="btn btn-info" id="addProductBtn" data-toggle="modal" data-target="#addProductModal">
+          Thêm Sản Phẩm
+        </button>
       </div>
-      <button class="btn btn-info" id="addProductBtn" data-toggle="modal" data-target="#addProductModal">
-        Thêm Sản Phẩm Mới
-      </button>
     </div>
-
     <div class="card shadow mb-3">
       <div class="card-body p-0">
         <div class="table-responsive">
