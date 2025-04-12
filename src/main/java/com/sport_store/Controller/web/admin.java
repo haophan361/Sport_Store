@@ -10,16 +10,16 @@ public class admin {
 
     @GetMapping("/dashboard")
     public String dashboardPage() {
-        return "admin/dashboard"; // Trỏ đến templates/admin/dashboard.html
+        return "admin/dashboard";
     }
 
     @GetMapping("/nhaphang")
     public String nhapHangPage() {
-        return "admin/nhaphang"; // Trỏ đến templates/admin/nhaphang.html
+        return "admin/nhaphang";
     }
 
     @GetMapping("/sanpham")
     public String sanPhamPage() {
-        return "admin/sanpham"; // Trỏ đến templates/admin/sanpham.html
+        return "admin/sanpham";
     }
 }
