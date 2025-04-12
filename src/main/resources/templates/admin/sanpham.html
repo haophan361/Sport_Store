@@ -1,0 +1,306 @@
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nhập Kho - Sport Store</title>
+<link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="../../css/sb-admin-2.min.css" rel="stylesheet">
+
+
+<!-- Layout cha gọi fragment 'layout', truyền vào phần nội dung là section này -->
+<div th:replace="layout :: layout(~{::section})">
+  <section>
+  <div class="container-fluid main-content" id="sanpham-content">
+    <h1 class="h4 mb-4 text-success font-weight-bold">Danh sách sản phẩm</h1>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input type="text" class="form-control" id="search-product-keyword" placeholder="Tìm theo mã hoặc tên sản phẩm...">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary" onclick="searchProduct()">Tìm kiếm</button>
+      </div>
+      <button class="btn btn-info" id="addProductBtn" data-toggle="modal" data-target="#addProductModal">
+        Thêm Sản Phẩm Mới
+      </button>
+    </div>
+
+    <div class="card shadow mb-3">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-bordered m-0">
+            <thead class="thead-light">
+            <tr>
+              <th>Mã SP</th>
+              <th>Tên sản phẩm</th>
+              <th>Loại</th>
+              <th>Thương hiệu</th>
+              <th>Giảm giá</th>
+              <th>Trạng thái</th>
+              <th>Mô tả</th>
+            </tr>
+            </thead>
+            <tbody id="product-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm Sản Phẩm -->
+  <div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Thêm sản phẩm mới</h5>
+          <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="product-form">
+            <div class="form-group">
+              <label>Mã sản phẩm</label>
+              <input type="text" class="form-control" id="product_id" required>
+            </div>
+            <div class="form-group">
+              <label>Tên sản phẩm</label>
+              <input type="text" class="form-control" id="product_name" required>
+            </div>
+            <div class="form-group">
+              <label>Mô tả sản phẩm</label>
+              <textarea class="form-control" id="product_detail" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label>Loại sản phẩm</label>
+                <select id="category_id" class="form-control" onchange="handleAddOption('category')"></select>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Thương hiệu</label>
+                <select id="brand_id" class="form-control" onchange="handleAddOption('brand')"></select>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Mã giảm giá</label>
+                <select id="discount_id" class="form-control" onchange="handleAddOption('discount')"></select>
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="is_active" checked>
+              <label class="form-check-label">Đang bán</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu sản phẩm</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm Thương Hiệu -->
+  <div class="modal fade" id="addBrandModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="brand-form">
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title">Thêm thương hiệu</h5>
+            <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Tên thương hiệu</label>
+              <input type="text" class="form-control" id="new_brand_name" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-info">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm Loại Sản Phẩm -->
+  <div class="modal fade" id="addCategoryModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="category-form">
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title">Thêm loại sản phẩm</h5>
+            <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Tên loại</label>
+              <input type="text" class="form-control" id="new_category_name" required>
+            </div>
+            <div class="form-group">
+              <label>Hình ảnh</label>
+              <input type="file" class="form-control-file" id="new_category_image" accept="image/*">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-info">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Thêm Giảm Giá -->
+  <div class="modal fade" id="addDiscountModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Thêm giảm giá mới</h5>
+          <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="discount-form">
+            <div class="form-group">
+              <label>Phần trăm giảm (%)</label>
+              <input type="number" id="new_discount_percentage" class="form-control" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+              <label>Ngày bắt đầu</label>
+              <input type="datetime-local" id="new_discount_start" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Ngày kết thúc</label>
+              <input type="datetime-local" id="new_discount_end" class="form-control" required>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="new_discount_active" checked>
+              <label class="form-check-label" for="new_discount_active">Kích hoạt</label>
+            </div>
+            <button type="submit" class="btn btn-info">Lưu</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <!-- Danh sách mẫu sản phẩm -->
+  <div class="container-fluid main-content" id="product-option-content" style="display: none;">
+    <h1 class="h4 mb-4 text-primary font-weight-bold">Danh sách Mẫu Sản Phẩm</h1>
+
+    <!-- Thanh tìm kiếm và thêm sản phẩm -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input type="text" class="form-control" id="search-product_option-keyword" placeholder="Tìm theo mã hoặc tên sản phẩm...">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary" onclick="searchProductOption()">Tìm kiếm</button>
+      </div>
+      <button class="btn btn-info" id="addOptionBtn" data-toggle="modal" data-target="#addOptionModal">
+        Thêm Mẫu Sản Phẩm Mới
+      </button>
+    </div>
+
+    <table class="table table-bordered" id="productOptionTable">
+      <thead class="thead-light">
+      <tr>
+        <th>Option ID</th>
+        <th>Màu</th>
+        <th>Kích thước</th>
+        <th>Số lượng</th>
+        <th>Giá</th>
+        <th>Giảm giá</th>
+        <th>Hình ảnh</th>
+        <th>Kích hoạt</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Nội dung sẽ được thêm bằng JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Thêm Mẫu Sản Phẩm Mới -->
+  <div class="modal fade" id="addOptionModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-white">
+          <h5 class="modal-title">Thêm Mẫu Sản Phẩm Mới</h5>
+          <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+        </div>
+        <form id="productOptionForm">
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Option ID</label>
+              <input type="text" id="newOptionId" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Màu (Color)</label>
+              <select id="color_id" onchange="handleAddOption('color')" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Kích thước</label>
+              <input type="text" id="newOptionSize" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Số lượng</label>
+              <input type="number" id="newOptionQuantity" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Giá</label>
+              <input type="number" id="newOptionPrice" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Giảm giá</label>
+              <select id="newOptionDiscountId" class="form-control">
+                <option value="">Không áp dụng</option>
+                <option value="1">Giảm 10%</option>
+                <option value="2">Giảm 20%</option>
+                <option value="3">Giảm 50%</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Hình ảnh</label>
+              <input type="file" class="form-control-file" id="newOptionImage" accept="image/*" multiple>
+            </div>
+            <div id="imagePreview" class="mt-2 d-flex flex-wrap gap-2"></div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="newOptionIsActive" checked>
+              <label class="form-check-label">Kích hoạt</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-info">Lưu Mẫu Sản Phẩm</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm Màu Mới -->
+    <!-- Modal Thêm Màu -->
+  <div class="modal fade" id="addColorModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Thêm màu mới</h5>
+          <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="color-form">
+            <div class="form-group">
+              <label for="new_color_name">Tên màu mới</label>
+              <input type="text" id="new_color_name" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-info">Lưu</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </section>
+</div>
+
+<!-- Footer -->
+<!--#include file="layout/footer.html" -->
+<script src="../../vendor/jquery/jquery.min.js"></script>
+<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="../../js/fakedata.js"></script>
+<script src="../../js/sanpham.js"></script>
+
+<!-- Dữ liệu giả -->
+
+
