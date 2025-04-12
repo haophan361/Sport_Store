@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class cookie_Service {
-    public Cookie create_tokenCookie(String token_value, String token_name, String path, int maxAge, boolean isHttpOnly) {
-        Cookie cookie = new Cookie(token_name, token_value);
+    public Cookie create_Cookie(String value, String name, String path, int maxAge, boolean isHttpOnly) {
+        Cookie cookie = new Cookie(name, value);
         cookie.setPath(path);
         cookie.setHttpOnly(isHttpOnly);
         cookie.setMaxAge(maxAge);
         return cookie;
     }
-    
+
 
     public Cookie deleteCookie(String cookie_name, String path) {
         Cookie cookie = new Cookie(cookie_name, "");

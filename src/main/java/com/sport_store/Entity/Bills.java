@@ -27,13 +27,13 @@ public class Bills {
     private boolean is_active;
     @ManyToOne
     @JoinColumn(name = "employee_id")
-    private Employees employee;
+    private Employees employees;
     @OneToMany(mappedBy = "bills")
     private List<Bill_Details> bill_details;
     @ManyToOne
     @JoinColumn(name = "receiver_id")
-    private Receiver_Info receiver;
+    private Receiver_Info receivers;
     @ManyToOne
     @JoinColumn(name = "coupon_id")
-    private Coupons coupon;
+    private Coupons coupons;
 }

@@ -1,13 +1,7 @@
 package com.sport_store.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
@@ -19,8 +13,10 @@ import java.util.List;
 @Table(name = "brands")
 public class Brands {
     @Id
-    public String brand_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int brand_id;
     public String brand_name;
+    @ToString.Exclude
     @OneToMany(mappedBy = "brands")
     private List<Products> products;
 }

@@ -26,6 +26,6 @@ public class Receiver_Info {
     @JsonIgnore
     @ToString.Exclude
     private Customers customers;
-    @OneToMany(mappedBy = "receiver")
-    private List<Bills> bill;
+    @OneToMany(mappedBy = "receivers")
+    private List<Bills> bills;
 }
