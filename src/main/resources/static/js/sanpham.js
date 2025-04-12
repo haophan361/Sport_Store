@@ -128,6 +128,13 @@ function handleAddOption(type) {
 }
 
 
+document.getElementById("search-product-keyword")?.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        searchProduct();
+    }
+});
+
+
 document.getElementById("newOptionImage").addEventListener("change", function () {
     const preview = document.getElementById("imagePreview");
     preview.innerHTML = "";
@@ -146,12 +153,6 @@ document.getElementById("newOptionImage").addEventListener("change", function ()
     });
 });
 
-
-document.getElementById("search-product-keyword")?.addEventListener("keydown", function(e) {
-    if (e.key === "Enter") {
-        searchProduct();
-    }
-});
 
 // ==================== THÊM SẢN PHẨM MỚI ====================
 document.getElementById("product-form")?.addEventListener("submit", function (e) {
