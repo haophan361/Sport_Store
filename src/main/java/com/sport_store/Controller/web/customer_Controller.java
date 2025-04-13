@@ -77,6 +77,11 @@ public class customer_Controller {
         return "user/request_forgetPassword";
     }
 
+    @GetMapping("/web/admin")
+    public String showWebAdminPage() {
+        return "web/admin";  // ánh xạ tới resources/templates/web/admin.html
+    }
+
     @GetMapping("/form/changeInfoCustomer")
     public String getForm_UpdateInfoUser(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -88,7 +93,6 @@ public class customer_Controller {
         model.addAttribute("customer", customer);
         return "user/changeInfoUser";
     }
-
     @GetMapping("/login/oauth2/google")
     public String authenticationGoogle(@RequestParam String code, HttpServletRequest httpServletRequest,
                                        HttpServletResponse httpServletResponse) {

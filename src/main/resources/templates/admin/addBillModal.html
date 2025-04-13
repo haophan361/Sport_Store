@@ -1,0 +1,425 @@
+<!-- Modal Thêm Hóa Đơn Nhập -->
+<div
+        th:fragment="addBillModal"
+        class="modal fade"
+        id="addBillModal"
+        tabindex="-1"
+>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content rounded-lg shadow-lg border-0">
+            <div class="modal-header bg-primary text-white py-3">
+                <h5 class="modal-title d-flex align-items-center">
+                    <i class="fas fa-clipboard-list mr-2"></i>
+                    Thêm phiếu nhập
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <form id="bill-form">
+                    <div class="card mb-4 border-primary-light shadow-sm">
+                        <div
+                                class="card-header bg-gradient-primary-soft d-flex align-items-center py-3"
+                        >
+                            <i class="fas fa-info-circle text-primary mr-2"></i>
+                            <h6 class="font-weight-bold text-primary m-0">
+                                Thông tin hóa đơn
+                            </h6>
+                        </div>
+                        <div class="card-body bg-white">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="d-flex align-items-center font-weight-bold">
+                                            <i class="fas fa-hashtag text-primary mr-1"></i>
+                                            Mã hóa đơn
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-light"><i class="fas fa-barcode text-gray-500"></i></span>
+                                            </div>
+                                            <input
+                                                    type="text"
+                                                    id="bill_id"
+                                                    class="form-control rounded-right"
+                                                    placeholder="Nhập mã hóa đơn..."
+                                                    required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="d-flex align-items-center font-weight-bold">
+                                            <i class="fas fa-building text-primary mr-1"></i>
+                                            Nhà cung cấp
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-light"><i class="fas fa-industry text-gray-500"></i></span>
+                                            </div>
+                                            <input
+                                                    type="text"
+                                                    id="supplier_name"
+                                                    class="form-control rounded-right"
+                                                    placeholder="Tên nhà cung cấp..."
+                                                    required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="d-flex align-items-center font-weight-bold">
+                                            <i class="fas fa-phone text-primary mr-1"></i>
+                                            Số điện thoại
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-light"><i class="fas fa-phone-alt text-gray-500"></i></span>
+                                            </div>
+                                            <input
+                                                    type="text"
+                                                    id="supplier_phone"
+                                                    class="form-control rounded-right"
+                                                    placeholder="Số điện thoại liên hệ..."
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="d-flex align-items-center font-weight-bold">
+                                            <i class="fas fa-map-marker-alt text-primary mr-1"></i>
+                                            Địa chỉ
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-light"><i class="fas fa-home text-gray-500"></i></span>
+                                            </div>
+                                            <input
+                                                    type="text"
+                                                    id="supplier_address"
+                                                    class="form-control rounded-right"
+                                                    placeholder="Địa chỉ nhà cung cấp..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="d-flex align-items-center font-weight-bold">
+                                            <i class="fas fa-calendar text-primary mr-1"></i>
+                                            Ngày nhập
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-light"><i class="fas fa-calendar-day text-gray-500"></i></span>
+                                            </div>
+                                            <input
+                                                    type="date"
+                                                    id="bill_date"
+                                                    class="form-control rounded-right"
+                                                    required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="d-flex align-items-center font-weight-bold">
+                                            <i class="fas fa-user text-primary mr-1"></i>
+                                            Người tạo phiếu
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-light"><i class="fas fa-user-check text-gray-500"></i></span>
+                                            </div>
+                                            <input
+                                                    type="text"
+                                                    id="current-user"
+                                                    class="form-control rounded-right"
+                                                    value="Admin"
+                                                    readonly
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-success-light shadow-sm mb-4">
+                        <div
+                                class="card-header bg-gradient-success-soft d-flex align-items-center py-3"
+                        >
+                            <i class="fas fa-shopping-cart text-success mr-2"></i>
+                            <h6 class="font-weight-bold text-success m-0">
+                                Chọn sản phẩm nhập kho
+                            </h6>
+                        </div>
+                        <div class="card-body bg-white">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm h-100 border-left-primary">
+                                        <div class="card-header bg-white py-3">
+                                            <div
+                                                    class="d-flex justify-content-between align-items-center"
+                                            >
+                        <span class="font-weight-bold text-primary">
+                          <i class="fas fa-box mr-1"></i>
+                          Danh sách sản phẩm
+                        </span>
+                                                <div
+                                                        class="input-group input-group-sm"
+                                                        style="max-width: 250px"
+                                                >
+                                                    <input
+                                                            type="text"
+                                                            id="product-search"
+                                                            class="form-control"
+                                                            placeholder="Tìm kiếm sản phẩm..."
+                                                    />
+                                                    <div class="input-group-append">
+                                                        <button
+                                                                class="btn btn-primary"
+                                                                type="button"
+                                                                id="search-product-btn"
+                                                        >
+                                                            <i class="fas fa-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                                class="card-body p-0"
+                                                style="max-height: 350px; overflow-y: auto"
+                                        >
+                                            <table
+                                                    class="table table-hover table-striped mb-0"
+                                            >
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th>Mã SP</th>
+                                                    <th>Tên sản phẩm</th>
+                                                    <th>Loại</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="available-products-list">
+                                                <tr>
+                                                    <td><span class="badge badge-light">SP001</span></td>
+                                                    <td>Giày Nike Air Max</td>
+                                                    <td><span>Giày</span></td>
+                                                    <td>
+                                                        <button
+                                                                type="button"
+                                                                class="btn btn-sm btn-success add-product-btn"
+                                                                data-toggle="tooltip"
+                                                                title="Thêm vào phiếu nhập"
+                                                        >
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><span class="badge badge-light">SP002</span></td>
+                                                    <td>Áo Adidas</td>
+                                                    <td><span>Áo</span></td>
+                                                    <td>
+                                                        <button
+                                                                type="button"
+                                                                class="btn btn-sm btn-success add-product-btn"
+                                                                data-toggle="tooltip"
+                                                                title="Thêm vào phiếu nhập"
+                                                        >
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="card-footer bg-white text-center">
+                                            <nav>
+                                                <ul class="pagination pagination-sm justify-content-center mb-0">
+                                                    <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm h-100 border-left-success">
+                                        <div class="card-header bg-white py-3">
+                      <span class="font-weight-bold text-success">
+                        <i class="fas fa-clipboard-check mr-1"></i>
+                        Sản phẩm đã chọn
+                      </span>
+                                        </div>
+                                        <div
+                                                class="card-body p-0"
+                                                style="max-height: 350px; overflow-y: auto"
+                                        >
+                                            <table
+                                                    class="table table-hover table-striped mb-0"
+                                            >
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th>Mã SP</th>
+                                                    <th>Tên sản phẩm</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Đơn giá</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="selected-products-list">
+                                                <tr data-product-id="SP001">
+                                                    <td><span class="badge badge-light">SP001</span></td>
+                                                    <td>Giày Nike Air Max</td>
+                                                    <td>
+                                                        <input
+                                                                type="number"
+                                                                class="form-control form-control-sm product-quantity"
+                                                                value="2"
+                                                                min="1"
+                                                                style="width: 80px"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group input-group-sm">
+                                                            <input
+                                                                    type="text"
+                                                                    class="form-control form-control-sm product-price"
+                                                                    value="2,500,000"
+                                                                    min="0"
+                                                                    style="width: 100px"
+                                                                    data-raw-value="2500000"
+                                                            />
+
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                                type="button"
+                                                                class="btn btn-sm btn-danger remove-product-btn"
+                                                                data-toggle="tooltip"
+                                                                title="Xóa sản phẩm"
+                                                        >
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr data-product-id="SP003">
+                                                    <td><span class="badge badge-light">SP003</span></td>
+                                                    <td>Quần thể thao Puma</td>
+                                                    <td>
+                                                        <input
+                                                                type="number"
+                                                                class="form-control form-control-sm product-quantity"
+                                                                value="5"
+                                                                min="1"
+                                                                style="width: 80px"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group input-group-sm">
+                                                            <input
+                                                                    type="text"
+                                                                    class="form-control form-control-sm product-price"
+                                                                    value="800,000"
+                                                                    min="0"
+                                                                    style="width: 100px"
+                                                                    data-raw-value="800000"
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                                type="button"
+                                                                class="btn btn-sm btn-danger remove-product-btn"
+                                                                data-toggle="tooltip"
+                                                                title="Xóa sản phẩm"
+                                                        >
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr data-product-id="SP007">
+                                                    <td><span class="badge badge-light">SP007</span></td>
+                                                    <td>Bóng đá Nike Strike</td>
+                                                    <td>
+                                                        <input
+                                                                type="number"
+                                                                class="form-control form-control-sm product-quantity"
+                                                                value="10"
+                                                                min="1"
+                                                                style="width: 80px"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group input-group-sm">
+                                                            <input
+                                                                    type="text"
+                                                                    class="form-control form-control-sm product-price"
+                                                                    value="750,000"
+                                                                    min="0"
+                                                                    style="width: 100px"
+                                                                    data-raw-value="750000"
+                                                            />
+
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                                type="button"
+                                                                class="btn btn-sm btn-danger remove-product-btn"
+                                                                data-toggle="tooltip"
+                                                                title="Xóa sản phẩm"
+                                                        >
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="card-footer bg-white">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="font-weight-bold mr-2">Tổng SP:</span>
+                                                        <span class="badge badge-pill badge-success px-3 py-2" id="total-product-count">3</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="d-flex align-items-center justify-content-end">
+                                                        <span class="font-weight-bold mr-2">Tổng tiền:</span>
+                                                        <span class="badge badge-pill badge-primary px-3 py-2" id="total-product-cost">17.000.000 ₫</span>
+                                                        <input type="hidden" id="bill_cost" value="17000000" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-lg btn-primary px-5 mr-2">
+                            <i class="fas fa-save mr-2"></i> Lưu hóa đơn
+                        </button>
+                        <button
+                                type="button"
+                                class="btn btn-lg btn-secondary px-4"
+                                data-dismiss="modal"
+                        >
+                            <i class="fas fa-times mr-2"></i> Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -128,14 +128,31 @@ function handleAddOption(type) {
 }
 
 
-
-
-
 document.getElementById("search-product-keyword")?.addEventListener("keydown", function(e) {
     if (e.key === "Enter") {
         searchProduct();
     }
 });
+
+
+document.getElementById("newOptionImage").addEventListener("change", function () {
+    const preview = document.getElementById("imagePreview");
+    preview.innerHTML = "";
+
+    Array.from(this.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.className = "img-thumbnail m-1";
+            img.style.width = "100px";
+            img.style.height = "100px";
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
 
 // ==================== THÊM SẢN PHẨM MỚI ====================
 document.getElementById("product-form")?.addEventListener("submit", function (e) {
