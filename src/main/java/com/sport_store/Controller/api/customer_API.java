@@ -13,10 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Collections;
@@ -30,7 +27,7 @@ public class customer_API {
     private final authentication_Service authentication_service;
     private final cookie_Service cookie_service;
 
-    @PostMapping("/customer/changeInfoCustomer")
+    @PutMapping("/customer/changeInfoCustomer")
     public ResponseEntity<?> changeInfoUser(@RequestBody updateCustomer_request request, HttpServletRequest httpServletRequest) {
         customer_service.updateCustomer(request);
         load_user_session.refreshUser(httpServletRequest.getSession());

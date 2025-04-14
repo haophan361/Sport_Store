@@ -1,4 +1,4 @@
-package com.sport_store.Controller.web;
+package com.sport_store.Controller.controller;
 
 import com.sport_store.DTO.response.product_Response.product_detail_Response;
 import com.sport_store.DTO.response.product_option_Response.product_option_detail_Response;
@@ -51,7 +51,7 @@ public class product_Controller {
 
         product_option_detail_Response current_option_detail = product_option_detail_Response
                 .builder()
-                .product_option_id(current_option.getOption_id())
+                .option_id(current_option.getOption_id())
                 .price(decimalFormat.format(current_option.getOption_cost()))
                 .new_price(new_price_format)
                 .product_img(current_option.getColors().getProduct_img())

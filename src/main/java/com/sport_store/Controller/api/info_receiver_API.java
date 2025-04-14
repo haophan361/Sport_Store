@@ -6,6 +6,7 @@ import com.sport_store.Service.info_receiver_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class info_receiver_API {
         return ResponseEntity.ok(Collections.singletonMap("message", "Thêm thông tin người nhận thành công"));
     }
 
-    @PostMapping("/customer/update_infoReceiver")
+    @PutMapping("/customer/update_infoReceiver")
     public ResponseEntity<?> update_infoReceiver(@RequestBody infoReceiver_request request) {
         info_receiver_service.update_infoReceiver(request);
         return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật thông tin người nhận thành công"));

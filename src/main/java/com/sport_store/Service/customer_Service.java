@@ -37,6 +37,9 @@ public class customer_Service {
     public void updateCustomer(updateCustomer_request request) {
         Customers customer = get_myInfo();
         customer.setCustomer_name(request.getCustomer_name());
+        if (customer_repository.findByPhone(customer.getCustomer_phone()) != null) {
+            throw new RuntimeException("Số điện thoại đã tồn tại");
+        }
         customer.setCustomer_phone(request.getCustomer_phone());
         customer.setCustomer_date_of_birth(request.getCustomer_date_of_birth());
         customer_repository.save(customer);

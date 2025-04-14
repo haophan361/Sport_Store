@@ -1,5 +1,6 @@
 package com.sport_store.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,5 +19,6 @@ public class Images {
     private String image_url;
     @OneToMany(mappedBy = "images", fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonIgnore
     private List<Product_Img> product_img;
 }

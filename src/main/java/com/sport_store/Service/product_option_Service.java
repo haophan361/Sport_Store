@@ -5,11 +5,15 @@ import com.sport_store.Entity.*;
 import com.sport_store.Repository.product_option_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,29 +25,29 @@ public class product_option_Service {
     private final product_img_Service product_img_service;
     private final color_Service color_service;
 
+    @Transactional
     public void Save_productOption(productOption_request request, MultipartFile[] files) {
         Products product = product_service.getProductById(request.getProduct_id());
-        Colors color = product_option_repository.getColorByProductId_Colors(request.getProduct_id(), request.getColor());
+        Colors color = product_option_repository.getColorByProductId_Colors(request.getProduct_id(), request.getColor_id());
         List<Images> images = new ArrayList<>();
-        if (color != null) {
+        if (color != null && !color.getProduct_img().isEmpty()) {
             for (Product_Img product_img : color.getProduct_img()) {
                 images.add(product_img.getImages());
             }
         } else {
-            color = color_service.saveColor(request.getColor());
             for (MultipartFile file : files) {
                 String image_url = image_service.upload(file);
                 Images image = image_service.saveImage(image_url);
                 images.add(image);
             }
+            color = color_service.findColorById(request.getColor_id());
         }
         Product_Options product_option = Product_Options
                 .builder()
-                .option_id(UUID.randomUUID().toString())
                 .option_size(request.getSize())
                 .option_cost(request.getOption_price())
                 .option_quantity(request.getOption_quantity())
-                .is_active(true)
+                .is_active(request.isActive())
                 .products(product)
                 .colors(color)
                 .discounts(discount_service.getDiscount(request.getDiscount_id()))
@@ -65,7 +69,7 @@ public class product_option_Service {
         return product_option_repository.getOptionProductByColors(product_id, color);
     }
 
-    public void delete_product_option(String option_id) {
+    public void delete_product_option(int option_id) {
         Product_Options option = product_option_repository.findById(option_id).orElse(null);
         if (option != null) {
             option.set_active(false);

@@ -14,7 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Product_Options {
     @Id
-    private String option_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int option_id;
     private String option_size;
     private int option_quantity;
     private BigDecimal option_cost;

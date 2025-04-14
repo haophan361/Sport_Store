@@ -22,6 +22,6 @@ public class Bill_Details {
     private Bills bills;
     @Id
     @ManyToOne
-    @JoinColumn(name = "product_option_id")
+    @JoinColumn(name = "option_id")
     private Product_Options product_options;
 }

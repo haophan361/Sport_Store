@@ -1,5 +1,6 @@
 package com.sport_store.Service;
 
+import com.sport_store.DTO.request.discount_Request.discount_request;
 import com.sport_store.Entity.Discounts;
 import com.sport_store.Repository.discount_Repository;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +14,13 @@ import java.util.List;
 public class discount_Service {
     private final discount_Repository discount_repository;
 
-    public void saveDiscount(int discount, LocalDateTime time_start, LocalDateTime time_end) {
+    public void saveDiscount(discount_request request) {
         Discounts discounts = Discounts
                 .builder()
-                .discount_percentage(discount)
-                .discount_start_date(time_start)
-                .discount_end_date(time_end)
-                .is_active(true)
+                .discount_percentage(request.getDiscount_percentage())
+                .discount_start_date(request.getStart_date())
+                .discount_end_date(request.getEnd_date())
+                .is_active(request.isActive())
                 .build();
         discount_repository.save(discounts);
     }

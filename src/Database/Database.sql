@@ -40,7 +40,7 @@ CREATE TABLE `products`(
 );
 
 CREATE TABLE `product_options`(
-	`option_id` VARCHAR(100) PRIMARY KEY,
+	`option_id` INT PRIMARY KEY AUTO_INCREMENT,
     `option_size` NVARCHAR(50),
     `option_quantity` INT,
     `option_cost` DECIMAL,
@@ -101,7 +101,7 @@ CREATE TABLE `receiver_info`(
 
 CREATE TABLE `carts`(
 	`cart_id` VARCHAR(100) PRIMARY KEY,
-    `option_id` VARCHAR(100),
+    `option_id` INT,
     `customer_id` VARCHAR(100),
     `cart_quantity` INT NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
@@ -147,13 +147,13 @@ CREATE TABLE `bills`(
 CREATE TABLE `bill_details`(
 	`bill_detail_id` VARCHAR(100) PRIMARY KEY,
 	`bill_id` VARCHAR(100),
-    `product_option_id` VARCHAR(100),
+    `option_id` INT,
     `product_name` NVARCHAR(200),
     `product_cost` DECIMAL(10,2) DEFAULT 0,
     `product_quantity` INT,
-    UNIQUE (bill_id, product_option_id),
+    UNIQUE (bill_id, option_id),
     FOREIGN KEY (bill_id) REFERENCES bills(bill_id),
-    FOREIGN KEY (product_option_id) REFERENCES product_options(option_id)
+    FOREIGN KEY (option_id) REFERENCES product_options(option_id)
 );
 
 CREATE TABLE `bill_supplies`(
@@ -169,7 +169,7 @@ CREATE TABLE `bill_supply_details`(
 	`bill_supply_detail_id` VARCHAR(100) PRIMARY KEY,
     `bill_supply_id` VARCHAR(100),
     `product_name` NVARCHAR(200),
-    `option_id` VARCHAR(100),
+    `option_id` INT,
     `option_cost` DECIMAL (10,2),
     `option_quantity` INT,
     FOREIGN KEY (bill_supply_id) REFERENCES bill_supplies(bill_supply_id),

@@ -18,7 +18,7 @@ public class LoadUser {
     private final account_Service account_service;
     private final employee_Service employee_service;
 
-    public void CustomerSession(HttpSession session, authentication_response response) {
+    public void userSession(HttpSession session, authentication_response response) {
         Accounts account = account_service.getAccountByEmail(response.getAccount_response().getEmail());
         if (account != null) {
             if (account.getRole().toString().equals("CUSTOMER")) {
@@ -31,7 +31,7 @@ public class LoadUser {
                 session.setAttribute("name", "Quản trị viên");
             }
             session.setAttribute("email", account.getEmail());
-            session.setAttribute("role", account.getRole());
+            session.setAttribute("role", account.getRole().toString());
             session.setAttribute("isLoggedIn", 1);
         } else {
             session.setAttribute("isLoggedIn", 0);

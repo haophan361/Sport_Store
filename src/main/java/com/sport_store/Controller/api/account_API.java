@@ -16,10 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Collections;
@@ -103,7 +100,7 @@ public class account_API {
         }
     }
 
-    @PostMapping("/web/forgetPassword")
+    @PutMapping("/web/forgetPassword")
     public ResponseEntity<?> forgetPassword(@CookieValue(value = "token_resetPassword") String token_resetPassword, @RequestBody forgetPassword_request request, HttpServletResponse httpServletResponse) {
         try {
             SignedJWT signedJWT = authentication_service.verifyToken(token_resetPassword, false);
@@ -120,7 +117,7 @@ public class account_API {
         }
     }
 
-    @PostMapping("/user/changePassword")
+    @PutMapping("/user/changePassword")
     public ResponseEntity<?> changePassword(@RequestBody changePassword_request request) {
         Accounts account = account_service.get_myAccountInfo();
         if (!passwordEncoder.matches(request.getOld_password(), account.getPassword())) {

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class product_option_detail_Response {
-    private String product_option_id;
+    private int option_id;
     private String price;
     private String new_price;
     private List<Product_Img> product_img;

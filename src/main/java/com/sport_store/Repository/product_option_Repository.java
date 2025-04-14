@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface product_option_Repository extends JpaRepository<Product_Options, String>,
+public interface product_option_Repository extends JpaRepository<Product_Options, Integer>,
         JpaSpecificationExecutor<Product_Options> {
     @Query("SELECT o FROM Product_Options o WHERE o.products.product_id= :product_id AND o.colors.color= :color")
     List<Product_Options> getOptionProductByColors(String product_id, String color);
 
-    @Query("SELECT o.colors FROM Product_Options o WHERE o.colors.color= :color AND o.products.product_id= :product_id")
-    Colors getColorByProductId_Colors(String product_id, String color);
+    @Query("SELECT o.colors FROM Product_Options o WHERE o.colors.color_id= :color_id AND o.products.product_id= :product_id")
+    Colors getColorByProductId_Colors(String product_id, int color_id);
 
     @Query("SELECT DISTINCT o.colors FROM Product_Options o WHERE o.products.product_id= :product_id")
     List<Colors> getColorByProductId(String product_id);

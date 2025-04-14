@@ -1,4 +1,4 @@
-package com.sport_store.Controller.web;
+package com.sport_store.Controller.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -93,6 +93,7 @@ public class customer_Controller {
         model.addAttribute("customer", customer);
         return "user/changeInfoUser";
     }
+
     @GetMapping("/login/oauth2/google")
     public String authenticationGoogle(@RequestParam String code, HttpServletRequest httpServletRequest,
                                        HttpServletResponse httpServletResponse) {
@@ -136,7 +137,7 @@ public class customer_Controller {
                     .build();
             token_service.createToken(tokensEntity);
             HttpSession session = httpServletRequest.getSession();
-            load_user.CustomerSession(session, response);
+            load_user.userSession(session, response);
             Cookie cookie = cookie_service.create_Cookie(response.getToken(), "token", "/", 3600, true);
             httpServletResponse.addCookie(cookie);
             account_service.Update_isOnline(jsonNode.get("email").asText(), true);

@@ -27,7 +27,7 @@ public class product_Service {
                 .product_detail(request.getDescription())
                 .brands(brand)
                 .categories(category)
-                .is_active(true)
+                .is_active(request.isActive())
                 .build();
         product_repository.save(product);
     }
