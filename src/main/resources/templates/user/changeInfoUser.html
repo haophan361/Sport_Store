@@ -13,7 +13,7 @@
 <div class="login-wrapper">
     <div class="login-card">
         <h2 class="text-center mb-4">Thông tin cá nhân </h2>
-        <form id="changeInfoUserForm" method="POST">
+        <form id="changeInfoUserForm" method="POST" th:if="${session.role == 'CUSTOMER'}">
             <div class="form-group">
                 <label for="name">Họ và tên</label>
                 <input type="text" id="name" name="name" th:value="${customer.customer_name}" class="form-control"
@@ -155,6 +155,49 @@
                 </div>
                 <div class="col-3">
                     <button type="button" class="btn btn-primary" onclick="changeInfoCustomer()">Lưu</button>
+                </div>
+            </div>
+        </form>
+
+        <form id="changeInfoEmployeeForm" method="POST" th:if="${session.role == 'EMPLOYEE'}">
+            <div class="form-group">
+                <label for="emp_name">Họ và tên</label>
+                <input type="text" id="emp_name" name="emp_name" th:value="${employee.employee_name}" class="form-control"
+                       readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="emp_date_of_birth">Ngày sinh</label>
+                <input type="text" id="emp_date_of_birth" name="emp_date_of_birth"
+                       th:value="${employee.employee_date_of_birth}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="emp_email">Email</label>
+                <input type="text" id="emp_email" name="emp_phone" th:value="${employee.employee_email}"
+                       class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="emp_phone">Số điện thoại</label>
+                <input type="text" id="emp_phone" name="emp_phone" th:value="${employee.employee_phone}"
+                       class="form-control"
+                       placeholder="Nhập số điện thoại" required>
+            </div>
+
+            <div class="form-group">
+                <label for="emp_address">Địa chỉ</label>
+                <input type="text" id="emp_address" name="emp_address" th:value="${employee.employee_address}"
+                       class="form-control"
+                       placeholder="Nhập địa chỉ" required>
+            </div>
+
+            <div class="d-flex justify-content-around align-items-center">
+                <div class="col-3">
+                    <button type="button" class="btn btn-danger" onclick="history.back()">Hủy</button>
+                </div>
+                <div class="col-3">
+                    <button type="button" class="btn btn-primary" onclick="changeInfoEmployee()">Lưu</button>
                 </div>
             </div>
         </form>
