@@ -31,7 +31,7 @@ public class LoadUser {
                 session.setAttribute("name", "Quản trị viên");
             }
             session.setAttribute("email", account.getEmail());
-            session.setAttribute("role", account.getRole());
+            session.setAttribute("role", account.getRole().toString());
             session.setAttribute("isLoggedIn", 1);
         } else {
             session.setAttribute("isLoggedIn", 0);
@@ -40,8 +40,15 @@ public class LoadUser {
 
     public void refreshUser(HttpSession session) {
         String email = session.getAttribute("email").toString();
-        Customers customer = customer_service.getUserByEmail(email);
-        session.setAttribute("name", customer.getCustomer_name());
+        if (email != null) {
+            Accounts account = account_service.getAccountByEmail(email);
+            if (account != null) {
+                if (account.getRole().toString().equals("CUSTOMER")) {
+                    Customers customer = customer_service.getUserByEmail(email);
+                    session.setAttribute("name", customer.getCustomer_name());
+                }
+            }
+        }
     }
 
 }

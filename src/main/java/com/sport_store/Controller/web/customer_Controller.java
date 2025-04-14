@@ -8,6 +8,7 @@ import com.sport_store.DTO.request.customer_Request.register_account;
 import com.sport_store.DTO.response.account_Response.authentication_response;
 import com.sport_store.Entity.Accounts;
 import com.sport_store.Entity.Customers;
+import com.sport_store.Entity.Employees;
 import com.sport_store.Entity.Tokens;
 import com.sport_store.Service.*;
 import com.sport_store.Util.LoadUser;
@@ -34,6 +35,7 @@ import java.util.UUID;
 @Controller
 public class customer_Controller {
     private final customer_Service customer_service;
+    private final employee_Service employee_service;
     private final token_Service token_service;
     private final mail_Service mail_service;
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
@@ -83,9 +85,15 @@ public class customer_Controller {
         if (session == null) {
             return "web/login";
         }
+
         String email = (String) session.getAttribute("email");
-        Customers customer = customer_service.getUserByEmail(email);
-        model.addAttribute("customer", customer);
+        if (session.getAttribute("role") == "CUSTOMER") {
+            Customers customer = customer_service.getUserByEmail(email);
+            model.addAttribute("customer", customer);
+        } else {
+            Employees employee = employee_service.getEmployee(email);
+            model.addAttribute("employee", employee);
+        }
         return "user/changeInfoUser";
     }
 

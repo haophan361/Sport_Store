@@ -42,6 +42,16 @@ function changeInfoCustomer() {
         JSON.stringify(form_changeInfoCustomer), null, null, "include", callback_changeInfoUser)
 }
 
+function changeInfoEmployee() {
+    const form_changeInfoEmployee =
+        {
+            employee_address: document.getElementById("emp_address").value,
+            employee_phone: document.getElementById("emp_phone").value,
+        }
+    apiRequest("/employee/changeInfoEmployee", "PUT", {'Content-type': 'application/json'},
+        JSON.stringify(form_changeInfoEmployee), null, null, "include", callback_changeInfoUser)
+}
+
 document.getElementById('addReceiverModal').addEventListener('show.bs.modal', function () {
     var cities = document.getElementById("cities");
     var districts = document.getElementById("districts");
