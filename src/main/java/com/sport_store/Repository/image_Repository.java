@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface image_Repository extends JpaRepository<Images, Integer> {
-
 }

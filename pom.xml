@@ -104,8 +104,19 @@
             <artifactId>spring-boot-starter-mail</artifactId>
             <version>3.3.4</version>
         </dependency>
-        
 
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.1.1-jre</version>
+        </dependency>
+        
     </dependencies>
 
     <build>

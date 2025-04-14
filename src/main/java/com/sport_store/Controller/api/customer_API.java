@@ -2,7 +2,8 @@ package com.sport_store.Controller.api;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.UserDTO.updateCustomer_request;
+import com.sport_store.DTO.request.customer_Request.updateCustomer_request;
+import com.sport_store.DTO.response.customer_response.customerInfo_response;
 import com.sport_store.Service.authentication_Service;
 import com.sport_store.Service.cookie_Service;
 import com.sport_store.Service.customer_Service;
@@ -13,13 +14,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class customer_API {
     private final authentication_Service authentication_service;
     private final cookie_Service cookie_service;
 
-    @PostMapping("/user/changeInfoCustomer")
+    @PostMapping("/customer/changeInfoCustomer")
     public ResponseEntity<?> changeInfoUser(@RequestBody updateCustomer_request request, HttpServletRequest httpServletRequest) {
         customer_service.updateCustomer(request);
         load_user_session.refreshUser(httpServletRequest.getSession());
@@ -52,6 +51,20 @@ public class customer_API {
             }
         } catch (JOSEException | ParseException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/admin/customers")
+    //@PreAuthorize("hasRole('ADMIN')") // Restrict to admins
+    public ResponseEntity<?> getCustomerInfoList() {
+        try {
+            List<customerInfo_response> customers = customer_service.getCustomerInfoList();
+            if (customers.isEmpty()) {
+                return ResponseEntity.ok(Collections.singletonMap("message", "Danh sách khách hàng trống"));
+            }
+            return ResponseEntity.ok(customers);
+        } catch (Exception e) {
+            throw new RuntimeException("Không lấy được danh sách khách hàng" + e.getMessage());
         }
     }
 

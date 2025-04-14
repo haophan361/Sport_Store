@@ -2,8 +2,8 @@ package com.sport_store.Controller.api;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
-import com.sport_store.DTO.request.UserDTO.changePassword_request;
-import com.sport_store.DTO.request.UserDTO.forgetPassword_request;
+import com.sport_store.DTO.request.account_Request.changePassword_request;
+import com.sport_store.DTO.request.account_Request.forgetPassword_request;
 import com.sport_store.Entity.Accounts;
 import com.sport_store.Service.account_Service;
 import com.sport_store.Service.authentication_Service;
@@ -42,7 +42,7 @@ public class account_API {
         }
         String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
         String token_verifyEmail = authentication_service.generateToken(account, code_verifyEmail);
-        Cookie cookie_verifyEmail = cookie_service.create_tokenCookie(token_verifyEmail, "token_verifyEmail",
+        Cookie cookie_verifyEmail = cookie_service.create_Cookie(token_verifyEmail, "token_verifyEmail",
                 "/web/checkCode_ForgetPassword", 300, true);
         httpServletResponse.addCookie(cookie_verifyEmail);
         session.setAttribute("email", email);
@@ -70,7 +70,7 @@ public class account_API {
         String code_verifyEmail = UUID.randomUUID().toString().substring(0, 6);
         String new_token_verifyEmail = authentication_service.generateToken(account, code_verifyEmail);
         String path = (typeVerify.equals("forgetPassword")) ? "/web/checkCode_ForgetPassword" : "/web/checkCode_Register";
-        Cookie cookie_verifyEmail = cookie_service.create_tokenCookie(new_token_verifyEmail, "token_verifyEmail",
+        Cookie cookie_verifyEmail = cookie_service.create_Cookie(new_token_verifyEmail, "token_verifyEmail",
                 path, 300, true);
         httpServletResponse.addCookie(cookie_verifyEmail);
         try {
@@ -89,7 +89,7 @@ public class account_API {
             Accounts account = account_service.getAccountByEmail(signedJWT.getJWTClaimsSet().getSubject());
             if (issuer.equals(code)) {
                 String token_resetPassword = authentication_service.generateToken(account, "reset_password");
-                Cookie cookie_forgetPassword = cookie_service.create_tokenCookie(token_resetPassword, "token_resetPassword",
+                Cookie cookie_forgetPassword = cookie_service.create_Cookie(token_resetPassword, "token_resetPassword",
                         "/web/forgetPassword", 300, true);
                 Cookie deleteCookie = cookie_service.deleteCookie("token_verifyEmail", "/web/checkCode_ForgetPassword");
                 httpServletResponse.addCookie(cookie_forgetPassword);

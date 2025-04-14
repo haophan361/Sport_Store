@@ -5,56 +5,69 @@ CREATE DATABASE Sport_Store;
 USE Sport_Store;
 
 CREATE TABLE `brands`(
-	`brand_id` VARCHAR(12) PRIMARY KEY,
+	`brand_id` INT PRIMARY KEY AUTO_INCREMENT,
     `brand_name` NVARCHAR(100)
 );
 
 CREATE TABLE `categories`(
-	`category_id` VARCHAR(12) PRIMARY KEY,
+	`category_id` INT PRIMARY KEY AUTO_INCREMENT,
     `category_image` VARCHAR(400),
     `category_name` NVARCHAR(100)
 );
 
 CREATE TABLE `discounts`(
-	`discount_id` VARCHAR(12) PRIMARY KEY,
+	`discount_id` INT PRIMARY KEY AUTO_INCREMENT,
     `discount_percentage` INT,
     `discount_start_date` DATETIME,
     `discount_end_date` DATETIME,
     `is_active` TINYINT(1)
 );
 
+CREATE TABLE `colors`(
+	`color_id` INT PRIMARY KEY AUTO_INCREMENT,
+    `color` NVARCHAR(50)
+);
+
 CREATE TABLE `products`(
 	`product_id` VARCHAR(100) PRIMARY KEY,
     `product_name` NVARCHAR(200),
-    `category_id` VARCHAR(12),
-    `brand_id` VARCHAR(12),
     `product_detail` LONGTEXT,
-    `discount_id` VARCHAR(12),
+    `category_id`INT,
+    `brand_id` INT,
     `is_active` TINYINT(1),
     FOREIGN KEY (brand_id) REFERENCES brands(brand_id),
-    FOREIGN KEY (category_id) REFERENCES categories(category_id),
-    FOREIGN KEY (discount_id) REFERENCES discounts(discount_id)
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
 CREATE TABLE `product_options`(
-	`option_id` VARCHAR(12) PRIMARY KEY,
-    `option_color` NVARCHAR(50),
-    `option_size` VARCHAR(10),
-    `option_quantity` INT DEFAULT 0,
-    `option_cost` DECIMAL(10,2) NOT NULL,
-    `option_image_url` VARCHAR(400),
+	`option_id` VARCHAR(100) PRIMARY KEY,
+    `option_size` NVARCHAR(50),
+    `option_quantity` INT,
+    `option_cost` DECIMAL,
+    `discount_id` INT,
+    `color_id` INT,
+    `product_id` VARCHAR(100),
     `is_active` TINYINT(1),
-	`product_id` VARCHAR(100),
-    UNIQUE(product_id, option_color, option_size),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
+    FOREIGN KEY (color_id) REFERENCES colors(color_id),
+    FOREIGN KEY (discount_id) REFERENCES discounts(discount_id),
+    FOREIGN KEY (product_id) REFERENCES products (product_id)
 );
 
 CREATE TABLE `images`(
-	`image_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `image_url` VARCHAR(400),
-    `product_id` VARCHAR(100),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
+	`image_id` INT PRIMARY KEY AUTO_INCREMENT,
+    `image_url` VARCHAR(400)
 );
+
+CREATE TABLE `product_img`(
+	`product_id` VARCHAR(100),
+	`color_id` INT,
+    `image_id` INT,
+    PRIMARY KEY(product_id,color_id,image_id),
+    FOREIGN KEY(product_id) REFERENCES products(product_id),
+    FOREIGN KEY (color_id) REFERENCES colors(color_id),
+    FOREIGN KEY(image_id) REFERENCES images(image_id)
+);
+    
 
 CREATE TABLE `employees`(
 	`employee_id` VARCHAR(100) PRIMARY KEY,
@@ -63,8 +76,7 @@ CREATE TABLE `employees`(
     `employee_phone` VARCHAR(10),
     `employee_address` NVARCHAR(300),
     `employee_date_of_birth` DATE,
-    `employee_gender` TINYINT(1),
-    `is_active` TINYINT(1)
+    `employee_gender` TINYINT(1)
 );
 
 CREATE TABLE `customers`(
@@ -72,8 +84,7 @@ CREATE TABLE `customers`(
 	`customer_email` VARCHAR(100),
     `customer_name` NVARCHAR(300),
     `customer_date_of_birth` DATE,
-    `customer_phone` VARCHAR(10),
-    `is_active` TINYINT(1)
+    `customer_phone` VARCHAR(10)
 );
 
 CREATE TABLE `receiver_info`(
@@ -90,11 +101,11 @@ CREATE TABLE `receiver_info`(
 
 CREATE TABLE `carts`(
 	`cart_id` VARCHAR(100) PRIMARY KEY,
-    `product_option_id` VARCHAR(100),
+    `option_id` VARCHAR(100),
     `customer_id` VARCHAR(100),
     `cart_quantity` INT NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
-    FOREIGN KEY (product_option_id) REFERENCES product_options(option_id)
+    FOREIGN KEY (option_id) REFERENCES product_options(option_id)
 );
 
 CREATE TABLE `comments`(
@@ -155,7 +166,7 @@ CREATE TABLE `bill_supplies`(
 );
 
 CREATE TABLE `bill_supply_details`(
-	`bill_supply_detail_id` VARCHAR(100),
+	`bill_supply_detail_id` VARCHAR(100) PRIMARY KEY,
     `bill_supply_id` VARCHAR(100),
     `product_name` NVARCHAR(200),
     `option_id` VARCHAR(100),

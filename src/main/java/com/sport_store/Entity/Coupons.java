@@ -25,6 +25,6 @@ public class Coupons {
     private LocalDateTime coupon_start_date;
     private LocalDateTime coupon_expiration_date;
     private int coupon_attempts_left;
-    @OneToMany(mappedBy = "coupon")
-    private List<Bills> bill;
+    @OneToMany(mappedBy = "coupons")
+    private List<Bills> bills;
 }

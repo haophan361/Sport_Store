@@ -26,7 +26,6 @@ public class Customers {
     private String customer_name;
     private LocalDate customer_date_of_birth;
     private String customer_phone;
-    private boolean is_active;
     @OneToMany(mappedBy = "customers")
     private List<Receiver_Info> Receiver_Info;
     @OneToMany(mappedBy = "customers")
