@@ -27,5 +27,8 @@ public class product_img_Service {
         }
     }
 
-    
+    public List<Colors> getAllColorByProduct(String product_id) {
+        return product_img_repository.getAllColorByProduct(product_id);
+    }
+
 }

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multi Shop - Admin Page</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <!-- Favicon -->
+  <link th:href="@{img/favicon.ico}" rel="icon">
+
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Libraries Stylesheet -->
+  <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
+  <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+
+  <!-- Customized Bootstrap Stylesheet -->
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+
+  <!-- Custom CSS for Admin Dashboard -->
+  <style>
+    #wrapper {
+      overflow-x: hidden;
+    }
+
+    #sidebar-wrapper {
+      min-height: 100vh;
+      margin-left: -15rem;
+      transition: margin .25s ease-out;
+      background-color: #f8f9fa;
+    }
+
+    #sidebar-wrapper .sidebar-heading {
+      padding: 0.875rem 1.25rem;
+      font-size: 1.2rem;
+      background-color: #007bff;
+      color: white;
+    }
+
+    #sidebar-wrapper .list-group {
+      width: 15rem;
+    }
+
+    #page-content-wrapper {
+      min-width: 100vw;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+      margin-left: 0;
+    }
+
+    @media (min-width: 768px) {
+      #sidebar-wrapper {
+        margin-left: 0;
+      }
+
+      #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+      }
+
+      #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+      }
+    }
+
+    .list-group-item-action:hover {
+      background-color: #e9ecef !important;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+<!-- Topbar Start -->
+<div class="container-fluid">
+  <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
+    <div class="col-lg-4">
+      <a href="" class="text-decoration-none">
+        <span class="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
+        <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
+      </a>
+    </div>
+    <div class="col-lg-8 d-flex justify-content-end">
+      <!-- Dropdown cho người chưa đăng nhập -->
+      <div class="btn-group" th:if="${session.isLoggedIn!=1}">
+        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <button class="dropdown-item" type="button" onclick="window.location.href='/web/form_login'">
+            Sign in
+          </button>
+          <button class="dropdown-item" type="button" onclick="window.location.href='/web/form_register'">
+            Sign up
+          </button>
+        </div>
+      </div>
+      <!-- Dropdown cho người đã đăng nhập -->
+      <div class="btn-group mx-2" th:if="${session.isLoggedIn==1}">
+        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
+          <b th:text="${session.name}"></b>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <button class="dropdown-item" type="button" onclick="window.location.href='/form/changePassword'">
+            Đổi mật khẩu
+          </button>
+          <button class="dropdown-item" type="button" onclick="window.location.href ='/logout'">Đăng xuất</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-inline align-items-center d-block d-lg-none">
+    <a href="" class="btn px-0 ml-2">
+      <i class="fas fa-heart text-dark"></i>
+      <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">0</span>
+    </a>
+    <a th:href="@{/customer/cart}" class="btn px-0 ml-2">
+      <i class="fas fa-shopping-cart text-dark"></i>
+      <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">0</span>
+    </a>
+  </div>
+</div>
+<!-- Topbar End -->
+
+<!-- Admin Dashboard Start -->
+<div class="d-flex" id="wrapper">
+  <!-- Sidebar -->
+  <div class="bg-light border-right" id="sidebar-wrapper">
+    <div class="sidebar-heading">Admin Menu</div>
+    <div class="list-group list-group-flush">
+      <a th:href="@{/admin/dashboard}" class="list-group-item list-group-item-action bg-light">
+        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+      </a>
+      <a th:href="@{/admin/users}" class="list-group-item list-group-item-action bg-light">
+        <i class="fas fa-users mr-2"></i>User Management
+      </a>
+      <a th:href="@{/admin/products}" class="list-group-item list-group-item-action bg-light">
+        <i class="fas fa-box mr-2"></i>Product Management
+      </a>
+      <a th:href="@{/admin/orders}" class="list-group-item list-group-item-action bg-light">
+        <i class="fas fa-shopping-cart mr-2"></i>Order Management
+      </a>
+      <a th:href="@{/admin/reports}" class="list-group-item list-group-item-action bg-light">
+        <i class="fas fa-chart-bar mr-2"></i>Reports
+      </a>
+      <a th:href="@{/admin/settings}" class="list-group-item list-group-item-action bg-light">
+        <i class="fas fa-cog mr-2"></i>Settings
+      </a>
+    </div>
+  </div>
+  <!-- /#sidebar-wrapper -->
+
+  <!-- Page Content -->
+  <div id="page-content-wrapper">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+      <button class="btn btn-primary" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="navbar-brand ml-3">Admin Dashboard</div>
+    </nav>
+
+    <div class="container-fluid p-4">
+      <h1 class="mt-4">Welcome to Admin Dashboard</h1>
+      <p>Content goes here...</p>
+    </div>
+  </div>
+  <!-- /#page-content-wrapper -->
+</div>
+<!-- Admin Dashboard End -->
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/lib/easing/easing.min.js}"></script>
+<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+
+<!-- Custom Script for Sidebar Toggle -->
+<script>
+  $(document).ready(function () {
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  });
+</script>
+
+</body>
+</html>

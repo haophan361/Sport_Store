@@ -1,5 +1,6 @@
 package com.sport_store.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,18 +14,21 @@ import lombok.*;
 public class Product_Img {
     @Id
     @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Products products;
 
     @Id
     @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "color_id")
     private Colors colors;
 
     @Id
     @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "image_id")
     private Images images;

@@ -15,4 +15,5 @@ public class discount_request {
     private int discount_percentage;
     private LocalDateTime start_date;
     private LocalDateTime end_date;
+    private boolean active;
 }

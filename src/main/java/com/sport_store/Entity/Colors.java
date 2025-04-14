@@ -1,5 +1,6 @@
 package com.sport_store.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,9 +18,11 @@ public class Colors {
     private int color_id;
     private String color;
     @ToString.Exclude
+    @JsonIgnore
     @OneToMany(mappedBy = "colors")
     private List<Product_Options> product_options;
     @OneToMany(mappedBy = "colors", fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonIgnore
     private List<Product_Img> product_img;
 }

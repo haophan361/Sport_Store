@@ -5,6 +5,8 @@ import com.sport_store.Repository.color_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class color_Service {
@@ -26,4 +28,7 @@ public class color_Service {
         return color_repository.findById(color_id).orElse(null);
     }
 
+    public List<Colors> getAllColors() {
+        return color_repository.findAll();
+    }
 }
