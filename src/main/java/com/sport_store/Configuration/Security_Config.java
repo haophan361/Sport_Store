@@ -50,7 +50,9 @@ public class Security_Config {
                                 "/lib/**",
                                 "/scss/**",
                                 "/img/**",
-                                "/mail/**").permitAll()
+                                "/mail/**",
+                                "/admin/**",
+                                "/employee/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(cookieAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

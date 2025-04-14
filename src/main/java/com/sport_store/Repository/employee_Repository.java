@@ -10,5 +10,9 @@ public interface employee_Repository extends JpaRepository<Employees, String> {
     @Query("SELECT e  FROM Employees e WHERE e.employee_email= :email")
     public Employees getEmployeeByEmail(String email);
 
+    @Query("SELECT count(e)>0 FROM Employees e WHERE e.employee_email = :email")
+    boolean existsByEmployeeEmail(String email);
 
+    @Query("SELECT count(e)>0 FROM Employees e WHERE e.employee_phone = :phone")
+    boolean existsByEmployeePhone(String phone);
 }

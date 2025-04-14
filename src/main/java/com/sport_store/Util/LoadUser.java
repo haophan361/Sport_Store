@@ -40,8 +40,15 @@ public class LoadUser {
 
     public void refreshUser(HttpSession session) {
         String email = session.getAttribute("email").toString();
-        Customers customer = customer_service.getUserByEmail(email);
-        session.setAttribute("name", customer.getCustomer_name());
+        if (email != null) {
+            Accounts account = account_service.getAccountByEmail(email);
+            if (account != null) {
+                if (account.getRole().toString().equals("CUSTOMER")) {
+                    Customers customer = customer_service.getUserByEmail(email);
+                    session.setAttribute("name", customer.getCustomer_name());
+                }
+            }
+        }
     }
 
 }
