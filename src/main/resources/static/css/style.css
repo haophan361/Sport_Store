@@ -3393,16 +3393,33 @@ input[type="button"].btn-block {
 }
 
 .dropdown-item {
-    display: block;
-    width: 100%;
-    padding: 0.25rem 1.5rem;
-    clear: both;
-    font-weight: 400;
-    color: #212529;
-    text-align: inherit;
-    white-space: nowrap;
-    background-color: transparent;
-    border: 0;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item .btn-danger {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    visibility: hidden;
+}
+
+.dropdown-item:hover .btn-danger {
+    visibility: visible;
+}
+
+.dropdown-item.text-primary {
+    color: #007bff !important;
+    cursor: pointer;
+}
+
+.dropdown-item.text-primary:hover {
+    background-color: #f8f9fa;
 }
 
 .dropdown-item:hover, .dropdown-item:focus {
@@ -10581,4 +10598,45 @@ a.text-dark:hover, a.text-dark:focus {
 .disabled {
     pointer-events: none;
     opacity: 0.5;
+}
+
+.color-dropdown .dropdown-item {
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.color-dropdown .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.color-dropdown .dropdown-item .delete-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    color: #dc3545;
+    visibility: hidden;
+    margin-left: 8px;
+}
+
+.color-dropdown .dropdown-item:hover .delete-btn {
+    visibility: visible;
+}
+
+.color-dropdown .dropdown-item .delete-btn:hover {
+    color: #c82333;
+}
+
+.color-dropdown .add-new-color {
+    padding: 0.5rem 1rem;
+    color: #007bff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.color-dropdown .add-new-color:hover {
+    background-color: #f8f9fa;
 }

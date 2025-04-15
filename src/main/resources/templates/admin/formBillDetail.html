@@ -37,13 +37,14 @@
                 <th>Số lượng</th>
                 <th>Đơn giá</th>
                 <th>Thành tiền</th>
+                <th>Thao tác</th>
             </tr>
             </thead>
             <tbody id="bill-detail-body"></tbody>
             <tfoot>
             <tr>
                 <td colspan="4"></td>
-                <td class="font-weight-bold text-right">Tổng cộng:</td>
+      4         <td class=4         "font-weight-bold text-right">Tổng cộng:</td>
                 <td class="font-weight-bold text-primary" id="detail-total-amount">1.250.000 ₫</td>
             </tr>
             </tfoot>
@@ -58,3 +59,4 @@
         </button>
     </div>
 </div>
+<div th:replace="admin/editBillDetailModal :: addBillDetailModal"></div>

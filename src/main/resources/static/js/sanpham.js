@@ -19,7 +19,14 @@ function renderProductList() {
             ${product.is_active ? 'Đang bán' : 'Ngừng'}
           </span>
         </td>
-        <td>${product.product_detail}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" onclick="editProduct('${product.product_id}')">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" title="Xoá" onclick="deleteProduct('${product.product_id}')">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
       </tr>
     `;
         tbody.insertAdjacentHTML("beforeend", row);
@@ -43,12 +50,20 @@ function loadProducts(data = products) {
             ${p.is_active === 1 ? 'Đang bán' : 'Ngừng bán'}
           </span>
         </td>
-        <td>${p.product_detail}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" onclick="editProduct('${p.product_id}')">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" title="Xoá" onclick="deleteProduct('${p.product_id}')">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
       </tr>
     `;
         tbody.insertAdjacentHTML("beforeend", row);
     });
 }
+
 function displayProductOptions(productId) {
     const options = productOptionsData[productId] || [];
     const tbody = document.querySelector('#productOptionTable tbody');
@@ -64,9 +79,20 @@ function displayProductOptions(productId) {
             <td>${option.size}</td>
             <td>${option.quantity}</td>
             <td>${option.cost.toLocaleString()}₫</td>
-            <td>${option.discount_id}</td>
+            <td>${option.discount_id || '-'}</td>
             <td><img src="img/placeholder.jpg" width="50" alt="Ảnh mẫu"></td>
-            <td><input type="checkbox" ${option.is_active ? 'checked' : ''}></td>
+            <td><span class="badge ${option.is_active ? 'badge-success' : 'badge-danger'}">
+                ${option.is_active ? 'Có' : 'Không'}</span></td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" 
+                    onclick="editProductOption(this)" data-option='${JSON.stringify(option)}'>
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" title="Xoá" 
+                    onclick="deleteProductOption(this)" data-option-id="${option.option_id}">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
         `;
         tbody.appendChild(row);
     });
@@ -127,13 +153,97 @@ function handleAddOption(type) {
     }
 }
 
+function populateDropdownList(items, listId, dropdownId, type) {
+    const list = document.getElementById(listId);
+    const dropdownButton = document.getElementById(dropdownId);
+    const hiddenInput = document.getElementById(`${type}_id`);
+    
+    // Clear existing items
+    list.innerHTML = '';
+    
+    // Add items
+    items.forEach(item => {
+        const itemContainer = document.createElement('div');
+        itemContainer.className = 'dropdown-item d-flex justify-content-between align-items-center';
+        itemContainer.innerHTML = `
+            <span>${item.name || item}</span>
+            <button class="btn btn-sm btn-danger ml-2" onclick="deleteItem('${type}', '${item.id || item}')">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        
+        itemContainer.addEventListener('click', (e) => {
+            if (!e.target.closest('.btn-danger')) {
+                dropdownButton.textContent = item.name || item;
+                hiddenInput.value = item.id || item;
+            }
+        });
+        
+        list.appendChild(itemContainer);
+    });
+    
+    // Add "Thêm mới" option
+    const addNew = document.createElement('div');
+    addNew.className = 'dropdown-item text-primary';
+    addNew.innerHTML = `<i class="fas fa-plus"></i> Thêm ${type === 'category' ? 'loại' : type === 'brand' ? 'thương hiệu' : 'mã giảm giá'} mới`;
+    addNew.addEventListener('click', () => handleAddOption(type));
+    list.appendChild(addNew);
+}
+
+function deleteItem(type, id) {
+    event.stopPropagation();
+    const name = event.target.closest('.dropdown-item').querySelector('span').textContent;
+    
+    if (confirm(`Bạn có chắc muốn xóa ${name}?`)) {
+        // Remove from dropdown
+        event.target.closest('.dropdown-item').remove();
+        
+        // Reset selected value if it was selected
+        const dropdownButton = document.getElementById(`${type}Dropdown`);
+        const hiddenInput = document.getElementById(`${type}_id`);
+        if (hiddenInput.value === id) {
+            dropdownButton.textContent = `Chọn ${type === 'category' ? 'loại sản phẩm' : type === 'brand' ? 'thương hiệu' : type === 'discount' ? 'mã giảm giá' : 'màu'}`;
+            hiddenInput.value = '';
+        }
+        
+        // TODO: Call API to delete item from database
+        console.log(`Deleted ${type} with id ${id}`);
+    }
+}
+
+// Xử lý xóa màu
+$(document).on('click', '.color-dropdown .delete-btn', function(e) {
+    e.stopPropagation(); // Ngăn dropdown đóng lại
+    $(this).closest('.dropdown-item').remove();
+    updateColorCount();
+});
+
+function updateColorCount() {
+    const colorCount = $('.color-dropdown .dropdown-item').length;
+    if (colorCount === 0) {
+        $('.color-dropdown .dropdown-toggle').text('Chọn màu');
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    renderProductList();
+    populateSelect("color_id", color, "màu");
+    populateSelect("category_id", categories, "loại");
+    populateSelect("brand_id", brands, "thương hiệu");
+    populateSelect("discount_id", discounts, "giảm giá");
+
+    // Populate dropdowns
+    populateDropdownList(categories, 'category_list', 'categoryDropdown', 'category');
+    populateDropdownList(brands, 'brand_list', 'brandDropdown', 'brand');
+    populateDropdownList(discounts, 'discount_list', 'discountDropdown', 'discount');
+    populateDropdownList(color, 'color_list', 'colorDropdown', 'color');
+});
 
 document.getElementById("search-product-keyword")?.addEventListener("keydown", function(e) {
     if (e.key === "Enter") {
         searchProduct();
     }
 });
-
 
 document.getElementById("newOptionImage").addEventListener("change", function () {
     const preview = document.getElementById("imagePreview");
@@ -155,9 +265,11 @@ document.getElementById("newOptionImage").addEventListener("change", function ()
 
 
 // ==================== THÊM SẢN PHẨM MỚI ====================
+let isEditing = false;
+
 document.getElementById("product-form")?.addEventListener("submit", function (e) {
     e.preventDefault();
-    const newProduct = {
+    const formData = {
         product_id: document.getElementById("product_id").value,
         product_name: document.getElementById("product_name").value,
         product_detail: document.getElementById("product_detail").value,
@@ -166,26 +278,37 @@ document.getElementById("product-form")?.addEventListener("submit", function (e)
         discount_id: document.getElementById("discount_id").value,
         is_active: document.getElementById("is_active").checked ? 1 : 0
     };
-    products.push(newProduct);
+
+    if (isEditing) {
+        // Cập nhật sản phẩm
+        const index = products.findIndex(p => p.product_id === formData.product_id);
+        if (index !== -1) {
+            products[index] = {...products[index], ...formData};
+            alert("Đã cập nhật sản phẩm thành công!");
+        }
+    } else {
+        // Thêm sản phẩm mới
+        products.push(formData);
+        alert("Đã thêm sản phẩm mới!");
+    }
+
     loadProducts();
-    alert("\u0110\u00e3 th\u00eam s\u1ea3n ph\u1ea9m m\u1edbi!");
     this.reset();
     document.getElementById("is_active").checked = true;
+    document.getElementById("product_id").readOnly = false;
     $('#addProductModal').modal('hide');
+    isEditing = false;
 });
 
-
+$('#addProductModal').on('hidden.bs.modal', function () {
+    document.getElementById("product-form").reset();
+    document.getElementById("product_id").readOnly = false;
+    document.querySelector('#addProductModal .modal-title').textContent = 'Thêm sản phẩm mới';
+    document.querySelector('#addProductModal button[type="submit"]').textContent = 'Lưu sản phẩm';
+    isEditing = false;
+});
 
 // ==================== SỰ KIỆN CLICK VÀO DÒNG ====================
-document.addEventListener("DOMContentLoaded", () => {
-    renderProductList();
-    populateSelect("color_id", color, "màu");
-    populateSelect("category_id", categories, "loại");
-    populateSelect("brand_id", brands, "thương hiệu");
-    populateSelect("discount_id", discounts, "giảm giá");
-
-});
-
 $(document).on("click", "#product-list tr", function () {
     const productId = $(this).data("product-id");
     console.log("Clicked sản phẩm:", productId);
@@ -193,3 +316,73 @@ $(document).on("click", "#product-list tr", function () {
     $("#sanpham-content").hide();
     $("#product-option-content").show();
 });
+
+// ==================== HANDLER FUNCTIONS ====================
+function editProduct(productId) {
+    event.stopPropagation();
+    isEditing = true;
+    
+    // Tìm sản phẩm trong mảng products
+    const product = products.find(p => p.product_id === productId);
+    if (product) {
+        // Thay đổi tiêu đề modal
+        document.querySelector('#addProductModal .modal-title').textContent = 'Chỉnh sửa sản phẩm';
+        document.querySelector('#addProductModal button[type="submit"]').textContent = 'Cập nhật';
+        
+        // Điền thông tin vào form
+        document.getElementById('product_id').value = product.product_id;
+        document.getElementById('product_id').readOnly = true; // Không cho sửa mã sản phẩm
+        document.getElementById('product_name').value = product.product_name;
+        document.getElementById('product_detail').value = product.product_detail || '';
+        
+        // Điền các select
+        populateSelect('category_id', categories, 'loại');
+        populateSelect('brand_id', brands, 'thương hiệu');
+        populateSelect('discount_id', discounts, 'giảm giá');
+        
+        // Set selected values
+        document.getElementById('category_id').value = product.category_id;
+        document.getElementById('brand_id').value = product.brand_id;
+        document.getElementById('discount_id').value = product.discount_id || '';
+        
+        // Set checkbox
+        document.getElementById('is_active').checked = product.is_active === 1;
+        
+        // Mở modal
+        $('#addProductModal').modal('show');
+    }
+}
+
+function deleteProduct(productId) {
+    event.stopPropagation(); // Prevent row click event
+    if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+        // TODO: Implement delete functionality
+        console.log('Delete product:', productId);
+    }
+}
+
+function editProductOption(button) {
+    const row = button.closest('tr');
+    const optionId = row.cells[0].textContent;
+    // Lấy dữ liệu từ row và điền vào modal
+    $('#newOptionId').val(optionId);
+    $('#color_id').val(row.cells[1].textContent);
+    $('#newOptionSize').val(row.cells[2].textContent);
+    $('#newOptionQuantity').val(row.cells[3].textContent);
+    $('#newOptionPrice').val(row.cells[4].textContent);
+    $('#newOptionDiscountId').val(row.cells[5].textContent.replace('%', ''));
+    $('#newOptionIsActive').prop('checked', row.cells[7].querySelector('.badge-success') !== null);
+
+    // Mở modal chỉnh sửa
+    $('#addOptionModal').modal('show');
+}
+
+function deleteProductOption(button) {
+    if (confirm('Bạn có chắc chắn muốn xoá mẫu sản phẩm này?')) {
+        const row = button.closest('tr');
+        const optionId = row.cells[0].textContent;
+        // Thực hiện call API xoá mẫu sản phẩm
+        // TODO: Implement API call
+        row.remove();
+    }
+}

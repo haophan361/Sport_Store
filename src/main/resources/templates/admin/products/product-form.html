@@ -1,0 +1,31 @@
+<!-- Color Dropdown -->
+<div class="dropdown color-dropdown">
+    <button class="btn btn-light dropdown-toggle" type="button" id="colorDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Màu (Color)
+    </button>
+    <div class="dropdown-menu w-100" aria-labelledby="colorDropdown">
+        <a class="dropdown-item" href="#">
+            Đỏ
+            <button class="btn btn-danger btn-sm" onclick="removeColor(this)">
+                <i class="fas fa-trash"></i>
+            </button>
+        </a>
+        <a class="dropdown-item" href="#">
+            Xanh
+            <button class="btn btn-danger btn-sm" onclick="removeColor(this)">
+                <i class="fas fa-trash"></i>
+            </button>
+        </a>
+        <a class="dropdown-item" href="#">
+            Cam
+            <button class="btn btn-danger btn-sm" onclick="removeColor(this)">
+                <i class="fas fa-trash"></i>
+            </button>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-primary add-new-color" href="#" onclick="addNewColor()">
+            <i class="fas fa-plus"></i>
+            Thêm màu mới
+        </a>
+    </div>
+</div>
