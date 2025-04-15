@@ -1,5 +1,6 @@
 package com.sport_store.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class Discounts {
     private LocalDateTime discount_end_date;
     private boolean is_active;
     @ToString.Exclude
+    @JsonIgnore
     @OneToMany(mappedBy = "discounts")
     List<Product_Options> product_options;
 }

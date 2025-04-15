@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface color_Repository extends JpaRepository<Colors, Integer> {
-
+    
 }

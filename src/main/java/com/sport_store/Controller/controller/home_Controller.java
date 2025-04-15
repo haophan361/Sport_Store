@@ -1,4 +1,4 @@
-package com.sport_store.Controller.web;
+package com.sport_store.Controller.controller;
 
 import com.sport_store.DTO.response.product_Response.product_shop_Response;
 import com.sport_store.Entity.Product_Options;

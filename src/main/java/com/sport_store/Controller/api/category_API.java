@@ -1,15 +1,14 @@
 package com.sport_store.Controller.api;
 
+import com.sport_store.Entity.Categories;
 import com.sport_store.Service.category_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +26,10 @@ public class category_API {
     public ResponseEntity<?> delete_category(@RequestBody String category_id) {
         category_service.deleteCategory(category_id);
         return ResponseEntity.ok(Collections.singletonMap("message", "Xóa loại sản phẩm thành công"));
+    }
+
+    @GetMapping("/getAllCategory")
+    public List<Categories> getAllCategory() {
+        return category_service.getAllCategories();
     }
 }

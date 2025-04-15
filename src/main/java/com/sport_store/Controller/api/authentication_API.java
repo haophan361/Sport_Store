@@ -91,7 +91,7 @@ public class authentication_API {
                                    HttpServletResponse httpServletResponse) throws Exception {
         authentication_response response = authentication_service.authenticate(request, false);
         HttpSession session = httpServletRequest.getSession();
-        loadUser.CustomerSession(session, response);
+        loadUser.userSession(session, response);
 
         SignedJWT signedJWT = authentication_service.verifyToken(response.getToken(), false);
         Tokens tokensEntity = Tokens.builder()
@@ -149,7 +149,7 @@ public class authentication_API {
         }
     }
 
-    @PostMapping("/refresh")
+    @PutMapping("/refresh")
     public ResponseEntity<refreshToken_response> refreshToken(@CookieValue("token") String token, HttpServletResponse httpServletResponse) throws ParseException, JOSEException {
         String new_token = authentication_service.refreshToken(token);
         Cookie new_cookie = cookie_service.create_Cookie(new_token, "token", "/", 3600, true);

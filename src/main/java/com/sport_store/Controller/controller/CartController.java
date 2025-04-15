@@ -1,4 +1,4 @@
-package com.sport_store.Controller.web;
+package com.sport_store.Controller.controller;
 
 import com.sport_store.Util.LoadUser;
 import jakarta.servlet.http.HttpSession;

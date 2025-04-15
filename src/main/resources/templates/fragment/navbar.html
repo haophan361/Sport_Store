@@ -27,30 +27,29 @@
                             </button>
                         </div>
                     </div>
+                    <div class="btn-group mx-2" th:if="${session.role=='ADMIN'}">
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
+                            <b> Quản lý</b>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <button class="dropdown-item" type="button"
+                                    onclick="window.location.href='/admin/dashboard'">
+                                Quản lý nhập hàng
+                            </button>
+                        </div>
+                    </div>
                     <div class="btn-group mx-2" th:if="${session.isLoggedIn==1}">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
                             <b th:text="${session.name}"></b>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button"
+                            <button th:if="${session.role!='ADMIN'}" class="dropdown-item" type="button"
                                     onclick="window.location.href='/form/changeInfoCustomer'">Cập nhật thông tin cá nhân
                             </button>
                             <button class="dropdown-item" type="button"
                                     onclick="window.location.href='/form/changePassword'">Đổi mật khẩu
                             </button>
                             <button class="dropdown-item" type="button" onclick="logout()">Đăng xuất</button>
-                        </div>
-                    </div>
-                    <div class="btn-group mx-2" th:if="${session.role=='ADMIN'}">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
-                            <b> Quản lý cửa hàng</b>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">Quản lý sản phẩm
-                            </button>
-                            <button class="dropdown-item" type="button">Quản lý nhập hàng
-                            </button>
-                            <button class="dropdown-item" type="button">Xem báo cáo thống kê</button>
                         </div>
                     </div>
                 </div>

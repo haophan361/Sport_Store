@@ -19,4 +19,5 @@ public class product_request {
     private String description;
     private String category_id;
     private String brand_id;
+    private boolean active;
 }
