@@ -130,19 +130,44 @@
                 <div class="d-flex align-items-center mb-4 pt-2">
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
-                            <button class="btn btn-primary btn-minus">
+                            <button class="btn btn-primary btn-minus" type="button">
                                 <i class="fa fa-minus"></i>
                             </button>
                         </div>
-                        <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
+                        <input type="text" name="quantity" class="form-control bg-secondary border-0 text-center quantity-input" value="1">
                         <div class="input-group-btn">
-                            <button class="btn btn-primary btn-plus">
+                            <button class="btn btn-primary btn-plus" type="button">
                                 <i class="fa fa-plus"></i>
                             </button>
                         </div>
                     </div>
-                    <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To
-                        Cart
+
+                    <script>
+                        // Xử lý tất cả các nút trừ
+                        document.querySelectorAll('.btn-minus').forEach(function(btn) {
+                            btn.addEventListener('click', function() {
+                                let input = this.closest('.input-group').querySelector('.quantity-input');
+                                let quantity = parseInt(input.value) || 1;
+                                if (quantity > 1) {
+                                    input.value = quantity - 1;
+                                    input.setAttribute("value", input.value);
+                                }
+                            });
+                        });
+
+                        // Xử lý tất cả các nút cộng
+                        document.querySelectorAll('.btn-plus').forEach(function(btn) {
+                            btn.addEventListener('click', function() {
+                                let input = this.closest('.input-group').querySelector('.quantity-input');
+                                let quantity = parseInt(input.value) || 1;
+                                input.value = quantity + 1;
+                                input.setAttribute("value", input.value);
+                            });
+                        });
+                    </script>
+                    <input type="hidden" id="optionProductIdInput" name="optionProductId" th:value="${product.current_option.option_id}" />
+                    <button type="button" class="btn btn-primary px-3" onclick="handleAddToCart()">
+                        <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
                     </button>
                 </div>
             </div>
@@ -390,6 +415,7 @@
 <script th:src="@{/mail/jqBootstrapValidation.min.js}"></script>
 <script th:src="@{/mail/contact.js}"></script>
 <script th:src="@{/js/call_api/product_option/get_currentOption.js}"></script>
+<script th:src="@{/js/call_api/cart/cart.js}"></script>
 <!-- Template Javascript -->
 <script th:src="@{/js/main.js}"></script>
 </body>

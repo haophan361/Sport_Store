@@ -23,8 +23,8 @@ public class color_API {
     }
 
     @GetMapping("/getAllColor")
-    public List<Colors> getAllColor(@RequestParam String product_id) {
-        return product_img_service.getAllColorByProduct(product_id);
+    public List<Colors> getAllColor() {
+        return color_service.getAllColors();
     }
 
 
