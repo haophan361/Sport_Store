@@ -26,27 +26,25 @@
                         </div>
                         <div class="form-group">
                             <label>Màu sắc</label>
-                            <div class="input-group">
-                                <select id="color_id" class="form-control" required>
-                                    <option value="">Chọn màu</option>
-                                    <option value="__add__">➕ Thêm màu mới</option>
-                                </select>
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-info" onclick="handleAddOption('color')">+</button>
-                                </div>
+                            <div class="dropdown border">
+                                <button class="btn btn-white dropdown-toggle w-100 text-left d-flex justify-content-between align-items-center" type="button" id="colorDropdown" data-toggle="dropdown">
+                                    <span>Chọn màu sắc</span>
+                                  </button>
+                              <div class="dropdown-menu w-100" id="color_list">
+                              </div>
                             </div>
+                            <input type="hidden" id="color_id">
                         </div>
-                        <div class="form-group">
-                            <label>Giảm giá</label>
-                            <div class="input-group">
-                                <select id="discount_id" class="form-control">
-                                    <option value="">Không áp dụng</option>
-                                    <option value="__add__">➕ Thêm giảm giá mới</option>
-                                </select>
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-info" onclick="handleAddOption('discount')">+</button>
-                                </div>
+                        <div class="form-group ">
+                            <label>Mã giảm giá</label>
+                            <div class="border dropdown">
+                                <button class="btn btn-white dropdown-toggle w-100 text-left d-flex justify-content-between align-items-center" type="button" id="discountDropdown" data-toggle="dropdown">
+                                    <span>Chọn mã giảm giá</span>
+                                  </button>
+                              <div class="dropdown-menu w-100" id="discount_list">
+                              </div>
                             </div>
+                            <input type="hidden" id="discount_id">
                         </div>
                         <div class="form-group form-check">
                             <input type="checkbox" class="form-check-input" id="newOptionIsActive" checked>
