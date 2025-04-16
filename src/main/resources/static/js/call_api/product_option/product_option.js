@@ -35,6 +35,22 @@ function displayProductOptions(productId) {
 
             $(".main-content").hide();
             container.style.display = "block";
+            if ($.fn.DataTable.isDataTable('#productOptionTable')) {
+                $('#productOptionTable').DataTable().clear().destroy();
+            }
+
+            $('#productOptionTable').DataTable({
+                pageLength: 10,
+                language: {
+                    search: "Tìm kiếm:",
+                    lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+                    info: "Trang _PAGE_ trong tổng số _PAGES_ trang",
+                    paginate: {
+                        previous: "Trước",
+                        next: "Sau"
+                    }
+                }
+            });
         })
 }
 

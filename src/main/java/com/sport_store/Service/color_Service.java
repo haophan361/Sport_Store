@@ -13,6 +13,7 @@ public class color_Service {
     private final color_Repository color_repository;
 
     public Colors saveColor(String color) {
+
         Colors colors = Colors
                 .builder()
                 .color(color)
