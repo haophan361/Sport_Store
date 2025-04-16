@@ -3,60 +3,48 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-warning text-white">
-                    <h5 class="modal-title">Thêm Mẫu Sản Phẩm </h5>
+                    <h5 class="modal-title">Thêm Mẫu Sản Phẩm Mới</h5>
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
-                <form id="productOptionForm" enctype="multipart/form-data" method="POST" th:action="@{/admin/upload-option}">
+                <form id="productOptionForm" enctype="multipart/form-data" method="POST"
+                      th:action="@{/admin/upload-option}">
+                    <input type="hidden" id="selected_product_id">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Option ID</label>
-                            <input type="text" id="newOptionId" class="form-control" required>
+                            <label>Màu (Color)</label>
+                            <select id="color_id" onchange="handleAddOption('color')" class="form-control"></select>
                         </div>
                         <div class="form-group">
                             <label>Kích thước</label>
-                            <input type="text" id="newOptionSize" class="form-control" required>
+                            <input type="text" id="new_option_size" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Số lượng</label>
-                            <input type="number" id="newOptionQuantity" class="form-control" min="0" required>
+                            <input type="number" id="new_quantity" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Giá</label>
-                            <input type="number" id="newOptionPrice" class="form-control" min="0" required>
+                            <input type="number" id="new_price" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>Màu sắc</label>
-                            <div class="dropdown border">
-                                <button class="btn btn-white dropdown-toggle w-100 text-left d-flex justify-content-between align-items-center" type="button" id="colorDropdown" data-toggle="dropdown">
-                                    <span>Chọn màu sắc</span>
-                                  </button>
-                              <div class="dropdown-menu w-100" id="color_list">
-                              </div>
-                            </div>
-                            <input type="hidden" id="color_id">
-                        </div>
-                        <div class="form-group ">
                             <label>Mã giảm giá</label>
-                            <div class="border dropdown">
-                                <button class="btn btn-white dropdown-toggle w-100 text-left d-flex justify-content-between align-items-center" type="button" id="discountDropdown" data-toggle="dropdown">
-                                    <span>Chọn mã giảm giá</span>
-                                  </button>
-                              <div class="dropdown-menu w-100" id="discount_list">
-                              </div>
-                            </div>
-                            <input type="hidden" id="discount_id">
-                        </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="newOptionIsActive" checked>
-                            <label class="form-check-label">Kích hoạt</label>
+                            <select id="discount_id" class="form-control"
+                                    onchange="handleAddOption('discount')"></select>
                         </div>
                         <div class="form-group">
                             <label>Hình ảnh</label>
-                            <input type="file" class="form-control-file" id="newOptionImages" multiple>
+                            <input type="file" class="form-control-file" id="new_option_image" accept="image/*"
+                                   multiple>
+                        </div>
+                        <div id="imagePreview" class="mt-2 d-flex flex-wrap gap-2"></div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="newOptionIsActive" checked>
+                            <label class="form-check-label">Kích hoạt</label>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-warning text-white">Lưu</button>
+                        <button type="button" class="btn btn-info" onclick="saveProductOption()">Lưu Mẫu Sản Phẩm
+                        </button>
                     </div>
                 </form>
             </div>
