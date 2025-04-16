@@ -1,6 +1,3 @@
-let discounts = ["DC01", "DC02"];
-
-
 function populateSelect(id, list, label, valueKey, displayKey) {
     const select = document.getElementById(id);
     select.innerHTML = `<option value="">-- Chọn ${label} --</option>`;

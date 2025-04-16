@@ -5,19 +5,16 @@ import com.sport_store.Entity.Customers;
 import com.sport_store.Entity.Product_Options;
 import com.sport_store.Service.CartService;
 import com.sport_store.Service.customer_Service;
-import com.sport_store.Service.product_Service;
 import com.sport_store.Service.product_option_Service;
 import com.sport_store.Util.LoadUser;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,7 +66,7 @@ public class CartController {
             return "redirect:/web/form_login";
         }
         Customers customers = customerService.finbyId(customer_id);
-        Product_Options product_options = productOptionService.getProductOptionsById(option_id);
+        Product_Options product_options = productOptionService.getProduct_Option(option_id);
         Carts carts = cartService.findCart(customers, product_options);
 
         if (carts != null) {
@@ -98,7 +95,7 @@ public class CartController {
                 cartService.updateCart(cart);
             }
             //else {
-                //cartService.delete(cart);
+            //cartService.delete(cart);
             //}
         }
         shop(model, session);
