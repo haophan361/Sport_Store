@@ -1,5 +1,6 @@
 package com.sport_store.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,8 +33,12 @@ public class Product_Options {
     @ManyToOne
     @JoinColumn(name = "discount_id")
     private Discounts discounts;
+    @ToString.Exclude
+    @JsonIgnore
     @OneToMany(mappedBy = "product_options")
     private List<Carts> carts;
     @OneToMany(mappedBy = "product_options")
+    @JsonIgnore
+    @ToString.Exclude
     private List<Bill_Details> bill_details;
 }

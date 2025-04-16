@@ -6,34 +6,16 @@
             </strong> -
             <span id="selected-bill-id" class="font-weight-bold"></span>
         </div>
-        <div class="col-md-5 mb-0 pl-0">
-            <div class="input-group">
-                <div class="input-group-prepend">
-            <span class="input-group-text bg-light">
-              <i class="fas fa-search text-primary"></i>
-            </span>
-                </div>
-                <input
-                        type="text"
-                        id="detail-search-keyword"
-                        class="form-control"
-                        placeholder="Tìm sản phẩm theo mã, tên..."
-                >
-                <div class="input-group-append">
-                    <button class="btn btn-primary" onclick="searchDetailProduct()">
-                        Tìm kiếm
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="card-body">
-        <table class="table table-bordered table-hover">
+        <table id="billSupplyDetailTable" class="table table-bordered table-hover">
             <thead class="thead-light">
             <tr>
-                <th>Mã</th>
+                <th>Mã chi tiết hóa đơn</th>
                 <th>Tên sản phẩm</th>
-                <th>Phân loại</th>
+                <th>Mã mẫu SP</th>
+                <th>Màu sắc</th>
+                <th>Size</th>
                 <th>Số lượng</th>
                 <th>Đơn giá</th>
                 <th>Thành tiền</th>
@@ -44,16 +26,16 @@
             <tr>
                 <td colspan="4"></td>
                 <td class="font-weight-bold text-right">Tổng cộng:</td>
-                <td class="font-weight-bold text-primary" id="detail-total-amount">1.250.000 ₫</td>
+                <td class="font-weight-bold text-primary" id="detail-total-amount"></td>
             </tr>
             </tfoot>
         </table>
     </div>
     <div class="card-footer bg-light d-flex justify-content-end">
-        <button class="btn btn-secondary mr-2" onclick="closeBillDetail()">
+        <button type="button" class="btn btn-secondary mr-2" onclick="closeBillDetail()">
             <i class="fas fa-times mr-1"></i> Đóng
         </button>
-        <button class="btn btn-info" onclick="printBillDetail()">
+        <button type="button" class="btn btn-info" onclick="printBillDetail()">
             <i class="fas fa-print mr-1"></i> In phiếu
         </button>
     </div>
