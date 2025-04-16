@@ -103,4 +103,8 @@ public class product_option_Service {
     public Product_Options getProduct_OptionBySize_ProductId_Color(String product_id, String color, String size) {
         return product_option_repository.getProduct_OptionBySize_ProductId_Color(product_id, color, size);
     }
+
+    public Product_Options getProductOptionsById(int optionId) {
+        return product_option_repository.findById(optionId).orElse(null);
+    }
 }
