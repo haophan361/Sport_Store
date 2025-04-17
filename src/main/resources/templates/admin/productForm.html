@@ -1,0 +1,59 @@
+<!-- Phần dropdown cho loại sản phẩm -->
+<div class="form-group">
+    <label for="categorySelect">Loại sản phẩm</label>
+    <div class="dropdown">
+        <input type="text" class="form-control" id="categoryInput" readonly data-toggle="dropdown">
+        <div class="dropdown-menu w-100" id="categoryDropdown">
+            <template id="categoryItemTemplate">
+                <a class="dropdown-item">
+                    <span class="item-text"></span>
+                    <button type="button" class="btn btn-danger btn-sm delete-btn">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </a>
+            </template>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-primary" id="addNewCategory">
+                <i class="fas fa-plus"></i> Thêm loại mới
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryInput = document.getElementById('categoryInput');
+    const categoryDropdown = document.getElementById('categoryDropdown');
+    const categoryTemplate = document.getElementById('categoryItemTemplate');
+    
+    function createCategoryItem(category) {
+        const item = categoryTemplate.content.cloneNode(true);
+        const itemText = item.querySelector('.item-text');
+        const deleteBtn = item.querySelector('.delete-btn');
+        
+        itemText.textContent = category;
+        
+        // Xử lý khi chọn category
+        item.querySelector('.dropdown-item').addEventListener('click', function(e) {
+            if (e.target.closest('.delete-btn')) return;
+            categoryInput.value = category;
+        });
+        
+        // Xử lý khi xóa category
+        deleteBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (confirm('Bạn có chắc muốn xóa loại sản phẩm này?')) {
+                // Thêm code xử lý xóa category ở đây
+                this.closest('.dropdown-item').remove();
+            }
+        });
+        
+        return item;
+    }
+    
+    // Thêm các category mẫu
+    ['CAT01', 'CAT02'].forEach(category => {
+        categoryDropdown.insertBefore(createCategoryItem(category), categoryDropdown.lastElementChild.previousElementSibling);
+    });
+});
+</script>
