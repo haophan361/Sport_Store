@@ -125,7 +125,7 @@
                         <h5>Total</h5>
                         <span th:text="${totalAmount + '.000 VNĐ'}"></span>
                     </div>
-                    <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
+                    <a th:href="@{/customer/checkout}" class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</a>
                 </div>
             </div>
         </div>
