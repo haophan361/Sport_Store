@@ -4,6 +4,6 @@ function changePassword() {
         confirm_password: document.getElementById("confirm_password").value,
         old_password: document.getElementById("old_password").value
     }
-    apiRequest("/user/changePassword", "POST", {'Content-type': 'application/json'}, JSON.stringify(form_changePassword)
+    apiRequest("/user/changePassword", "PUT", {'Content-type': 'application/json'}, JSON.stringify(form_changePassword)
         , "/", null, "include")
 }

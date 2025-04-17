@@ -42,7 +42,7 @@ setInterval(() => {
 function refreshToken() {
     fetch("/refresh",
         {
-            method: "POST",
+            method: "PUT",
             credentials: "include"
         })
         .then(response => {

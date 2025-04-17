@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface category_Repository extends JpaRepository<Categories, String> {
+public interface category_Repository extends JpaRepository<Categories, Integer> {
     @Query("SELECT c.category_name FROM Categories c")
     public List<String> getAllCategories();
 }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface token_Repository extends JpaRepository<Tokens, Integer> {
+public interface token_Repository extends JpaRepository<Tokens, String> {
 
     @Query("SELECT t FROM Tokens  t WHERE t.token_expiration_time < :expirationTime")
     public List<Tokens> findTokenByExpirationTime(@Param("expirationTime") LocalDateTime expirationTime);
