@@ -14,6 +14,9 @@ function fetchProduct() {
 // ==================== TẢI SẢN PHẨM ====================
 function loadProducts(data) {
     const tbody = document.getElementById("product-list");
+    if ($.fn.DataTable.isDataTable('#productTable')) {
+        $('#productTable').DataTable().clear().destroy();
+    }
     tbody.innerHTML = "";
     data.forEach(p => {
         const row = `
@@ -31,12 +34,7 @@ function loadProducts(data) {
         `;
         tbody.insertAdjacentHTML("beforeend", row);
     });
-
-    if ($.fn.DataTable.isDataTable('#selectedOptionTable')) {
-        $('#selectedOptionTable').DataTable().clear().destroy();
-    }
-
-    $('#selectedOptionTable').DataTable({
+    $('#productTable').DataTable({
         pageLength: 10,
         language: {
             search: "Tìm kiếm:",

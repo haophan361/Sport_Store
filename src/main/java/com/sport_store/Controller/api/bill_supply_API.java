@@ -1,6 +1,7 @@
 package com.sport_store.Controller.api;
 
 import com.sport_store.DTO.request.bill_supply_Request.bill_supply_Request;
+import com.sport_store.DTO.response.bill_supply_Response.bill_supply_Response;
 import com.sport_store.DTO.response.product_option_Response.product_option_bill_supply_Response;
 import com.sport_store.Entity.Bill_Supplies;
 import com.sport_store.Entity.Product_Options;
@@ -30,8 +31,22 @@ public class bill_supply_API {
     }
 
     @GetMapping("/getAllBillSupply")
-    public List<Bill_Supplies> getAllBillSupply() {
-        return bill_supply_service.getAllBillSupply();
+    public List<bill_supply_Response> getAllBillSupply() {
+        List<Bill_Supplies> bill_supplies = bill_supply_service.getAllBillSupply();
+        List<bill_supply_Response> responses = new ArrayList<>();
+        for (Bill_Supplies bill_supply : bill_supplies) {
+            bill_supply_Response response = bill_supply_Response
+                    .builder()
+                    .bill_supply_id(bill_supply.getBill_supply_id())
+                    .supplier_name(bill_supply.getSupplier_name())
+                    .supplier_phone(bill_supply.getSupplier_phone())
+                    .supplier_address(bill_supply.getSupplier_address())
+                    .bill_supply_cost(bill_supply.getBill_supply_cost())
+                    .bill_supply_date(bill_supply.getBill_supply_date())
+                    .build();
+            responses.add(response);
+        }
+        return responses;
     }
 
     @GetMapping("/getOption_BillSupply")

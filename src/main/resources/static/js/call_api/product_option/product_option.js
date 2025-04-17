@@ -7,11 +7,15 @@ function fetchProductOption(product_id) {
         })
 }
 
+
 function displayProductOptions(productId) {
     fetchProductOption(productId)
         .then(options => {
             if (!Array.isArray(options)) {
                 options = [];
+            }
+            if ($.fn.DataTable.isDataTable('#productOptionTable')) {
+                $('#productOptionTable').DataTable().clear().destroy();
             }
             const tbody = document.querySelector('#productOptionTable tbody');
             const container = document.getElementById("product-option-content");
@@ -35,10 +39,6 @@ function displayProductOptions(productId) {
 
             $(".main-content").hide();
             container.style.display = "block";
-            if ($.fn.DataTable.isDataTable('#productOptionTable')) {
-                $('#productOptionTable').DataTable().clear().destroy();
-            }
-
             $('#productOptionTable').DataTable({
                 pageLength: 10,
                 language: {
