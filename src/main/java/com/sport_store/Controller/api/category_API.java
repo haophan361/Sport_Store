@@ -23,7 +23,7 @@ public class category_API {
     }
 
     @PostMapping("/admin/delete_category")
-    public ResponseEntity<?> delete_category(@RequestBody String category_id) {
+    public ResponseEntity<?> delete_category(@RequestBody Integer category_id) {
         category_service.deleteCategory(category_id);
         return ResponseEntity.ok(Collections.singletonMap("message", "Xóa loại sản phẩm thành công"));
     }

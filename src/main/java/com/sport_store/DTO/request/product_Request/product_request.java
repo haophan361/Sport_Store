@@ -22,10 +22,10 @@ public class product_request {
     private String description;
 
     @NotBlank(message = "Loại sản phẩm không được để trống")
-    private String category_id;
+    private Integer category_id;
 
     @NotBlank(message = "Thương hiệu không được để trống")
-    private String brand_id;
+    private Integer brand_id;
 
     private boolean active;
 }
