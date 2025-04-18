@@ -3,6 +3,7 @@ package com.sport_store.Service;
 import com.sport_store.Entity.*;
 import com.sport_store.Repository.bill_details_Repository;
 import com.sport_store.Repository.bills_Repository;
+import com.sport_store.Repository.CouponRepository;
 import com.sport_store.Repository.product_option_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,10 @@ public class bills_Service {
     private final info_receiver_Service info_receiver_service;
     private final CartService cart_service;
     private final product_option_Repository product_option_repository;
+    private final CouponRepository couponRepository;
 
     @Transactional
-    public Bills create_bill(String customer_id, String receiver_id, List<Carts> carts) {
+    public Bills create_bill(String customer_id, String receiver_id, List<Carts> carts, String coupon_id) {
         Customers customer = customer_service.finbyId(customer_id);
         Receiver_Info receiver = info_receiver_service.get_receiver_by_id(receiver_id);
         
@@ -42,6 +44,19 @@ public class bills_Service {
                 .is_active(true)
                 .receivers(receiver)
                 .build();
+
+        // Nếu có coupon ID, tìm và gán vào bill
+        if (coupon_id != null && !coupon_id.isEmpty()) {
+            try {
+                Coupons coupon = couponRepository.findById(coupon_id).orElse(null);
+                if (coupon != null) {
+                    bill.setCoupons(coupon);
+                }
+            } catch (Exception e) {
+                // Log lỗi nếu cần
+                System.out.println("Error finding coupon: " + e.getMessage());
+            }
+        }
 
         // Save the bill first to ensure it has an ID
         bill = bills_repository.save(bill);
@@ -69,6 +84,13 @@ public class bills_Service {
             total_cost = total_cost.add(cost.multiply(BigDecimal.valueOf(quantity)));
         }
 
+        // Tính toán giảm giá nếu có coupon
+        if (bill.getCoupons() != null) {
+            int discount_percentage = bill.getCoupons().getCoupon_percentage();
+            BigDecimal discount_amount = total_cost.multiply(BigDecimal.valueOf(discount_percentage)).divide(BigDecimal.valueOf(100));
+            total_cost = total_cost.subtract(discount_amount);
+        }
+
         // Update bill with total cost and details
         bill.setBill_total_cost(total_cost);
         bill.setBill_details(bill_details);
@@ -78,6 +100,11 @@ public class bills_Service {
         cart_service.deleteAllByCustomer(customer);
 
         return bill;
+    }
+
+    @Transactional
+    public Bills create_bill(String customer_id, String receiver_id, List<Carts> carts) {
+        return create_bill(customer_id, receiver_id, carts, null);
     }
 
     public Bills get_bill_by_id(String bill_id) {

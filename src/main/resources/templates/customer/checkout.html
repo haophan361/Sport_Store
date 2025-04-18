@@ -55,6 +55,7 @@
             <div class="bg-light p-30 mb-5">
                 <div class="row">
                     <input type="hidden" id="customerId" th:value="${customerId}">
+                    <input type="hidden" id="appliedCouponId" th:value="${appliedCoupon != null ? appliedCoupon.coupon_id : ''}">
                     <div class="col-md-12 form-group">
                         <label>Select Receiver Information</label>
                         <select class="form-control" id="receiverSelect">
@@ -143,17 +144,21 @@
                 <div class="border-bottom pt-3 pb-2">
                     <div class="d-flex justify-content-between mb-3">
                         <h6>Subtotal</h6>
-                        <h6 th:text="${totalAmount + '00 VNĐ'}"></h6>
+                        <h6 th:text="${totalAmount + '.000 VNĐ'}"></h6>
                     </div>
                     <div class="d-flex justify-content-between">
                         <h6 class="font-weight-medium">Shipping</h6>
-                        <h6 class="font-weight-medium">$10</h6>
+                        <h6 class="font-weight-medium">Free</h6>
+                    </div>
+                    <div th:if="${appliedCoupon}" class="d-flex justify-content-between">
+                        <h6 class="font-weight-medium">Coupon Discount (<span th:text="${appliedCoupon.coupon_id}"></span> - <span th:text="${appliedCoupon.coupon_percentage}"></span>%)</h6>
+                        <h6 class="font-weight-medium" th:text="${discountAmount + '.000 VNĐ'}"></h6>
                     </div>
                 </div>
                 <div class="pt-2">
                     <div class="d-flex justify-content-between mt-2">
                         <h5>Total</h5>
-                        <h5 th:text="${totalAmount + '.000 VNĐ'}"></h5>
+                        <h5 th:text="${finalTotal + '.000 VNĐ'}"></h5>
                     </div>
                 </div>
             </div>
@@ -325,7 +330,8 @@
                 data: JSON.stringify({
                     customer_id: customerId,
                     receiver_id: receiverId,
-                    cart_items: cartItems
+                    cart_items: cartItems,
+                    coupon_id: $('#appliedCouponId').val() || null
                 }),
                 success: function(response) {
                     if (response && response.bill_id) {

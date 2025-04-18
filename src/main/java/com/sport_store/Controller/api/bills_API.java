@@ -22,6 +22,7 @@ public class bills_API {
         try {
             String customerId = (String) requestData.get("customer_id");
             String receiverId = (String) requestData.get("receiver_id");
+            String couponId = (String) requestData.get("coupon_id");
             List<Map<String, Object>> cartItemsData = (List<Map<String, Object>>) requestData.get("cart_items");
             
             if (customerId == null || receiverId == null || cartItemsData == null) {
@@ -29,10 +30,9 @@ public class bills_API {
             }
             
             // Convert cart items data to Carts objects
-            // This is a simplified approach - you may need to adjust based on your actual data structure
             List<Carts> cartItems = bills_service.convertToCartItems(customerId, cartItemsData);
             
-            Bills bill = bills_service.create_bill(customerId, receiverId, cartItems);
+            Bills bill = bills_service.create_bill(customerId, receiverId, cartItems, couponId);
             if (bill != null) {
                 return ResponseEntity.ok(Map.of("bill_id", bill.getBill_id()));
             } else {
@@ -58,9 +58,8 @@ public class bills_API {
     public String orderConfirmation(@PathVariable String billId, Model model) {
         Bills bill = bills_service.get_bill_by_id(billId);
         if (bill != null) {
-            model.addAttribute("successMessage", "Đặt hàng thành công!");
-            model.addAttribute("billId", billId);
-            return "redirect:/home";
+            model.addAttribute("bill", bill);
+            return "customer/orderconfirmation";
         }
         return "redirect:/customer/cart";
     }
