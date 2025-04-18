@@ -45,7 +45,7 @@
                                 Coupon Applied: <span th:text="${bill.coupons.coupon_id}"></span>
                                 (<span th:text="${bill.coupons.coupon_percentage}"></span>% off)
                             </p>
-                            <p>Total Amount: <span th:text="${bill.bill_total_cost + '.000 VNĐ'}"></span></p>
+                            <p>Total Amount: <span th:text="${bill.bill_total_cost + '0 VNĐ'}"></span></p>
                             <p>Payment Status: <span th:text="${bill.bill_status_payment ? 'Paid' : 'Pending'}"></span></p>
                         </div>
                         <div class="col-md-6">
@@ -78,8 +78,8 @@
                                     <td th:text="${item.product_options.option_size}"></td>
                                     <td th:text="${item.product_options.colors.color}"></td>
                                     <td th:text="${item.product_quantity}"></td>
-                                    <td th:text="${item.product_cost + '.000 VNĐ'}"></td>
-                                    <td th:text="${item.product_cost * item.product_quantity + '.000 VNĐ'}"></td>
+                                    <td th:text="${item.product_cost + '0 VNĐ'}"></td>
+                                    <td th:text="${item.product_cost * item.product_quantity + '0 VNĐ'}"></td>
                                 </tr>
                             </tbody>
                             <tfoot class="font-weight-bold">
@@ -87,8 +87,7 @@
                                     <td colspan="5" class="text-right"><strong>Subtotal:</strong></td>
                                     <td>
                                         <!-- Tính tổng phụ bằng cách cộng tất cả giá trị sản phẩm -->
-                                        <span th:with="subtotal = ${bill.bill_details.stream().map(item -> item.product_cost.multiply(new java.math.BigDecimal(item.product_quantity))).reduce(java.math.BigDecimal.ZERO, (a, b) -> a.add(b))}" 
-                                              th:text="${subtotal + '.000 VNĐ'}"></span>
+                                        <span th:text="${bill.bill_total_cost + '0 VNĐ'}"></span>
                                     </td>
                                 </tr>
                                 <!-- Hiển thị thông tin coupon nếu có -->
@@ -102,12 +101,12 @@
                                         <!-- Tính số tiền giảm giá -->
                                         <span th:with="subtotal = ${bill.bill_details.stream().map(item -> item.product_cost.multiply(new java.math.BigDecimal(item.product_quantity))).reduce(java.math.BigDecimal.ZERO, (a, b) -> a.add(b))},
                                                      discount = ${subtotal.multiply(new java.math.BigDecimal(bill.coupons.coupon_percentage)).divide(new java.math.BigDecimal(100))}" 
-                                              th:text="${'-' + discount + '.000 VNĐ'}" class="text-danger"></span>
+                                              th:text="${'-' + discount + '0 VNĐ'}" class="text-danger"></span>
                                     </td>
                                 </tr>
                                 <tr class="bg-primary text-white">
                                     <td colspan="5" class="text-right"><strong>Final Total:</strong></td>
-                                    <td><strong th:text="${bill.bill_total_cost + '.000 VNĐ'}"></strong></td>
+                                    <td><strong th:text="${bill.bill_total_cost + '0 VNĐ'}"></strong></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -128,7 +127,7 @@
                                     <strong>Discount Amount:</strong> <span th:with="subtotal = ${bill.bill_details.stream().map(item -> item.product_cost.multiply(new java.math.BigDecimal(item.product_quantity))).reduce(java.math.BigDecimal.ZERO, (a, b) -> a.add(b))}, discount = ${subtotal.multiply(new java.math.BigDecimal(bill.coupons.coupon_percentage)).divide(new java.math.BigDecimal(100))}" th:text="${discount + '.000 VNĐ'}"></span>
                                 </p>
                                 <p class="font-weight-bold">
-                                    <strong>Final Total:</strong> <span th:text="${bill.bill_total_cost + '.000 VNĐ'}"></span>
+                                    <strong>Final Total:</strong> <span th:text="${bill.bill_total_cost + '0 VNĐ'}"></span>
                                 </p>
                             </div>
                             <div class="col-md-4">
