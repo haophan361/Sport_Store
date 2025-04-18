@@ -113,6 +113,15 @@ public class bills_Service {
     public List<Bills> get_bills_by_customer_id(String customer_id) {
         return bills_repository.findByReceivers_Customers_Customer_id(customer_id);
     }
+
+    /**
+     * Update a bill in the database
+     * @param bill The bill to update
+     * @return The updated bill
+     */
+    public Bills updateBill(Bills bill) {
+        return bills_repository.save(bill);
+    }
     
     /**
      * Convert cart items data from frontend to Carts objects

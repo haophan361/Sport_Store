@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequiredArgsConstructor
@@ -62,5 +63,59 @@ public class OrderController {
             return "customer/orderconfirmation";
         }
         return "redirect:/customer/cart";
+    }
+
+    @GetMapping("/customer/bills")
+    public String customerBills(Model model, HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        if (customerId == null) {
+            return "redirect:/web/form_login";
+        }
+        
+        List<Bills> bills = billsService.get_bills_by_customer_id(customerId);
+        model.addAttribute("bills", bills);
+        return "customer/bill-list";
+    }
+
+    @GetMapping("/customer/bill-detail/{billId}")
+    public String billDetail(@PathVariable String billId, Model model, HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        if (customerId == null) {
+            return "redirect:/web/form_login";
+        }
+        
+        Bills bill = billsService.get_bill_by_id(billId);
+        
+        // Check if bill exists and belongs to the current customer
+        if (bill == null || !bill.getReceivers().getCustomers().getCustomer_id().equals(customerId)) {
+            return "redirect:/customer/bills";
+        }
+        
+        model.addAttribute("bill", bill);
+        return "customer/order-detail";
+    }
+
+    @PostMapping("/customer/cancel-order")
+    public String cancelOrder(@RequestParam("billId") String billId, HttpSession session, Model model) {
+        String customerId = (String) session.getAttribute("customerId");
+        if (customerId == null) {
+            return "redirect:/web/form_login";
+        }
+        
+        Bills bill = billsService.get_bill_by_id(billId);
+        
+        // Verify the bill belongs to this customer and can be canceled
+        if (bill != null && bill.getReceivers().getCustomers().getCustomer_id().equals(customerId) 
+            && bill.is_active() && bill.getEmployees() == null) {
+            
+            // Set inactive without setting employee
+            bill.set_active(false);
+            billsService.updateBill(bill);
+            model.addAttribute("cancelSuccess", true);
+        } else {
+            model.addAttribute("cancelError", "Không thể hủy đơn hàng. Vui lòng kiểm tra lại.");
+        }
+        
+        return "redirect:/customer/bills";
     }
 } 
