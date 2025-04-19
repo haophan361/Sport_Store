@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +40,20 @@ public class CouponService {
             coupon.setCoupon_attempts_left(coupon.getCoupon_attempts_left() - 1);
             couponRepository.save(coupon);
         }
+    }
+    
+    // Lấy tất cả mã giảm giá
+    public List<Coupons> getAllCoupons() {
+        return couponRepository.findAll();
+    }
+    
+    // Lưu mã giảm giá mới hoặc cập nhật mã giảm giá hiện có
+    public void saveCoupon(Coupons coupon) {
+        couponRepository.save(coupon);
+    }
+    
+    // Xóa mã giảm giá theo ID
+    public void deleteCoupon(String couponId) {
+        couponRepository.deleteById(couponId);
     }
 } 
