@@ -1,10 +1,8 @@
 package com.sport_store.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -20,9 +18,13 @@ public class Bill_Supply_Details {
     private String product_name;
     private BigDecimal option_cost;
     private int option_quantity;
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "option_id")
     private Product_Options product_options;
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bill_supply_id")
     private Bill_Supplies bill_supplies;

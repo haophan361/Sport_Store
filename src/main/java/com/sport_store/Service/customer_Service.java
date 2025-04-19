@@ -82,4 +82,8 @@ public class customer_Service {
                         .thenComparing(customerInfo_response::isOnline, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
     }
+
+    public Customers finbyId(String id){
+        return customer_repository.findById(id).orElse(null);
+    }
 }

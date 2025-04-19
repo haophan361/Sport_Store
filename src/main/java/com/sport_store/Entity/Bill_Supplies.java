@@ -1,13 +1,11 @@
 package com.sport_store.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,6 +25,8 @@ public class Bill_Supplies {
     private String supplier_phone;
     private LocalDateTime bill_supply_date;
     private BigDecimal bill_supply_cost;
+    @ToString.Exclude
+    @JsonIgnore
     @OneToMany(mappedBy = "bill_supplies")
     List<Bill_Supply_Details> bill_supply_details;
 }

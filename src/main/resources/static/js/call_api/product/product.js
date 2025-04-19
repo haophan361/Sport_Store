@@ -10,38 +10,55 @@ function fetchProduct() {
         })
 }
 
+
 // ==================== TẢI SẢN PHẨM ====================
 function loadProducts(data) {
     const tbody = document.getElementById("product-list");
     tbody.innerHTML = "";
     data.forEach(p => {
         const row = `
-      <tr data-product-id="${p.product_id}">
-        <td>${p.product_id}</td>
-        <td>${p.product_name}</td>
-        <td>${p.category}</td>
-        <td>${p.brand}</td>
-        <td>
-          <span class="badge ${p.active === true ? 'badge-success' : 'badge-danger'}">
-            ${p.active === true ? 'Đang bán' : 'Ngừng bán'}
-          </span>
-        </td>   
-      </tr>
-    `;
+          <tr data-product-id="${p.product_id}">
+            <td>${p.product_id}</td>
+            <td>${p.product_name}</td>
+            <td>${p.category}</td>
+            <td>${p.brand}</td>
+            <td>
+              <span class="badge ${p.active === true ? 'badge-success' : 'badge-danger'}">
+                ${p.active === true ? 'Đang bán' : 'Ngừng bán'}
+              </span>
+            </td>
+            <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" data-toggle="modal" data-target="#addProductModal">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" title="Xoá">
+                    <i class="bi bi-trash"></i>
+                  </button>
+            </td>
+            
+          </tr>
+        `;
         tbody.insertAdjacentHTML("beforeend", row);
+    });
+
+    if ($.fn.DataTable.isDataTable('#selectedOptionTable')) {
+        $('#selectedOptionTable').DataTable().clear().destroy();
+    }
+
+    $('#selectedOptionTable').DataTable({
+        pageLength: 10,
+        language: {
+            search: "Tìm kiếm:",
+            lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+            info: "Trang _PAGE_ trong tổng số _PAGES_ trang",
+            paginate: {
+                previous: "Trước",
+                next: "Sau"
+            }
+        }
     });
 }
 
-// ==================== TÌM KIẾM SẢN PHẨM ====================
-
-function searchProduct() {
-    const keyword = document.getElementById("search-product-keyword").value.toLowerCase();
-    const filtered = products.filter(p =>
-        p.product_id.toLowerCase().includes(keyword) ||
-        p.product_name.toLowerCase().includes(keyword)
-    );
-    loadProducts(filtered);
-}
 
 // ==================== THÊM SẢN PHẨM MỚI ====================
 function saveProduct() {

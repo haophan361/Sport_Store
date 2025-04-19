@@ -24,6 +24,7 @@ public class LoadUser {
             if (account.getRole().toString().equals("CUSTOMER")) {
                 Customers customer = customer_service.getUserByEmail(account.getEmail());
                 session.setAttribute("name", customer.getCustomer_name());
+                session.setAttribute("customerId", customer.getCustomer_id());
             } else if (account.getRole().toString().equals("EMPLOYEE")) {
                 Employees employee = employee_service.getEmployee(account.getEmail());
                 session.setAttribute("name", employee.getEmployee_name());
@@ -39,16 +40,18 @@ public class LoadUser {
     }
 
     public void refreshUser(HttpSession session) {
-        String email = session.getAttribute("email").toString();
+        String email = (String) session.getAttribute("email");
         if (email != null) {
             Accounts account = account_service.getAccountByEmail(email);
-            if (account != null) {
-                if (account.getRole().toString().equals("CUSTOMER")) {
-                    Customers customer = customer_service.getUserByEmail(email);
-                    session.setAttribute("name", customer.getCustomer_name());
-                }
+            if (account != null && account.getRole().toString().equals("CUSTOMER")) {
+                Customers customer = customer_service.getUserByEmail(email);
+                session.setAttribute("name", customer.getCustomer_name());
+                session.setAttribute("customerId", customer.getCustomer_id());
             }
         }
     }
 
+    public Customers getCustomerByEmail(String email) {
+        return customer_service.getUserByEmail(email);
+    }
 }
