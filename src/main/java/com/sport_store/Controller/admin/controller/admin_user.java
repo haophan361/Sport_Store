@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class admin_user {
     @GetMapping("/admin/manageCustomer")
     public String manageCustomer() {
-        return "admin/manageCustomer";
+        return "admin/user_management/manageCustomer";
     }
 
     @GetMapping("/admin/manageEmployee")
     public String manageEmployee() {
-        return "admin/manageEmployee";
+        return "admin/user_management/manageEmployee";
     }
 }
