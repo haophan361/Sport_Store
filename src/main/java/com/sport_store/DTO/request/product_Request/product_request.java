@@ -17,7 +17,7 @@ public class product_request {
     @NotBlank(message = "Tên sản phẩm không được để trống")
     private String product_name;
     private String description;
-    private String category_id;
-    private String brand_id;
+    private int category_id;
+    private int brand_id;
     private boolean active;
 }

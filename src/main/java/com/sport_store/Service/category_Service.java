@@ -24,7 +24,7 @@ public class category_Service {
         category_repository.save(categories);
     }
 
-    public void deleteCategory(String category_id) {
+    public void deleteCategory(int category_id) {
         category_repository.deleteById(category_id);
     }
 
@@ -32,7 +32,8 @@ public class category_Service {
         return category_repository.findAll();
     }
 
-    public Categories getCategory(String category_id) {
+    public Categories getCategory(int category_id) {
         return category_repository.findById(category_id).orElse(null);
     }
+
 }

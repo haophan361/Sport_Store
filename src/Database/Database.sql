@@ -162,7 +162,7 @@ CREATE TABLE `bill_supplies`(
     `supplier_phone` VARCHAR(10),
     `supplier_address` VARCHAR(300),
     `bill_supply_cost` DECIMAL(10,2),
-    `bill_supply_date` DATETIME
+    `bill_supply_date` DATETIME	
 );
 
 CREATE TABLE `bill_supply_details`(

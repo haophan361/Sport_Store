@@ -111,4 +111,9 @@ public class product_option_Service {
     public List<Product_Options> getAllProduct_Option() {
         return product_option_repository.findAll();
     }
+
+    public List<String> getAllSize() {
+        return product_option_repository.getAllSize();
+    }
+
 }
