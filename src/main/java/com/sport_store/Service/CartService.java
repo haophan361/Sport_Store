@@ -6,6 +6,7 @@ import com.sport_store.Entity.Product_Options;
 import com.sport_store.Repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,5 +38,10 @@ public class CartService {
 
     public void delete(Carts carts) {
         cartRepository.delete(carts);
+    }
+    
+    @Transactional
+    public void deleteAllByCustomer(Customers customers) {
+        cartRepository.deleteByCustomers(customers);
     }
 }

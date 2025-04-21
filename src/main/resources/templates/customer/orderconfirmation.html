@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Order Confirmation</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link th:href="@{/img/favicon.ico}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+    <header th:replace="~{fragment/navbar.html :: navbar}"></header>
+
+    <!-- Order Confirmation Start -->
+    <div class="container-fluid py-5">
+        <div class="row px-xl-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="bg-light p-30 mb-5">
+                    <div class="text-center mb-4">
+                        <h2>Order Confirmation</h2>
+                        <p class="text-success">Your order has been placed successfully!</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Order Details</h5>
+                            <p>Order ID: <span th:text="${bill.bill_id}"></span></p>
+                            <p>Order Date: <span th:text="${#temporals.format(bill.bill_purchase_date, 'dd-MM-yyyy HH:mm')}"></span></p>
+                            <p th:if="${bill.coupons != null}" class="text-primary">
+                                Coupon Applied: <span th:text="${bill.coupons.coupon_id}"></span>
+                                (<span th:text="${bill.coupons.coupon_percentage}"></span>% off)
+                            </p>
+                            <p>Total Amount: <span th:text="${bill.bill_total_cost + '0 VNĐ'}"></span></p>
+                            <p>Payment Status: <span th:text="${bill.bill_status_payment ? 'Paid' : 'Pending'}"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Shipping Details</h5>
+                            <p>Name: <span th:text="${bill.receivers.receiver_name}"></span></p>
+                            <p>Phone: <span th:text="${bill.receivers.receiver_phone}"></span></p>
+                            <p>Address: <span th:text="${bill.receivers.receiver_street + ', ' + 
+                                                      bill.receivers.receiver_ward + ', ' + 
+                                                      bill.receivers.receiver_district + ', ' + 
+                                                      bill.receivers.receiver_city}"></span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5>Order Items</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Size</th>
+                                    <th>Color</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${bill.bill_details}">
+                                    <td th:text="${item.product_name}"></td>
+                                    <td th:text="${item.product_options.option_size}"></td>
+                                    <td th:text="${item.product_options.colors.color}"></td>
+                                    <td th:text="${item.product_quantity}"></td>
+                                    <td th:text="${item.product_cost + '0 VNĐ'}"></td>
+                                    <td th:text="${item.product_cost * item.product_quantity + '0 VNĐ'}"></td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="font-weight-bold">
+                                <tr class="bg-light">
+                                    <td colspan="5" class="text-right"><strong>Subtotal:</strong></td>
+                                    <td>
+                                        <!-- Tính tổng phụ bằng cách cộng tất cả giá trị sản phẩm -->
+                                        <span th:text="${bill.bill_total_cost + '0 VNĐ'}"></span>
+                                    </td>
+                                </tr>
+                                <!-- Hiển thị thông tin coupon nếu có -->
+                                <tr th:if="${bill.coupons != null}" class="bg-light">
+                                    <td colspan="5" class="text-right text-primary">
+                                        <strong>Coupon Applied:</strong> 
+                                        <span th:text="${bill.coupons.coupon_id}"></span> 
+                                        (<span th:text="${bill.coupons.coupon_percentage}"></span>% off)
+                                    </td>
+                                    <td>
+                                        <!-- Tính số tiền giảm giá -->
+                                        <span th:with="subtotal = ${bill.bill_details.stream().map(item -> item.product_cost.multiply(new java.math.BigDecimal(item.product_quantity))).reduce(java.math.BigDecimal.ZERO, (a, b) -> a.add(b))},
+                                                     discount = ${subtotal.multiply(new java.math.BigDecimal(bill.coupons.coupon_percentage)).divide(new java.math.BigDecimal(100))}" 
+                                              th:text="${'-' + discount + '0 VNĐ'}" class="text-danger"></span>
+                                    </td>
+                                </tr>
+                                <tr class="bg-primary text-white">
+                                    <td colspan="5" class="text-right"><strong>Final Total:</strong></td>
+                                    <td><strong th:text="${bill.bill_total_cost + '0 VNĐ'}"></strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <!-- Hiển thị tóm tắt tính toán khi có coupon -->
+                    <div th:if="${bill.coupons != null}" class="mt-4 bg-light p-3 rounded border">
+                        <h5 class="text-primary">Discount Details</h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p>
+                                    <strong>Subtotal:</strong> <span th:with="subtotal = ${bill.bill_details.stream().map(item -> item.product_cost.multiply(new java.math.BigDecimal(item.product_quantity))).reduce(java.math.BigDecimal.ZERO, (a, b) -> a.add(b))}" th:text="${subtotal + '.000 VNĐ'}"></span>
+                                </p>
+                                <p class="text-primary">
+                                    <strong>Coupon Applied:</strong> <span th:text="${bill.coupons.coupon_id}"></span> (<span th:text="${bill.coupons.coupon_percentage}"></span>% off)
+                                </p>
+                                <p class="text-danger">
+                                    <strong>Discount Amount:</strong> <span th:with="subtotal = ${bill.bill_details.stream().map(item -> item.product_cost.multiply(new java.math.BigDecimal(item.product_quantity))).reduce(java.math.BigDecimal.ZERO, (a, b) -> a.add(b))}, discount = ${subtotal.multiply(new java.math.BigDecimal(bill.coupons.coupon_percentage)).divide(new java.math.BigDecimal(100))}" th:text="${discount + '.000 VNĐ'}"></span>
+                                </p>
+                                <p class="font-weight-bold">
+                                    <strong>Final Total:</strong> <span th:text="${bill.bill_total_cost + '0 VNĐ'}"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-success text-white p-3">
+                                    <div class="text-center">
+                                        <h4>You Saved</h4>
+                                        <h3><span th:with="subtotal = ${bill.bill_details.stream().map(item -> item.product_cost.multiply(new java.math.BigDecimal(item.product_quantity))).reduce(java.math.BigDecimal.ZERO, (a, b) -> a.add(b))}, discount = ${subtotal.multiply(new java.math.BigDecimal(bill.coupons.coupon_percentage)).divide(new java.math.BigDecimal(100))}" th:text="${discount + '.000 VNĐ'}"></span></h3>
+                                        <p>with coupon <span th:text="${bill.coupons.coupon_id}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="/" class="btn btn-primary">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Order Confirmation End -->
+
+    <footer th:replace="~{fragment/footer.html :: footer}"></footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/lib/easing/easing.min.js}"></script>
+    <script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+
+    <!-- Template Javascript -->
+    <script th:src="@{/js/main.js}"></script>
+</body>
+
+</html> 

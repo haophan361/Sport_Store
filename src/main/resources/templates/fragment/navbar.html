@@ -47,6 +47,9 @@
                             <button th:if="${session.role!='ADMIN'}" class="dropdown-item" type="button"
                                     onclick="window.location.href='/form/changeInfoCustomer'">Cập nhật thông tin cá nhân
                             </button>
+                            <button th:if="${session.role=='CUSTOMER'}" class="dropdown-item" type="button"
+                                    onclick="window.location.href='/customer/bills'">Lịch sử đơn hàng
+                            </button>
                             <button class="dropdown-item" type="button"
                                     onclick="window.location.href='/form/changePassword'">Đổi mật khẩu
                             </button>
