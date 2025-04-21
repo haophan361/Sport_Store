@@ -12,7 +12,7 @@
 
 <body>
   <!-- Layout cha gọi fragment 'layout', truyền vào phần nội dung là section này -->
-  <div th:replace="~{fragment/layout :: layout(~{::section})}">
+  <div th:replace="~{fragment/layout :: layout(~{::section})}"></div>
     <section>
       <div class="container-fluid main-content" id="nhapkho-content">
         <h1 class="h4 mb-4 text-primary font-weight-bold">Danh sách phiếu nhập</h1>
@@ -51,7 +51,7 @@
           &nbsp;&nbsp; Tổng tiền: <span id="total-cost" class="text-danger font-weight-bold">0 đ</span>
         </div>
       </div>
-  </div>
+  
 
   <div th:replace="~{admin/formBillDetail :: formBillDetail}"></div>
 

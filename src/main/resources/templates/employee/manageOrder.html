@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xử lý đơn hàng - Sport Store</title>
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
+</head>
+<body id="page-top">
+
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav sidebar sidebar-dark accordion" style="background-color: #e7de69;">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/employee/manageOrder}">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Sport Store</div>
+        </a>
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading">GIAO DIỆN</div>
+        <li class="nav-item">
+            <a class="nav-link" href="/employee/manageOrder">
+                <i class="fas fa-boxes"></i><span>Xử lý hóa đơn</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-bell fa-fw"></i>
+                            <span class="badge badge-danger badge-counter">3+</span></a>
+                    </li>
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-envelope fa-fw"></i>
+                            <span class="badge badge-danger badge-counter">7</span></a>
+                    </li>
+                    <div class="topbar-divider d-none d-sm-block"></div>
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                            <img class="img-profile rounded-circle" src="/img/undraw_profile.svg">
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- MAIN CONTENT -->
+            <div class="container-fluid">
+                <h1 class="h4 mb-4 text-primary font-weight-bold">Danh sách đơn hàng</h1>
+
+                <!-- Filter Options -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <select class="form-control" id="orderStatusFilter">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="PENDING">Chờ xử lý</option>
+                                <option value="PROCESSING">Đang xử lý</option>
+                                <option value="SHIPPED">Đã giao</option>
+                                <option value="CANCELLED">Đã hủy</option>
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" onclick="filterOrders()">Lọc</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="ordersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Mã hóa đơn</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Ngày mua</th>
+                                        <th>Ngày xác nhận</th>
+                                        <th>Trạng thái thanh toán</th>
+                                        <th>Ngày nhận</th>
+                                        <th>Trạng thái</th>
+                                        <th>Người nhận</th>
+                                        <th>Nhân viên xử lý</th>
+                                        <th>Mã giảm giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-list">
+                                    <!-- Data will be loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Order Detail Modal -->
+            <div class="modal fade" id="orderDetailModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Chi tiết đơn hàng</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="orderDetails">
+                                <!-- Order details will be loaded here -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" id="btnProcessOrder">Xử lý đơn hàng</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove reference to fakedata.js since we'll keep data in HTML -->
+<!-- Move fakeOrders data inside script tag -->
+<script>
+    const fakeOrders = [
+        {
+            bill_id: "HD001",
+            bill_total_cost: 1500000,
+            bill_purchase_date: "2024-04-20",
+            bill_confirm_date: "2024-04-21", 
+            bill_status_payment: 1,
+            bill_receive_date: "2024-04-22",
+            is_active: 1,
+            receiver_id: "KH001",
+            employee_id: "NV001",
+            coupon_id: "SALE10"
+        },
+        {
+            bill_id: "HD002",
+            bill_total_cost: 2500000,
+            bill_purchase_date: "2024-04-19",
+            bill_confirm_date: null,
+            bill_status_payment: 0,
+            bill_receive_date: null,
+            is_active: 1,
+            receiver_id: "KH002", 
+            employee_id: null,
+            coupon_id: null
+        }
+    ];
+</script>
+
+<!-- Keep other scripts -->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+<script src="/js/sb-admin-2.js"></script>
+<script src="/js/demo/fakedata.js"></script>
+<script src="/js/main.js"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
+<script src="/js/call_api/manage_order/manage_order.js"></script>
+
+</body>
+</html>
