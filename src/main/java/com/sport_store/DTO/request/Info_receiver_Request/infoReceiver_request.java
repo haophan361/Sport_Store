@@ -26,6 +26,7 @@ public class infoReceiver_request {
     private String district;
     @NotBlank(message = "Phường/Xã không được để trống")
     private String ward;
+    @NotBlank(message = "Tên đường không được để trống")
     @Size(max = 100, message = "Chỉ được nhập tối 100 kí tự")
     private String street;
     private Customers customer;

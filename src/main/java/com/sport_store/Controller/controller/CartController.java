@@ -1,9 +1,11 @@
 package com.sport_store.Controller.controller;
 
 import com.sport_store.Entity.Carts;
+import com.sport_store.Entity.Coupons;
 import com.sport_store.Entity.Customers;
 import com.sport_store.Entity.Product_Options;
 import com.sport_store.Service.CartService;
+import com.sport_store.Service.CouponService;
 import com.sport_store.Service.customer_Service;
 import com.sport_store.Service.product_option_Service;
 import com.sport_store.Util.LoadUser;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,6 +29,7 @@ public class CartController {
     private final customer_Service customerService;
     private final CartService cartService;
     private final product_option_Service productOptionService;
+    private final CouponService couponService;
 
     public void LoadProduct(Model model, HttpSession session) {
         String customer_id = (String) session.getAttribute("customerId");
@@ -43,6 +47,21 @@ public class CartController {
                 quantity += cart.getCart_quantity();
             }
         }
+        
+        // Kiểm tra nếu có áp dụng coupon
+        Coupons appliedCoupon = (Coupons) session.getAttribute("appliedCoupon");
+        if (appliedCoupon != null) {
+            // Tính toán giảm giá
+            double discountAmount = (totalAmount * appliedCoupon.getCoupon_percentage()) / 100;
+            double finalTotal = totalAmount - discountAmount;
+            
+            model.addAttribute("appliedCoupon", appliedCoupon);
+            model.addAttribute("discountAmount", discountAmount);
+            model.addAttribute("finalTotal", finalTotal);
+        } else {
+            model.addAttribute("finalTotal", totalAmount);
+        }
+        
         model.addAttribute("carts", cartsList);
         model.addAttribute("totalAmount", totalAmount);
         model.addAttribute("quantity", quantity);
@@ -54,6 +73,25 @@ public class CartController {
             loadUser.refreshUser(session);
             LoadProduct(model, session);
             return "customer/cart";
+        }
+        return "redirect:/web/form_login";
+    }
+
+    @GetMapping("/customer/cart/apply-coupon")
+    public String applyCoupon(Model model, HttpSession session, @RequestParam("couponId") String couponId) {
+        if (session.getAttribute("customerId") != null) {
+            // Xóa coupon cũ nếu có
+            session.removeAttribute("appliedCoupon");
+            
+            // Kiểm tra coupon mới
+            Coupons coupon = couponService.findCouponById(couponId);
+            if (coupon != null && couponService.validateCoupon(couponId)) {
+                session.setAttribute("appliedCoupon", coupon);
+                // Giảm số lần sử dụng coupon
+                couponService.decrementCouponAttempts(couponId);
+            }
+            
+            return "redirect:/customer/cart";
         }
         return "redirect:/web/form_login";
     }
@@ -122,5 +160,4 @@ public class CartController {
         }
         return "redirect:/customer/cart";  // quay lại trang giỏ hàng sau khi xóa
     }
-
 }

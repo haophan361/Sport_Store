@@ -14,4 +14,6 @@ public interface CartRepository extends JpaRepository<Carts, String> {
     Carts findByCustomersAndProduct_options(@Param("customers") Customers customers,
                                             @Param("productOptions") Product_Options productOptions);
     List<Carts> findByCustomers(Customers customers);
+    
+    void deleteByCustomers(Customers customers);
 }
