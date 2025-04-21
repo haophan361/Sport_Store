@@ -10,62 +10,11 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
 </head>
 <body id="page-top">
-<div id="wrapper">
-    <ul class="navbar-nav sidebar sidebar-dark accordion" style="background-color: #e7de69;">
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/admin/dashboard}">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-laugh-wink"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">Sport Store</div>
-        </a>
-        <hr class="sidebar-divider my-0">
-        <li class="nav-item"><a class="nav-link" th:href="@{/admin/dashboard}"><i
-                class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a>
-        </li>
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading">INTERFACE</div>
-        <li class="nav-item"><a class="nav-link" th:href="@{/admin/manageSupplierBill}"><i
-                class="fas fa-boxes"></i><span>Nhập kho</span></a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/admin/manageProduct}"><i
-                class="fas fa-dumbbell"></i><span>Sản phẩm</span></a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/admin/manageCoupon}"><i
-                class="fas fa-tags"></i><span>Mã giảm giá</span></a></li>
-    </ul>
-    <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown no-arrow mx-1">
-                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-bell fa-fw"></i><span
-                                class="badge badge-danger badge-counter">3+</span></a>
-                    </li>
-                    <li class="nav-item dropdown no-arrow mx-1">
-                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-envelope fa-fw"></i><span
-                                class="badge badge-danger badge-counter">7</span></a>
-                    </li>
-                    <div class="topbar-divider d-none d-sm-block"></div>
-                    <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+<div th:replace="fragment/layout :: layout(~{::section})">
+    <section>
+        <div class="container">WELCOME TO ADMIN DASHBOARD</div>
+    </section>
 </div>
-<!-- Kết thúc header -->
-<script src="../../vendor/jquery/jquery.min.js"></script>
-<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
-<script src="../../js/sb-admin-2.js"></script>
-
-<!-- Dữ liệu giả -->
-<script src="../../js/demo/fakedata.js"></script>
-
-<!-- Script xử lý chính -->
-<script src="../../js/sb-admin-2..js"></script>
 
 </body>
 </html>

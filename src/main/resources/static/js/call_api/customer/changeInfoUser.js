@@ -38,7 +38,7 @@ function changeInfoCustomer() {
             customer_date_of_birth: document.getElementById("date_of_birth").value,
             customer_phone: document.getElementById("phone").value,
         }
-    apiRequest("/customer/changeInfoCustomer", "POST", {'Content-type': 'application/json'},
+    apiRequest("/customer/changeInfoCustomer", "PUT", {'Content-type': 'application/json'},
         JSON.stringify(form_changeInfoCustomer), null, null, "include", callback_changeInfoUser)
 }
 

@@ -5,10 +5,7 @@ import com.sport_store.Service.customer_Service;
 import com.sport_store.Service.info_receiver_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
@@ -30,7 +27,7 @@ public class info_receiver_API {
         return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật thông tin người nhận thành công"));
     }
 
-    @PostMapping("/customer/delete_infoReceiver")
+    @DeleteMapping("/customer/delete_infoReceiver")
     public ResponseEntity<?> delete_infoReceiver(@RequestBody String receiver_id) {
         info_receiver_service.delete_infoReceiver(receiver_id);
         return ResponseEntity.ok(Collections.singletonMap("message", "Xóa thông tin người nhận thành công"));
