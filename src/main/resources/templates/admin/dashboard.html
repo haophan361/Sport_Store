@@ -1,20 +1,65 @@
-<!-- File: layout/header.html -->
+<!-- templates/statistics_dashboard.html -->
 <!DOCTYPE html>
-<html lang="vi">
-<head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sport Store</title>
-    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
+    <title>Dashboard - Sport Store</title>
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
 </head>
-<body id="page-top">
-<div th:replace="fragment/layout :: layout(~{::section})">
-    <section>
-        <div class="container">WELCOME TO ADMIN DASHBOARD</div>
-    </section>
+<body>
+<div th:replace="~{fragment/layout :: layout(~{::section})}">
+<section>
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Thống Kê Doanh Thu & Chi Phí</h1>
+
+        <!-- Date Range Selector -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Chọn Khoảng Thời Gian</h6>
+            </div>
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="datetime-local" class="form-control" id="startDate">
+                    <input type="datetime-local" class="form-control" id="endDate">
+                    <button class="btn btn-primary" id="fetchStats">Tải Thống Kê</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue vs Cost Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Doanh Thu vs Chi Phí Theo Tháng</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueCostChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Product Quantities Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Số Lượng Mua Sản Phẩm</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="productQuantitiesChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
 </div>
 
+<!-- Scripts -->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script th:src="@{/js/call_api/admin/dashboard.js}"></script>
+<script th:src="@{/js/call_api/account/logout.js}"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 </body>
 </html>

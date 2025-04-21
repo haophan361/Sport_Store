@@ -34,7 +34,7 @@ public class employee_API {
                 return ResponseEntity.ok(Collections.singletonMap("message", "Danh sách nhân viên trống"));
             }
             return ResponseEntity.ok(employees);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException("Không lấy được danh sách nhân viên" + e.getMessage());
         }
     }
@@ -50,15 +50,19 @@ public class employee_API {
                 );
             }
             throw new RuntimeException("Không thể tạo nhân viên.");
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException("Lỗi khi tạo tài khoản nhân viên: " + e.getMessage());
         }
     }
 
     @PutMapping("/employee/changeInfoEmployee")
     public ResponseEntity<?> changeInfoUser(@RequestBody update_employee request, HttpServletRequest httpServletRequest) {
-        employee_service.updateEmployee(request);
-        load_user_session.refreshUser(httpServletRequest.getSession());
-        return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật thông tin người dùng thành công"));
+        try {
+            employee_service.updateEmployee(request);
+            load_user_session.refreshUser(httpServletRequest.getSession());
+            return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật thông tin người dùng thành công"));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
