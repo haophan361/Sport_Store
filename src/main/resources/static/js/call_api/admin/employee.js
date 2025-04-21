@@ -114,15 +114,22 @@ function saveEmployee() {
             form[0].reset();
             fetchEmployees();
             // Hiển thị thông báo thành công
-            alert(response.message || 'Tạo nhân viên thành công!');
+            bootbox.alert({
+                title: "Thông báo",
+                message: response.message || 'Tạo nhân viên thành công!'
+            });
         },
         error: function(xhr, status, error) {
             // Hiển thị thông báo lỗi
             let errorMsg = 'Lỗi khi tạo nhân viên!';
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMsg = xhr.responseJSON.message;
+            if (xhr.responseText) {
+                errorMsg = xhr.responseText;
             }
-            alert(errorMsg);
+
+            bootbox.alert({
+                title: "Báo Lỗi",
+                message: errorMsg
+            });
         }
     });
 }

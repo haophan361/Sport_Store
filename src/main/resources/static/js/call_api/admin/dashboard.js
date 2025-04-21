@@ -94,7 +94,18 @@ $(document).ready(function() {
         const endDate = $endDateInput.val();
 
         if (!startDate || !endDate) {
-            alert('Vui lòng chọn cả ngày bắt đầu và ngày kết thúc');
+            bootbox.alert({
+                title: "Báo Lỗi",
+                message: "Vui lòng chọn cả ngày bắt đầu và ngày kết thúc"
+            });
+            return;
+        }
+
+        if (startDate >= endDate) {
+            bootbox.alert({
+                title: "Báo Lỗi",
+                message: "Ngày bắt đầu phải nhỏ hơn ngày kết thúc"
+            });
             return;
         }
 
