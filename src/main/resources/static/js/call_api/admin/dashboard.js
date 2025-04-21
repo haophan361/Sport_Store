@@ -75,70 +75,17 @@ $(document).ready(function() {
         });
     }
 
-    // Function to validate date range
-    function isValidDateRange(startDate, endDate) {
-        if (!startDate || !endDate) {
-            bootbox.alert({
-                title: "Thông báo",
-                message: "Vui lòng chọn cả ngày bắt đầu và ngày kết thúc",
-                backdrop: true
-            });
-            return false;
-        }
-
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        if (start > end) {
-            bootbox.alert({
-                title: "Thông báo",
-                message: "Ngày bắt đầu phải trước ngày kết thúc",
-                backdrop: true
-            });
-            return false;
-        }
-
-        return true;
-    }
-
     // Load all data on page load
     function loadAllStatistics() {
-        apiRequest(
-            '/admin/all-revenue',
-            'GET',
-            { 'Content-Type': 'application/json' },
-            null,
-            null,
-            null,
-            'include',
-            function(revenueData) {
-                apiRequest(
-                    '/admin/all-cost',
-                    'GET',
-                    { 'Content-Type': 'application/json' },
-                    null,
-                    null,
-                    null,
-                    'include',
-                    function(costData) {
-                        updateRevenueCostChart(revenueData, costData);
-                    }
-                );
-            }
-        );
+        $.getJSON('/admin/all-revenue', function(revenueData) {
+            $.getJSON('/admin/all-cost', function(costData) {
+                updateRevenueCostChart(revenueData, costData);
+            });
+        });
 
-        apiRequest(
-            '/admin/all-product-quantities',
-            'GET',
-            { 'Content-Type': 'application/json' },
-            null,
-            null,
-            null,
-            'include',
-            function(productData) {
-                updateProductQuantitiesChart(productData);
-            }
-        );
+        $.getJSON('/admin/all-product-quantities', function(productData) {
+            updateProductQuantitiesChart(productData);
+        });
     }
 
     // Load statistics for selected date range
@@ -146,46 +93,20 @@ $(document).ready(function() {
         const startDate = $startDateInput.val();
         const endDate = $endDateInput.val();
 
-        if (!isValidDateRange(startDate, endDate)) {
+        if (!startDate || !endDate) {
+            alert('Vui lòng chọn cả ngày bắt đầu và ngày kết thúc');
             return;
         }
 
-        apiRequest(
-            `/admin/revenue?start=${startDate}&end=${endDate}`,
-            'GET',
-            { 'Content-Type': 'application/json' },
-            null,
-            null,
-            null,
-            'include',
-            function(revenueData) {
-                apiRequest(
-                    `/admin/cost?start=${startDate}&end=${endDate}`,
-                    'GET',
-                    { 'Content-Type': 'application/json' },
-                    null,
-                    null,
-                    null,
-                    'include',
-                    function(costData) {
-                        updateRevenueCostChart(revenueData, costData);
-                    }
-                );
-            }
-        );
+        $.getJSON(`/admin/revenue?start=${startDate}&end=${endDate}`, function(revenueData) {
+            $.getJSON(`/admin/cost?start=${startDate}&end=${endDate}`, function(costData) {
+                updateRevenueCostChart(revenueData, costData);
+            });
+        });
 
-        apiRequest(
-            `/admin/product-quantities?start=${startDate}&end=${endDate}`,
-            'GET',
-            { 'Content-Type': 'application/json' },
-            null,
-            null,
-            null,
-            'include',
-            function(productData) {
-                updateProductQuantitiesChart(productData);
-            }
-        );
+        $.getJSON(`/admin/product-quantities?start=${startDate}&end=${endDate}`, function(productData) {
+            updateProductQuantitiesChart(productData);
+        });
     });
 
     // Load charts when page loads

@@ -1,4 +1,3 @@
-// employee.js
 $(document).ready(function() {
     fetchEmployees();
 
@@ -16,30 +15,20 @@ $(document).ready(function() {
 });
 
 function fetchEmployees() {
-    apiRequest(
-        '/admin/employees',
-        'GET',
-        { 'Content-Type': 'application/json' },
-        null,
-        null,
-        null,
-        'include',
-        function(response) {
+    $.ajax({
+        url: '/admin/employees',
+        method: 'GET',
+        success: function(response) {
             if (response.message) {
                 $('#employee-list').html('<tr><td colspan="8" class="text-center">Không có nhân viên nào</td></tr>');
                 return;
             }
             renderEmployees(response);
         },
-        function() {
-            bootbox.alert({
-                title: "Thông báo lỗi",
-                message: "Lỗi khi tải danh sách nhân viên",
-                backdrop: true
-            });
+        error: function(xhr, status, error) {
             $('#employee-list').html('<tr><td colspan="8" class="text-center text-danger">Lỗi khi tải danh sách nhân viên</td></tr>');
         }
-    );
+    });
 }
 
 function renderEmployees(employees) {
@@ -64,15 +53,11 @@ function renderEmployees(employees) {
 
 function searchEmployee() {
     const keyword = $('#employee-search-keyword').val().toLowerCase().trim();
-    apiRequest(
-        '/admin/employees',
-        'GET',
-        { 'Content-Type': 'application/json' },
-        null,
-        null,
-        null,
-        'include',
-        function(response) {
+    $.ajax({
+        url: '/admin/employees',
+        method: 'GET',
+        cache: false,
+        success: function(response) {
             if (response.message) {
                 $('#employee-list').html('<tr><td colspan="8" class="text-center">Không có nhân viên nào</td></tr>');
                 return;
@@ -91,15 +76,10 @@ function searchEmployee() {
                 $('#employee-list').html('<tr><td colspan="8" class="text-center">Không tìm thấy nhân viên nào</td></tr>');
             }
         },
-        function() {
-            bootbox.alert({
-                title: "Thông báo lỗi",
-                message: "Lỗi khi tìm kiếm nhân viên",
-                backdrop: true
-            });
+        error: function(xhr, status, error) {
             $('#employee-list').html('<tr><td colspan="8" class="text-center text-danger">Lỗi khi tìm kiếm nhân viên</td></tr>');
         }
-    );
+    });
 }
 
 function saveEmployee() {
@@ -124,31 +104,25 @@ function saveEmployee() {
         password: $('#password').val()
     };
 
-    apiRequest(
-        '/admin/employees',
-        'POST',
-        { 'Content-Type': 'application/json' },
-        JSON.stringify(newEmployee),
-        null,
-        null,
-        'include',
-        function(response) {
+    $.ajax({
+        url: '/admin/employees',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(newEmployee),
+        success: function(response) {
             $('#addEmployeeModal').modal('hide');
             form[0].reset();
             fetchEmployees();
-            bootbox.alert({
-                title: "Thông báo",
-                message: response.message || "Tạo nhân viên thành công!",
-                backdrop: true
-            });
+            // Hiển thị thông báo thành công
+            alert(response.message || 'Tạo nhân viên thành công!');
         },
-        function(error) {
-            let errorMsg = error.message || "Lỗi khi tạo nhân viên!";
-            bootbox.alert({
-                title: "Thông báo lỗi",
-                message: errorMsg,
-                backdrop: true
-            });
+        error: function(xhr, status, error) {
+            // Hiển thị thông báo lỗi
+            let errorMsg = 'Lỗi khi tạo nhân viên!';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
+            }
+            alert(errorMsg);
         }
-    );
+    });
 }

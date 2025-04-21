@@ -1,29 +1,19 @@
-// customer.js
 function fetchCustomers() {
-    apiRequest(
-        '/admin/customers',
-        'GET',
-        { 'Content-Type': 'application/json' },
-        null,
-        null,
-        null,
-        'include',
-        function(response) {
+    $.ajax({
+        url: '/admin/customers',
+        method: 'GET',
+        success: function(response) {
             if (response.message) {
                 $('#customer-list').html('<tr><td colspan="6" class="text-center">Không có khách hàng nào</td></tr>');
                 return;
             }
+
             renderCustomers(response);
         },
-        function() {
-            bootbox.alert({
-                title: "Thông báo lỗi",
-                message: "Lỗi khi tải danh sách khách hàng",
-                backdrop: true
-            });
+        error: function(xhr, status, error) {
             $('#customer-list').html('<tr><td colspan="6" class="text-center text-danger">Lỗi khi tải danh sách khách hàng</td></tr>');
         }
-    );
+    });
 }
 
 function renderCustomers(customers) {
@@ -31,15 +21,15 @@ function renderCustomers(customers) {
     tbody.empty();
     customers.forEach(customer => {
         const row = `
-            <tr>
-                <td>${customer.name}</td>
-                <td>${customer.email}</td>
-                <td>${customer.phone || 'N/A'}</td>
-                <td>${customer.dateOfBirth || 'N/A'}</td>
-                <td>${customer.online ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-secondary">Offline</span>'}</td>
-                <td>${customer.active ? '<span class="badge badge-primary">Đã kích hoạt</span>' : '<span class="badge badge-danger">Bị vô hiệu hóa</span>'}</td>
-            </tr>
-        `;
+                <tr>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone || 'N/A'}</td>
+                    <td>${customer.dateOfBirth || 'N/A'}</td>
+                    <td>${customer.online ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-secondary">Offline</span>'}</td>
+                    <td>${customer.active ? '<span class="badge badge-primary">Đã kích hoạt</span>' : '<span class="badge badge-danger">Bị vô hiệu hóa</span>'}</td>
+                </tr>
+            `;
         tbody.append(row);
     });
 }
@@ -47,15 +37,11 @@ function renderCustomers(customers) {
 function searchCustomer() {
     const keyword = $('#customer-search-keyword').val().toLowerCase().trim();
 
-    apiRequest(
-        '/admin/customers',
-        'GET',
-        { 'Content-Type': 'application/json' },
-        null,
-        null,
-        null,
-        'include',
-        function(response) {
+    $.ajax({
+        url: '/admin/customers',
+        method: 'GET',
+        cache: false,
+        success: function(response) {
             if (response.message) {
                 $('#customer-list').html('<tr><td colspan="6" class="text-center">Không có khách hàng nào</td></tr>');
                 return;
@@ -82,15 +68,10 @@ function searchCustomer() {
                 $('#customer-list').html('<tr><td colspan="6" class="text-center">Không tìm thấy khách hàng nào</td></tr>');
             }
         },
-        function() {
-            bootbox.alert({
-                title: "Thông báo lỗi",
-                message: "Lỗi khi tìm kiếm khách hàng",
-                backdrop: true
-            });
+        error: function(xhr, status, error) {
             $('#customer-list').html('<tr><td colspan="6" class="text-center text-danger">Lỗi khi tìm kiếm khách hàng</td></tr>');
         }
-    );
+    });
 }
 
 $(document).ready(function() {
