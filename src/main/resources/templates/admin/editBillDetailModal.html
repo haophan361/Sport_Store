@@ -1,0 +1,37 @@
+<!-- Modal: Thêm/Chỉnh sửa Chi Tiết Phiếu Nhập -->
+<div th:fragment="addBillDetailModal">
+    <div class="modal fade" id="addBillDetailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <form id="bill-detail-form" class="modal-content">
+            <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="detailModalLabel">Chi tiết sản phẩm</h5>
+            <button type="button" class="close" data-dismiss="modal" onclick="closeBillDetail()" aria-label="Đóng">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            <div class="form-group">
+                <label for="detail_product_name">Tên sản phẩm</label>
+                <input type="text" id="detail_product_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="detail_option_id">Phân loại</label>
+                <input type="text" id="detail_option_id" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="detail_quantity">Số lượng</label>
+                <input type="number" id="detail_quantity" class="form-control" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="detail_cost">Đơn giá</label>
+                <input type="number" id="detail_cost" class="form-control" min="0" required>
+            </div>
+            </div>
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeBillDetail()">Hủy</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>

@@ -30,6 +30,15 @@ function loadProducts(data) {
                 ${p.active === true ? 'Đang bán' : 'Ngừng bán'}
               </span>
             </td>
+            <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" data-toggle="modal" data-target="#addProductModal">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" title="Xoá">
+                    <i class="bi bi-trash"></i>
+                  </button>
+            </td>
+            
           </tr>
         `;
         tbody.insertAdjacentHTML("beforeend", row);

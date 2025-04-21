@@ -1,0 +1,35 @@
+<!-- Modal Thêm Giảm Giá -->
+<div th:fragment="addDiscountModal">
+  <div class="modal fade" id="addDiscountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Thêm giảm giá mới</h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="discount-form">
+                    <div class="form-group">
+                        <label>Phần trăm giảm (%)</label>
+                        <input type="number" id="new_discount_percentage" class="form-control" min="0" max="100"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày bắt đầu</label>
+                        <input type="datetime-local" id="new_discount_start" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày kết thúc</label>
+                        <input type="datetime-local" id="new_discount_end" class="form-control" required>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="new_discount_active" checked>
+                        <label class="form-check-label" for="new_discount_active">Kích hoạt</label>
+                    </div>
+                    <button type="button" class="btn btn-info" onclick="saveDiscount()">Lưu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -2,6 +2,9 @@ function formatCurrency(number) {
     if (number > 0) {
         return number.toLocaleString('vi-VN') + '.000 đ';
     }
+    else {
+        return '0 đ'
+    }
 }
 
 function fetchProductOption_BillSupply() {
@@ -153,7 +156,7 @@ function loadBills(data) {
     `;
     });
     document.getElementById("total-bills").textContent = data.length;
-    document.getElementById("total-cost").textContent = formatCurrency(total);
+    document.getElementById("total-cost").textContent = formatCurrency(total ?? 0);
 
     $('#supplierBillTable').DataTable({
         pageLength: 10,

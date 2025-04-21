@@ -72,7 +72,7 @@ function update_infoReceiver() {
             ward: document.getElementById("wardName").value,
             street: document.getElementById("street").value
         }
-    apiRequest("/customer/update_infoReceiver", "POST", {'Content-type': 'application/json'},
+    apiRequest("/customer/update_infoReceiver", "PUT", {'Content-type': 'application/json'},
         JSON.stringify(form_infoReceiver), null, null, "include",
         function () {
             window.location.reload();
@@ -99,7 +99,7 @@ function delete_infoReceiver(receiver_id) {
                 },
             callback: function (result) {
                 if (result) {
-                    apiRequest("/customer/delete_infoReceiver", "POST", {'Content-type': 'application/json'},
+                    apiRequest("/customer/delete_infoReceiver", "DELETE", {'Content-type': 'application/json'},
                         receiver_id, null, null, "include",
                         function () {
                             window.location.reload();
