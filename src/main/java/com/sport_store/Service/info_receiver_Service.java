@@ -7,6 +7,7 @@ import com.sport_store.Repository.infoReceiver_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -17,8 +18,7 @@ public class info_receiver_Service {
 
     public void add_infoReceiver(infoReceiver_request request) {
         Customers customer = customer_service.get_myInfo();
-        Receiver_Info receiver_info = Receiver_Info
-                .builder()
+        Receiver_Info receiver = Receiver_Info.builder()
                 .receiver_id(UUID.randomUUID().toString())
                 .receiver_name(request.getName())
                 .receiver_phone(request.getPhone())
@@ -28,21 +28,32 @@ public class info_receiver_Service {
                 .receiver_street(request.getStreet())
                 .customers(customer)
                 .build();
-        infoReceiver_repository.save(receiver_info);
+        infoReceiver_repository.save(receiver);
     }
 
     public void update_infoReceiver(infoReceiver_request request) {
-        Receiver_Info _receiverInfo = infoReceiver_repository.getReferenceById(request.getReceiver_id());
-        _receiverInfo.setReceiver_name(request.getName());
-        _receiverInfo.setReceiver_phone(request.getPhone());
-        _receiverInfo.setReceiver_city(request.getCity());
-        _receiverInfo.setReceiver_district(request.getDistrict());
-        _receiverInfo.setReceiver_ward(request.getWard());
-        _receiverInfo.setReceiver_street(request.getStreet());
-        infoReceiver_repository.save(_receiverInfo);
+        Receiver_Info receiver = infoReceiver_repository.findByReceiverId(request.getReceiver_id());
+        if (receiver != null) {
+            receiver.setReceiver_name(request.getName());
+            receiver.setReceiver_phone(request.getPhone());
+            receiver.setReceiver_city(request.getCity());
+            receiver.setReceiver_district(request.getDistrict());
+            receiver.setReceiver_ward(request.getWard());
+            receiver.setReceiver_street(request.getStreet());
+            infoReceiver_repository.save(receiver);
+        }
     }
 
     public void delete_infoReceiver(String receiver_id) {
         infoReceiver_repository.deleteById(receiver_id);
+    }
+
+    public List<Receiver_Info> get_all_infoReceiver(String customer_id) {
+        Customers customer = customer_service.finbyId(customer_id);
+        return infoReceiver_repository.findByCustomers(customer);
+    }
+
+    public Receiver_Info get_receiver_by_id(String receiver_id) {
+        return infoReceiver_repository.findByReceiverId(receiver_id);
     }
 }
