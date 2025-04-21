@@ -17,14 +17,8 @@
                             Account
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button"
-                                    onclick="window.location.href='/web/form_login'">
-                                Sign in
-                            </button>
-                            <button class="dropdown-item" type="button"
-                                    onclick="window.location.href='/web/form_register'">
-                                Sign up
-                            </button>
+                            <a class="dropdown-item" href="/web/form_login">Sign in</a>
+                            <a class="dropdown-item" href="/web/form_register">Sign up</a>
                         </div>
                     </div>
                     <div class="btn-group mx-2" th:if="${session.role=='ADMIN'}">

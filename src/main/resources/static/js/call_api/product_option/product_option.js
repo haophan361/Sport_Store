@@ -26,9 +26,16 @@ function displayProductOptions(productId) {
                     <td>${option.cost + ".000₫"}</td>
                     <td>${option.quantity}</td>
                     <td>${option.discount + "%"}</td>
-                    <td>${option.discount > 0 ? option.start + " - " + option.end : ""}</td>
                     <td><img src="${option.image}" width="50" alt="Hình ảnh mẫu sản phẩm"></td>
                     <td><input type="checkbox" ${option.active ? 'checked' : ''}></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" data-toggle="modal" data-target="#addProductModal">
+                        <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Xoá">
+                        <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });

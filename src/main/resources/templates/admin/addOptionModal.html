@@ -10,10 +10,17 @@
                       th:action="@{/admin/upload-option}">
                     <input type="hidden" id="selected_product_id">
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label>Màu (Color)</label>
-                            <select id="color_id" onchange="handleAddOption('color')" class="form-control"></select>
-                        </div>
+
+                          <div class="form-group col-md-6">
+                            <label>Màu (color)</label>
+                            <div class="dropdown">
+                              <button class="btn btn-light dropdown-toggle w-100 text-left" type="button" data-toggle="dropdown">
+                                -- Chọn Màu --
+                              </button>
+                              <div id="customColorDropdown" class="dropdown-menu w-100"></div>
+                            </div>
+                          </div>                       
+
                         <div class="form-group">
                             <label>Kích thước</label>
                             <input type="text" id="new_option_size" class="form-control" required>
@@ -26,11 +33,18 @@
                             <label>Giá</label>
                             <input type="number" id="new_price" class="form-control" required>
                         </div>
-                        <div class="form-group">
-                            <label>Mã giảm giá</label>
-                            <select id="discount_id" class="form-control"
-                                    onchange="handleAddOption('discount')"></select>
+                        
+                        <div class="form-group col-md-6">
+                        <label>Mã giảm giá</label>
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle w-100 text-left" type="button" data-toggle="dropdown">
+                            -- Chọn Mã giảm giá --
+                            </button>
+                            <div id="customDiscountDropdown" class="dropdown-menu w-100"></div>
                         </div>
+                        </div>
+                        
+                          
                         <div class="form-group">
                             <label>Hình ảnh</label>
                             <input type="file" class="form-control-file" id="new_option_image" accept="image/*"
