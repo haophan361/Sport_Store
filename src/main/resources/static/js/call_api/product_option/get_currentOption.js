@@ -21,3 +21,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+function addToCart() {
+    const optionId = document.getElementById("optionProductIdInput").value;
+    const quantity = document.querySelector(".quantity-input").value;
+    const insert_request = {
+        option_id: optionId,
+        quantity: quantity
+    }
+    apiRequest("/customer/addToCart", "POST", {'Content-type': 'application/json'}, JSON.stringify(insert_request),
+        null, null, "include", function () {
+            location.reload()
+        })
+}

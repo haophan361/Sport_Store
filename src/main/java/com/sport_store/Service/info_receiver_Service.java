@@ -49,7 +49,7 @@ public class info_receiver_Service {
     }
 
     public List<Receiver_Info> get_all_infoReceiver(String customer_id) {
-        Customers customer = customer_service.finbyId(customer_id);
+        Customers customer = customer_service.findCustomerByID(customer_id);
         return infoReceiver_repository.findByCustomers(customer);
     }
 

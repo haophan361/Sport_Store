@@ -2,7 +2,7 @@ function fetchCustomers() {
     $.ajax({
         url: '/admin/customers',
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             if (response.message) {
                 $('#customer-list').html('<tr><td colspan="6" class="text-center">Không có khách hàng nào</td></tr>');
                 return;
@@ -10,7 +10,7 @@ function fetchCustomers() {
 
             renderCustomers(response);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             $('#customer-list').html('<tr><td colspan="6" class="text-center text-danger">Lỗi khi tải danh sách khách hàng</td></tr>');
         }
     });
@@ -19,6 +19,9 @@ function fetchCustomers() {
 function renderCustomers(customers) {
     const tbody = $('#customer-list');
     tbody.empty();
+    if ($.fn.DataTable.isDataTable('#customerTable')) {
+        $('#customerTable').DataTable().clear().destroy();
+    }
     customers.forEach(customer => {
         const row = `
                 <tr>
@@ -32,48 +35,21 @@ function renderCustomers(customers) {
             `;
         tbody.append(row);
     });
-}
-
-function searchCustomer() {
-    const keyword = $('#customer-search-keyword').val().toLowerCase().trim();
-
-    $.ajax({
-        url: '/admin/customers',
-        method: 'GET',
-        cache: false,
-        success: function(response) {
-            if (response.message) {
-                $('#customer-list').html('<tr><td colspan="6" class="text-center">Không có khách hàng nào</td></tr>');
-                return;
+    $('#customerTable').DataTable({
+        pageLength: 10,
+        language: {
+            search: "Tìm kiếm:",
+            lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+            info: "Trang _PAGE_ trong tổng số _PAGES_ trang",
+            paginate: {
+                previous: "Trước",
+                next: "Sau"
             }
-
-            // Nếu không có từ khóa, hiển thị toàn bộ danh sách
-            if (!keyword) {
-                renderCustomers(response);
-                return;
-            }
-
-            // Lọc danh sách khách hàng
-            const filteredCustomers = response.filter(customer =>
-                (customer.name && customer.name.toLowerCase().includes(keyword)) ||
-                (customer.email && customer.email.toLowerCase().includes(keyword)) ||
-                (customer.phone && customer.phone.toLowerCase().includes(keyword))
-            );
-
-            // Render danh sách đã lọc
-            renderCustomers(filteredCustomers);
-
-            // Hiển thị thông báo nếu không tìm thấy
-            if (filteredCustomers.length === 0) {
-                $('#customer-list').html('<tr><td colspan="6" class="text-center">Không tìm thấy khách hàng nào</td></tr>');
-            }
-        },
-        error: function(xhr, status, error) {
-            $('#customer-list').html('<tr><td colspan="6" class="text-center text-danger">Lỗi khi tìm kiếm khách hàng</td></tr>');
         }
     });
 }
 
-$(document).ready(function() {
+
+$(document).ready(function () {
     fetchCustomers();
 });

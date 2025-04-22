@@ -9,11 +9,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CartRepository extends JpaRepository<Carts, String> {
+public interface cart_Repository extends JpaRepository<Carts, String> {
     @Query("SELECT c FROM Carts c WHERE c.customers = :customers AND c.product_options = :productOptions")
     Carts findByCustomersAndProduct_options(@Param("customers") Customers customers,
                                             @Param("productOptions") Product_Options productOptions);
+
     List<Carts> findByCustomers(Customers customers);
-    
+
     void deleteByCustomers(Customers customers);
 }

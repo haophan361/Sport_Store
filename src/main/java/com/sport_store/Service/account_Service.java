@@ -18,6 +18,11 @@ public class account_Service {
         account_repository.save(account);
     }
 
+    public String getEmail() {
+        var context = SecurityContextHolder.getContext();
+        return context.getAuthentication().getName();
+    }
+
     public Accounts get_myAccountInfo() {
         var context = SecurityContextHolder.getContext();
         String email = context.getAuthentication().getName();

@@ -9,113 +9,78 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <!-- Thêm Bootstrap DatePicker -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 </head>
 <body id="page-top">
 <div id="wrapper">
-    <ul class="navbar-nav sidebar sidebar-dark accordion" style="background-color: #e7de69;">
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/admin/dashboard}">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-laugh-wink"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">Sport Store</div>
-        </a>
-        <hr class="sidebar-divider my-0">
-        <li class="nav-item"><a class="nav-link" th:href="@{/admin/dashboard}"><i
-                class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a>
-        </li>
-        <hr class="sidebar-divider">
-        <div class="sidebar-heading">INTERFACE</div>
-        <li class="nav-item"><a class="nav-link" th:href="@{/admin/manageSupplierBill}"><i
-                class="fas fa-boxes"></i><span>Nhập kho</span></a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/admin/manageProduct}"><i
-                class="fas fa-dumbbell"></i><span>Sản phẩm</span></a></li>
-        <li class="nav-item active"><a class="nav-link" th:href="@{/admin/manageCoupon}"><i
-                class="fas fa-tags"></i><span>Mã giảm giá</span></a></li>
-    </ul>
     <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown no-arrow mx-1">
-                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-bell fa-fw"></i><span
-                                class="badge badge-danger badge-counter">3+</span></a>
-                    </li>
-                    <li class="nav-item dropdown no-arrow mx-1">
-                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-envelope fa-fw"></i><span
-                                class="badge badge-danger badge-counter">7</span></a>
-                    </li>
-                    <div class="topbar-divider d-none d-sm-block"></div>
-                    <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
-                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-            <!-- Nội dung chính -->
-            <div class="container-fluid">
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Quản lý Mã giảm giá</h1>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCouponModal">
-                        <i class="fas fa-plus fa-sm text-white-50"></i> Thêm mã giảm giá mới
-                    </button>
-                </div>
-
-                <!-- Danh sách mã giảm giá -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Danh sách mã giảm giá</h6>
+        <div th:replace="~{fragment/layout :: layout(~{::section})}">
+        <section>
+            <div id="content">
+                <!-- Nội dung chính -->
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Quản lý Mã giảm giá</h1>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCouponModal">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Thêm mã giảm giá mới
+                        </button>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="couponTable" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>
-                                    <th>Mã giảm giá</th>
-                                    <th>Phần trăm giảm</th>
-                                    <th>Ngày bắt đầu</th>
-                                    <th>Ngày hết hạn</th>
-                                    <th>Số lần sử dụng còn lại</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="coupon : ${coupons}">
-                                    <td th:text="${coupon.coupon_id}"></td>
-                                    <td th:text="${coupon.coupon_percentage} + '%'"></td>
-                                    <td th:text="${#temporals.format(coupon.coupon_start_date, 'dd-MM-yyyy HH:mm')}"></td>
-                                    <td th:text="${#temporals.format(coupon.coupon_expiration_date, 'dd-MM-yyyy HH:mm')}"></td>
-                                    <td th:text="${coupon.coupon_attempts_left}"></td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm edit-coupon" 
-                                                th:data-id="${coupon.coupon_id}"
-                                                th:data-percentage="${coupon.coupon_percentage}"
-                                                th:data-startdate="${#temporals.format(coupon.coupon_start_date, 'yyyy-MM-dd HH:mm')}"
-                                                th:data-expdate="${#temporals.format(coupon.coupon_expiration_date, 'yyyy-MM-dd HH:mm')}"
-                                                th:data-attempts="${coupon.coupon_attempts_left}">
-                                            <i class="fas fa-edit"></i> Sửa
-                                        </button>
-                                        <button class="btn btn-danger btn-sm delete-coupon" 
-                                                th:data-id="${coupon.coupon_id}">
-                                            <i class="fas fa-trash"></i> Xóa
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+
+                    <!-- Danh sách mã giảm giá -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Danh sách mã giảm giá</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="couponTable" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Mã giảm giá</th>
+                                        <th>Phần trăm giảm</th>
+                                        <th>Ngày bắt đầu</th>
+                                        <th>Ngày hết hạn</th>
+                                        <th>Số lần sử dụng còn lại</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="coupon : ${coupons}">
+                                        <td th:text="${coupon.coupon_id}"></td>
+                                        <td th:text="${coupon.coupon_percentage} + '%'"></td>
+                                        <td th:text="${#temporals.format(coupon.coupon_start_date, 'dd-MM-yyyy HH:mm')}"></td>
+                                        <td th:text="${#temporals.format(coupon.coupon_expiration_date, 'dd-MM-yyyy HH:mm')}"></td>
+                                        <td th:text="${coupon.coupon_attempts_left}"></td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm edit-coupon"
+                                                    th:data-id="${coupon.coupon_id}"
+                                                    th:data-percentage="${coupon.coupon_percentage}"
+                                                    th:data-startdate="${#temporals.format(coupon.coupon_start_date, 'yyyy-MM-dd HH:mm')}"
+                                                    th:data-expdate="${#temporals.format(coupon.coupon_expiration_date, 'yyyy-MM-dd HH:mm')}"
+                                                    th:data-attempts="${coupon.coupon_attempts_left}">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </button>
+                                            <button class="btn btn-danger btn-sm delete-coupon"
+                                                    th:data-id="${coupon.coupon_id}">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </div>
 
 <!-- Modal Thêm Mã giảm giá -->
-<div class="modal fade" id="addCouponModal" tabindex="-1" role="dialog" aria-labelledby="addCouponModalLabel" aria-hidden="true">
+<div class="modal fade" id="addCouponModal" tabindex="-1" role="dialog" aria-labelledby="addCouponModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -133,7 +98,8 @@
                     </div>
                     <div class="form-group">
                         <label for="percentage">Phần trăm giảm giá (%)</label>
-                        <input type="number" class="form-control" id="percentage" name="percentage" min="1" max="100" required>
+                        <input type="number" class="form-control" id="percentage" name="percentage" min="1" max="100"
+                               required>
                     </div>
                     <div class="form-group">
                         <label for="startDate">Ngày bắt đầu</label>
@@ -141,11 +107,13 @@
                     </div>
                     <div class="form-group">
                         <label for="expirationDate">Ngày hết hạn</label>
-                        <input type="datetime-local" class="form-control" id="expirationDate" name="expirationDate" required>
+                        <input type="datetime-local" class="form-control" id="expirationDate" name="expirationDate"
+                               required>
                     </div>
                     <div class="form-group">
                         <label for="attemptsLeft">Số lần sử dụng tối đa</label>
-                        <input type="number" class="form-control" id="attemptsLeft" name="attemptsLeft" min="1" required>
+                        <input type="number" class="form-control" id="attemptsLeft" name="attemptsLeft" min="1"
+                               required>
                     </div>
                 </form>
             </div>
@@ -158,7 +126,8 @@
 </div>
 
 <!-- Modal Sửa Mã giảm giá -->
-<div class="modal fade" id="editCouponModal" tabindex="-1" role="dialog" aria-labelledby="editCouponModalLabel" aria-hidden="true">
+<div class="modal fade" id="editCouponModal" tabindex="-1" role="dialog" aria-labelledby="editCouponModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -172,7 +141,8 @@
                     <input type="hidden" id="editCouponId" name="couponId">
                     <div class="form-group">
                         <label for="editPercentage">Phần trăm giảm giá (%)</label>
-                        <input type="number" class="form-control" id="editPercentage" name="percentage" min="1" max="100" required>
+                        <input type="number" class="form-control" id="editPercentage" name="percentage" min="1"
+                               max="100" required>
                     </div>
                     <div class="form-group">
                         <label for="editStartDate">Ngày bắt đầu</label>
@@ -180,11 +150,13 @@
                     </div>
                     <div class="form-group">
                         <label for="editExpirationDate">Ngày hết hạn</label>
-                        <input type="datetime-local" class="form-control" id="editExpirationDate" name="expirationDate" required>
+                        <input type="datetime-local" class="form-control" id="editExpirationDate" name="expirationDate"
+                               required>
                     </div>
                     <div class="form-group">
                         <label for="editAttemptsLeft">Số lần sử dụng còn lại</label>
-                        <input type="number" class="form-control" id="editAttemptsLeft" name="attemptsLeft" min="0" required>
+                        <input type="number" class="form-control" id="editAttemptsLeft" name="attemptsLeft" min="0"
+                               required>
                     </div>
                 </form>
             </div>
@@ -197,7 +169,8 @@
 </div>
 
 <!-- Modal Xác nhận xóa -->
-<div class="modal fade" id="deleteCouponModal" tabindex="-1" role="dialog" aria-labelledby="deleteCouponModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteCouponModal" tabindex="-1" role="dialog" aria-labelledby="deleteCouponModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -226,141 +199,6 @@
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-<script>
-    $(document).ready(function() {
-        // Khởi tạo DataTable
-        $('#couponTable').DataTable({
-            language: {
-                search: "Tìm kiếm:",
-                lengthMenu: "Hiển thị _MENU_ mục",
-                info: "Hiển thị _START_ đến _END_ trong _TOTAL_ mục",
-                infoEmpty: "Hiển thị 0 đến 0 trong 0 mục",
-                infoFiltered: "(lọc từ _MAX_ mục)",
-                paginate: {
-                    first: "Đầu tiên",
-                    last: "Cuối cùng",
-                    next: "Sau",
-                    previous: "Trước"
-                }
-            }
-        });
-
-        // Thêm mã giảm giá mới
-        $('#saveCouponBtn').click(function() {
-            if (!$('#addCouponForm')[0].checkValidity()) {
-                $('#addCouponForm')[0].reportValidity();
-                return;
-            }
-
-            var couponData = {
-                couponId: $('#couponId').val(),
-                percentage: parseInt($('#percentage').val()),
-                startDate: $('#startDate').val(),
-                expirationDate: $('#expirationDate').val(),
-                attemptsLeft: parseInt($('#attemptsLeft').val())
-            };
-
-            $.ajax({
-                url: '/admin/api/coupons/add',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(couponData),
-                success: function(response) {
-                    $('#addCouponModal').modal('hide');
-                    alert('Thêm mã giảm giá thành công!');
-                    location.reload();
-                },
-                error: function(xhr) {
-                    var errorMsg = 'Đã xảy ra lỗi khi thêm mã giảm giá.';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMsg = xhr.responseJSON.message;
-                    }
-                    alert(errorMsg);
-                }
-            });
-        });
-
-        // Mở modal sửa
-        $('.edit-coupon').click(function() {
-            var couponId = $(this).data('id');
-            var percentage = $(this).data('percentage');
-            var startDate = $(this).data('startdate');
-            var expirationDate = $(this).data('expdate');
-            var attemptsLeft = $(this).data('attempts');
-
-            $('#editCouponId').val(couponId);
-            $('#editPercentage').val(percentage);
-            $('#editStartDate').val(startDate);
-            $('#editExpirationDate').val(expirationDate);
-            $('#editAttemptsLeft').val(attemptsLeft);
-
-            $('#editCouponModal').modal('show');
-        });
-
-        // Cập nhật mã giảm giá
-        $('#updateCouponBtn').click(function() {
-            if (!$('#editCouponForm')[0].checkValidity()) {
-                $('#editCouponForm')[0].reportValidity();
-                return;
-            }
-
-            var couponData = {
-                couponId: $('#editCouponId').val(),
-                percentage: parseInt($('#editPercentage').val()),
-                startDate: $('#editStartDate').val(),
-                expirationDate: $('#editExpirationDate').val(),
-                attemptsLeft: parseInt($('#editAttemptsLeft').val())
-            };
-
-            $.ajax({
-                url: '/admin/api/coupons/update',
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(couponData),
-                success: function(response) {
-                    $('#editCouponModal').modal('hide');
-                    alert('Cập nhật mã giảm giá thành công!');
-                    location.reload();
-                },
-                error: function(xhr) {
-                    var errorMsg = 'Đã xảy ra lỗi khi cập nhật mã giảm giá.';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMsg = xhr.responseJSON.message;
-                    }
-                    alert(errorMsg);
-                }
-            });
-        });
-
-        // Mở modal xóa
-        $('.delete-coupon').click(function() {
-            var couponId = $(this).data('id');
-            $('#deleteCouponId').val(couponId);
-            $('#deleteCouponModal').modal('show');
-        });
-
-        // Xác nhận xóa mã giảm giá
-        $('#confirmDeleteBtn').click(function() {
-            var couponId = $('#deleteCouponId').val();
-
-            $.ajax({
-                url: '/admin/api/coupons/delete/' + couponId,
-                type: 'DELETE',
-                success: function(response) {
-                    $('#deleteCouponModal').modal('hide');
-                    alert('Xóa mã giảm giá thành công!');
-                    location.reload();
-                },
-                error: function(xhr) {
-                    var errorMsg = 'Đã xảy ra lỗi khi xóa mã giảm giá.';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMsg = xhr.responseJSON.message;
-                    }
-                    alert(errorMsg);
-                }
-            });
-        });
-    });
-</script>
+<script th:src="@{/js/call_api/coupon/coupon.js}"></script>
 </body>
 </html> 

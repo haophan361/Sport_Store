@@ -5,6 +5,7 @@ import com.sport_store.DTO.response.product_option_Response.product_option_detai
 import com.sport_store.Entity.Colors;
 import com.sport_store.Entity.Product_Options;
 import com.sport_store.Entity.Products;
+import com.sport_store.Service.category_Service;
 import com.sport_store.Service.product_Service;
 import com.sport_store.Service.product_option_Service;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class product_Controller {
     private final product_Service product_service;
     private final product_option_Service product_option_service;
     private final DecimalFormat decimalFormat = new DecimalFormat("#.###");
+    private final category_Service category_service;
 
     @GetMapping(value = {"/web/detail_product/{product_id}/{color}/{size}", "/web/detail_product/{product_id}/{color}"})
     public String detail_product(Model model, @PathVariable String product_id,
@@ -68,6 +70,7 @@ public class product_Controller {
                 .brand(product.getBrands())
                 .category(product.getCategories())
                 .build();
+        model.addAttribute("all_category", category_service.getAllCategories());
         model.addAttribute("selectedColor", color);
         model.addAttribute("colors", colors);
         model.addAttribute("size", product_option_service.order_Size(sizes));

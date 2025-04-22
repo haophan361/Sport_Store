@@ -23,6 +23,7 @@ public class Product_Options {
     private boolean is_active;
     @ManyToOne
     @ToString.Exclude
+    @JsonIgnore
     @JoinColumn(name = "product_id")
     private Products products;
     @ManyToOne

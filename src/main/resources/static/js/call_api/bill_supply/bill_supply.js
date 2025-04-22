@@ -2,9 +2,6 @@ function formatCurrency(number) {
     if (number > 0) {
         return number.toLocaleString('vi-VN') + '.000 đ';
     }
-    else {
-        return '0 đ'
-    }
 }
 
 function fetchProductOption_BillSupply() {
@@ -76,7 +73,7 @@ function loadProductOption(data) {
     })
 }
 
-let table = $('#selectedOptionTable').DataTable({
+let table_selected_option = $('#selectedOptionTable').DataTable({
     pageLength: 6,
     language: {
         search: "Tìm kiếm mẫu sản phẩm",
@@ -90,7 +87,7 @@ let table = $('#selectedOptionTable').DataTable({
 })
 
 function displaySelectedOption() {
-    table.clear()
+    table_selected_option.clear()
     const tbody = document.getElementById("selected-products-list")
     tbody.innerHTML = ''
     list_option.forEach(o => {
@@ -135,6 +132,9 @@ function fetchBillSupply() {
 // ==================== TẢI DANH SÁCH PHIẾU NHẬP ====================
 function loadBills(data) {
     const tbody = document.getElementById("bill-supply-list");
+    if ($.fn.DataTable.isDataTable('#supplierBillTable')) {
+        $('#supplierBillTable').DataTable().clear().destroy();
+    }
     tbody.innerHTML = "";
     let total = 0;
     data.forEach(b => {
@@ -153,11 +153,7 @@ function loadBills(data) {
     `;
     });
     document.getElementById("total-bills").textContent = data.length;
-    document.getElementById("total-cost").textContent = formatCurrency(total ?? 0);
-
-    if ($.fn.DataTable.isDataTable('#supplierBillTable')) {
-        $('#supplierBillTable').DataTable().clear().destroy();
-    }
+    document.getElementById("total-cost").textContent = formatCurrency(total);
 
     $('#supplierBillTable').DataTable({
         pageLength: 10,
@@ -200,7 +196,8 @@ function saveBillSupply() {
         JSON.stringify(newBillSupply), null, null, "include",
         function () {
             $('#addBillModal').modal('hide');
-            document.getElementById("bill-form").reset()
+            document.getElementById("bill-form").reset();
+            list_option = []
             fetchBillSupply()
         })
 }
@@ -211,4 +208,3 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchBillSupply();
     fetchProductOption_BillSupply()
 });
-
