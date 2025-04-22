@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Mã giảm giá - Sport Store</title>
+    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <!-- Thêm Bootstrap DatePicker -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div th:replace="~{fragment/layout :: layout(~{::section})}">
+        <section>
+            <div id="content">
+                <!-- Nội dung chính -->
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Quản lý Mã giảm giá</h1>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCouponModal">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Thêm mã giảm giá mới
+                        </button>
+                    </div>
+
+                    <!-- Danh sách mã giảm giá -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Danh sách mã giảm giá</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="couponTable" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Mã giảm giá</th>
+                                        <th>Phần trăm giảm</th>
+                                        <th>Ngày bắt đầu</th>
+                                        <th>Ngày hết hạn</th>
+                                        <th>Số lần sử dụng còn lại</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="coupon : ${coupons}">
+                                        <td th:text="${coupon.coupon_id}"></td>
+                                        <td th:text="${coupon.coupon_percentage} + '%'"></td>
+                                        <td th:text="${#temporals.format(coupon.coupon_start_date, 'dd-MM-yyyy HH:mm')}"></td>
+                                        <td th:text="${#temporals.format(coupon.coupon_expiration_date, 'dd-MM-yyyy HH:mm')}"></td>
+                                        <td th:text="${coupon.coupon_attempts_left}"></td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm edit-coupon"
+                                                    th:data-id="${coupon.coupon_id}"
+                                                    th:data-percentage="${coupon.coupon_percentage}"
+                                                    th:data-startdate="${#temporals.format(coupon.coupon_start_date, 'yyyy-MM-dd HH:mm')}"
+                                                    th:data-expdate="${#temporals.format(coupon.coupon_expiration_date, 'yyyy-MM-dd HH:mm')}"
+                                                    th:data-attempts="${coupon.coupon_attempts_left}">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </button>
+                                            <button class="btn btn-danger btn-sm delete-coupon"
+                                                    th:data-id="${coupon.coupon_id}">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Modal Thêm Mã giảm giá -->
+<div class="modal fade" id="addCouponModal" tabindex="-1" role="dialog" aria-labelledby="addCouponModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCouponModalLabel">Thêm mã giảm giá mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addCouponForm">
+                    <div class="form-group">
+                        <label for="couponId">Mã giảm giá</label>
+                        <input type="text" class="form-control" id="couponId" name="couponId" required>
+                        <small class="form-text text-muted">Nhập mã giảm giá (ví dụ: SUMMER2023, WELCOME10)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="percentage">Phần trăm giảm giá (%)</label>
+                        <input type="number" class="form-control" id="percentage" name="percentage" min="1" max="100"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Ngày bắt đầu</label>
+                        <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expirationDate">Ngày hết hạn</label>
+                        <input type="datetime-local" class="form-control" id="expirationDate" name="expirationDate"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="attemptsLeft">Số lần sử dụng tối đa</label>
+                        <input type="number" class="form-control" id="attemptsLeft" name="attemptsLeft" min="1"
+                               required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="saveCouponBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sửa Mã giảm giá -->
+<div class="modal fade" id="editCouponModal" tabindex="-1" role="dialog" aria-labelledby="editCouponModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCouponModalLabel">Sửa mã giảm giá</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editCouponForm">
+                    <input type="hidden" id="editCouponId" name="couponId">
+                    <div class="form-group">
+                        <label for="editPercentage">Phần trăm giảm giá (%)</label>
+                        <input type="number" class="form-control" id="editPercentage" name="percentage" min="1"
+                               max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStartDate">Ngày bắt đầu</label>
+                        <input type="datetime-local" class="form-control" id="editStartDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editExpirationDate">Ngày hết hạn</label>
+                        <input type="datetime-local" class="form-control" id="editExpirationDate" name="expirationDate"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAttemptsLeft">Số lần sử dụng còn lại</label>
+                        <input type="number" class="form-control" id="editAttemptsLeft" name="attemptsLeft" min="0"
+                               required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="updateCouponBtn">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xác nhận xóa -->
+<div class="modal fade" id="deleteCouponModal" tabindex="-1" role="dialog" aria-labelledby="deleteCouponModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCouponModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa mã giảm giá này không?</p>
+                <input type="hidden" id="deleteCouponId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../vendor/jquery/jquery.min.js"></script>
+<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="../../js/sb-admin-2.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+<script th:src="@{/js/call_api/coupon/coupon.js}"></script>
+</body>
+</html> 

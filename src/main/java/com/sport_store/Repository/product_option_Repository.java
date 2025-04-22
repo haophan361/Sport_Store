@@ -26,4 +26,7 @@ public interface product_option_Repository extends JpaRepository<Product_Options
 
     @Query("SELECT o FROM Product_Options o WHERE o.option_size= :size AND o.products.product_id= :product_id AND o.colors.color= :color")
     Product_Options getProduct_OptionBySize_ProductId_Color(String product_id, String color, String size);
+
+    @Query("SELECT DISTINCT(o.option_size) FROM Product_Options o")
+    List<String> getAllSize();
 }

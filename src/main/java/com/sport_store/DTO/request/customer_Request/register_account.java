@@ -35,6 +35,4 @@ public class register_account {
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^\\d{10}$", message = "Số điện thoại phải đủ 10 số")
     private String phone;
-
-    private boolean active;
 }

@@ -74,6 +74,7 @@ public class authentication_Service {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Accounts.Role.CUSTOMER)
+                .is_active(true)
                 .build();
         account_repository.save(account);
 
@@ -101,6 +102,9 @@ public class authentication_Service {
                 if (!authenticated) {
                     throw new Exception("Mật khẩu không hợp lệ");
                 }
+            }
+            if (!account.is_active()) {
+                throw new Exception("Tài khoản đã bị vô hiệu hóa");
             }
             String token = generateToken(account, "sport_store.com");
             account_response accountResponse = account_response

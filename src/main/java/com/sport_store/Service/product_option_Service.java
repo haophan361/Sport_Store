@@ -46,7 +46,7 @@ public class product_option_Service {
                 .builder()
                 .option_size(request.getSize())
                 .option_cost(request.getOption_price())
-                .option_quantity(request.getOption_quantity())
+                .option_quantity(0)
                 .is_active(request.isActive())
                 .products(product)
                 .colors(color)
@@ -111,4 +111,9 @@ public class product_option_Service {
     public List<Product_Options> getAllProduct_Option() {
         return product_option_repository.findAll();
     }
+
+    public List<String> getAllSize() {
+        return product_option_repository.getAllSize();
+    }
+
 }

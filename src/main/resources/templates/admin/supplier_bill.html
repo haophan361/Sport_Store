@@ -2,71 +2,69 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nhập Kho - Sport Store</title>
-  <link hef="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nhập Kho - Sport Store</title>
+    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
 </head>
 
 <body>
-  <!-- Layout cha gọi fragment 'layout', truyền vào phần nội dung là section này -->
-  <div th:replace="~{fragment/layout :: layout(~{::section})}">
+<!-- Layout cha gọi fragment 'layout', truyền vào phần nội dung là section này -->
+<div th:replace="~{fragment/layout :: layout(~{::section})}">
     <section>
-      <div class="container-fluid main-content" id="nhapkho-content">
-        <h1 class="h4 mb-4 text-primary font-weight-bold">Danh sách phiếu nhập</h1>
-        <div class="row mb-3">
-          <div class="col-md-8 text-right">
-            <button class="btn btn-info" id="addBillBtn" data-toggle="modal" data-target="#addBillModal">
-              Thêm Hóa Đơn
-            </button>
-          </div>
-        </div>
-
-        <div class="card shadow mb-3">
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-bordered m-0">
-                <thead class="thead-light">
-                  <tr>
-                    <th>Mã hóa đơn</th>
-                    <th>Nhà cung cấp</th>
-                    <th>Số điện thoại</th>
-                    <th>Địa chỉ</th>
-                    <th>Ngày nhập</th>
-                    <th>Trạng thái</th>
-                    <th>Tổng tiền</th>
-                    <th>Hành động</th>
-                  </tr>
-                </thead>
-                <tbody id="bill-supply-list"></tbody>
-              </table>
+        <div class="container-fluid main-content" id="nhapkho-content">
+            <h1 class="h4 mb-4 text-primary font-weight-bold">Danh sách phiếu nhập</h1>
+            <div class="row mb-3">
+                <div class="col-md-8 text-right">
+                    <button class="btn btn-info" id="addBillBtn" data-toggle="modal" data-target="#addBillModal">
+                        Thêm Hóa Đơn
+                    </button>
+                </div>
             </div>
-          </div>
+
+            <div class="card shadow mb-3">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table id="supplierBillTable" class="table table-bordered m-0">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Mã hóa đơn</th>
+                                <th>Nhà cung cấp</th>
+                                <th>Số điện thoại</th>
+                                <th>Địa chỉ</th>
+                                <th>Ngày nhập</th>
+                                <th>Trạng thái</th>
+                                <th>Tổng tiền</th>
+                                <th>Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody id="bill-supply-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-light border rounded">
+                Tổng hóa đơn: <span id="total-bills" class="text-danger font-weight-bold">0</span>
+                &nbsp;&nbsp; Tổng tiền: <span id="total-cost" class="text-danger font-weight-bold">0 đ</span>
+            </div>
         </div>
+        <div th:replace="~{admin/formBillDetail :: formBillDetail}"></div>
 
-        <div class="p-3 bg-light border rounded">
-          Tổng hóa đơn: <span id="total-bills" class="text-danger font-weight-bold">0</span>
-          &nbsp;&nbsp; Tổng tiền: <span id="total-cost" class="text-danger font-weight-bold">0 đ</span>
-        </div>
-      </div>
-
-      <div th:replace="~{admin/formBillDetail :: formBillDetail}"></div>
-
-      <div th:replace="~{admin/addBillModal :: addBillModal}"></div>
-      <div th:replace="~{admin/editBillDetailModal :: addBillDetailModal}"></div>
-
-      <script src="../../vendor/jquery/jquery.min.js"></script>
-      <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
-      <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
-      <script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
-      <script th:src="@{/js/call_api/bill_supply/bill_supply.js}"></script>
-      <script th:src="@{/js/call_api/bill_supply_detail/bill_supply_detail.js}"></script>
+        <div th:replace="~{admin/addBillModal :: addBillModal}"></div>
+        <div th:replace="~{admin/editBillDetailModal :: addBillDetailModal}"></div>
+        <script src="../../vendor/jquery/jquery.min.js"></script>
+        <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+        <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+        <script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
+        <script th:src="@{/js/call_api/bill_supply/bill_supply.js}"></script>
+        <script th:src="@{/js/call_api/bill_supply_detail/bill_supply_detail.js}"></script>
     </section>
-  </div>
+</div>
 </body>
 
 </html>

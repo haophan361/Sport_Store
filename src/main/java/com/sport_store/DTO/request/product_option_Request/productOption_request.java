@@ -21,7 +21,6 @@ public class productOption_request {
     private BigDecimal option_price;
     @NotNull(message = "Số lượng sản phẩm không được để trống")
     @Min(value = 0, message = "Số lượng sản phẩm không được nhỏ hơn 0")
-    private int option_quantity;
     private String product_id;
     private int discount_id;
     private boolean active;

@@ -1,10 +1,7 @@
 package com.sport_store.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,14 +23,14 @@ public class Bills {
     private LocalDateTime bill_receive_date;
     private boolean is_active;
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "employee_id")
     private Employees employees;
     @OneToMany(mappedBy = "bills")
+    @ToString.Exclude
     private List<Bill_Details> bill_details;
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "receiver_id")
     private Receiver_Info receivers;
-    @ManyToOne
-    @JoinColumn(name = "coupon_id")
-    private Coupons coupons;
 }

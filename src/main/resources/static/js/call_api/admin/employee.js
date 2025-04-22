@@ -1,13 +1,13 @@
-$(document).ready(function() {
+$(document).ready(function () {
     fetchEmployees();
 
     // Validation form thêm nhân viên
-    $('#employee-form').on('submit', function(e) {
+    $('#employee-form').on('submit', function (e) {
         e.preventDefault();
     });
 
     // Xử lý hiển thị validation khi mở modal
-    $('#addEmployeeModal').on('show.bs.modal', function() {
+    $('#addEmployeeModal').on('show.bs.modal', function () {
         $('#employee-form')[0].reset();
         $('#employee-form').find('.is-invalid').removeClass('is-invalid');
         $('#employee-form').find('.invalid-feedback').hide();
@@ -18,14 +18,14 @@ function fetchEmployees() {
     $.ajax({
         url: '/admin/employees',
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             if (response.message) {
                 $('#employee-list').html('<tr><td colspan="8" class="text-center">Không có nhân viên nào</td></tr>');
                 return;
             }
             renderEmployees(response);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             $('#employee-list').html('<tr><td colspan="8" class="text-center text-danger">Lỗi khi tải danh sách nhân viên</td></tr>');
         }
     });
@@ -34,6 +34,9 @@ function fetchEmployees() {
 function renderEmployees(employees) {
     const tbody = $('#employee-list');
     tbody.empty();
+    if ($.fn.DataTable.isDataTable('#employeeTable')) {
+        $('#employeeTable').DataTable().clear().destroy();
+    }
     employees.forEach(e => {
         const row = `
             <tr>
@@ -49,35 +52,16 @@ function renderEmployees(employees) {
         `;
         tbody.append(row);
     });
-}
-
-function searchEmployee() {
-    const keyword = $('#employee-search-keyword').val().toLowerCase().trim();
-    $.ajax({
-        url: '/admin/employees',
-        method: 'GET',
-        cache: false,
-        success: function(response) {
-            if (response.message) {
-                $('#employee-list').html('<tr><td colspan="8" class="text-center">Không có nhân viên nào</td></tr>');
-                return;
+    $('#employeeTable').DataTable({
+        pageLength: 10,
+        language: {
+            search: "Tìm kiếm:",
+            lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+            info: "Trang _PAGE_ trong tổng số _PAGES_ trang",
+            paginate: {
+                previous: "Trước",
+                next: "Sau"
             }
-            if (!keyword) {
-                renderEmployees(response);
-                return;
-            }
-            const filteredEmployees = response.filter(e =>
-                (e.name && e.name.toLowerCase().includes(keyword)) ||
-                (e.email && e.email.toLowerCase().includes(keyword)) ||
-                (e.phone && e.phone.toLowerCase().includes(keyword))
-            );
-            renderEmployees(filteredEmployees);
-            if (filteredEmployees.length === 0) {
-                $('#employee-list').html('<tr><td colspan="8" class="text-center">Không tìm thấy nhân viên nào</td></tr>');
-            }
-        },
-        error: function(xhr, status, error) {
-            $('#employee-list').html('<tr><td colspan="8" class="text-center text-danger">Lỗi khi tìm kiếm nhân viên</td></tr>');
         }
     });
 }
@@ -87,7 +71,7 @@ function saveEmployee() {
 
     // Kiểm tra validation
     if (!form[0].checkValidity()) {
-        form.find(':invalid').each(function() {
+        form.find(':invalid').each(function () {
             $(this).addClass('is-invalid');
             $(this).siblings('.invalid-feedback').show();
         });
@@ -109,7 +93,7 @@ function saveEmployee() {
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(newEmployee),
-        success: function(response) {
+        success: function (response) {
             $('#addEmployeeModal').modal('hide');
             form[0].reset();
             fetchEmployees();
@@ -119,7 +103,7 @@ function saveEmployee() {
                 message: response.message || 'Tạo nhân viên thành công!'
             });
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             // Hiển thị thông báo lỗi
             let errorMsg = 'Lỗi khi tạo nhân viên!';
             if (xhr.responseText) {

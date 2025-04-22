@@ -7,13 +7,17 @@ function fetchProductOption(product_id) {
         })
 }
 
+
 function displayProductOptions(productId) {
     fetchProductOption(productId)
         .then(options => {
             if (!Array.isArray(options)) {
                 options = [];
             }
-            const tbody = document.querySelector('#productOptionTable tbody');
+            if ($.fn.DataTable.isDataTable('#productOptionTable')) {
+                $('#productOptionTable').DataTable().clear().destroy();
+            }
+            const tbody = document.getElementById('product-option-list');
             const container = document.getElementById("product-option-content");
             tbody.innerHTML = '';
 
@@ -23,22 +27,25 @@ function displayProductOptions(productId) {
                     <td>${option.option_id}</td>
                     <td>${option.color || "Không rõ"}</td>
                     <td>${option.size}</td>
-                    <td>${option.cost + ".000₫"}</td>
                     <td>${option.quantity}</td>
+                    <td>${option.cost + ".000 VNĐ"}</td>
                     <td>${option.discount + "%"}</td>
-                    <td>${option.discount > 0 ? option.start + " - " + option.end : ""}</td>
                     <td><img src="${option.image}" width="50" alt="Hình ảnh mẫu sản phẩm"></td>
                     <td><input type="checkbox" ${option.active ? 'checked' : ''}></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" data-toggle="modal" data-target="#addProductModal">
+                        <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Xoá">
+                        <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(row);
             });
 
             $(".main-content").hide();
             container.style.display = "block";
-            if ($.fn.DataTable.isDataTable('#productOptionTable')) {
-                $('#productOptionTable').DataTable().clear().destroy();
-            }
-
             $('#productOptionTable').DataTable({
                 pageLength: 10,
                 language: {
@@ -59,7 +66,6 @@ function saveProductOption() {
         color_id: document.getElementById("color_id").value,
         size: document.getElementById("new_option_size").value,
         option_price: document.getElementById("new_price").value,
-        option_quantity: document.getElementById("new_quantity").value,
         product_id: document.getElementById("selected_product_id").value,
         discount_id: document.getElementById("discount_id").value,
         active: document.getElementById("newOptionIsActive").checked ? 1 : 0

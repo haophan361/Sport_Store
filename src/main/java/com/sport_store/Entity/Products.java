@@ -25,8 +25,6 @@ public class Products {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Categories categories;
-    @OneToMany(mappedBy = "products")
-    private List<Comments> comments;
     @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Product_Options> product_options;
