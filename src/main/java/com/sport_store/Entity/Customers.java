@@ -4,10 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,10 +23,10 @@ public class Customers {
     private String customer_name;
     private LocalDate customer_date_of_birth;
     private String customer_phone;
+    @ToString.Exclude
     @OneToMany(mappedBy = "customers")
     private List<Receiver_Info> Receiver_Info;
+    @ToString.Exclude
     @OneToMany(mappedBy = "customers")
     private List<Carts> carts;
-    @OneToMany(mappedBy = "customers")
-    private List<Comments> comments;
 }

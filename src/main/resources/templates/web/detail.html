@@ -77,16 +77,6 @@
         <div class="col-lg-7 h-auto mb-30">
             <div class="h-100 bg-light p-30">
                 <h3 th:text="${product.product_name}"></h3>
-                <div class="d-flex mb-3">
-                    <div class="text-primary mr-2">
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star-half-alt"></small>
-                        <small class="far fa-star"></small>
-                    </div>
-                    <small class="pt-1">(99 Reviews)</small>
-                </div>
                 <h3 class="font-weight-semi-bold mb-4"
                     th:text="${product.current_option.new_price !=null ? product.current_option.new_price : product.current_option.price}+'.000 VNĐ'"
                     style="color:#E8002d">
@@ -140,7 +130,8 @@
                                 <i class="fa fa-minus"></i>
                             </button>
                         </div>
-                        <input type="text" name="quantity" class="form-control bg-secondary border-0 text-center quantity-input" value="1">
+                        <input type="text" name="quantity"
+                               class="form-control bg-secondary border-0 text-center quantity-input" value="1">
                         <div class="input-group-btn">
                             <button class="btn btn-primary btn-plus" type="button">
                                 <i class="fa fa-plus"></i>
@@ -150,8 +141,8 @@
 
                     <script>
                         // Xử lý tất cả các nút trừ
-                        document.querySelectorAll('.btn-minus').forEach(function(btn) {
-                            btn.addEventListener('click', function() {
+                        document.querySelectorAll('.btn-minus').forEach(function (btn) {
+                            btn.addEventListener('click', function () {
                                 let input = this.closest('.input-group').querySelector('.quantity-input');
                                 let quantity = parseInt(input.value) || 1;
                                 if (quantity > 1) {
@@ -162,8 +153,8 @@
                         });
 
                         // Xử lý tất cả các nút cộng
-                        document.querySelectorAll('.btn-plus').forEach(function(btn) {
-                            btn.addEventListener('click', function() {
+                        document.querySelectorAll('.btn-plus').forEach(function (btn) {
+                            btn.addEventListener('click', function () {
                                 let input = this.closest('.input-group').querySelector('.quantity-input');
                                 let quantity = parseInt(input.value) || 1;
                                 input.value = quantity + 1;
@@ -171,8 +162,9 @@
                             });
                         });
                     </script>
-                    <input type="hidden" id="optionProductIdInput" name="optionProductId" th:value="${product.current_option.option_id}" />
-                    <button type="button" class="btn btn-primary px-3" onclick="handleAddToCart()">
+                    <input type="hidden" id="optionProductIdInput" name="optionProductId"
+                           th:value="${product.current_option.option_id}"/>
+                    <button type="button" class="btn btn-primary px-3" onclick="addToCart()">
                         <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
                     </button>
                 </div>
@@ -204,14 +196,16 @@
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
 <script th:src="@{/lib/easing/easing.min.js}"></script>
 <script th:src="@{lib/owlcarousel/owl.carousel.min.js}"></script>
 
 <!-- Contact Javascript File -->
 <script th:src="@{/mail/jqBootstrapValidation.min.js}"></script>
 <script th:src="@{/mail/contact.js}"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
 <script th:src="@{/js/call_api/product_option/get_currentOption.js}"></script>
-<script th:src="@{/js/call_api/cart/cart.js}"></script>
+
 <!-- Template Javascript -->
 <script th:src="@{/js/main.js}"></script>
 </body>

@@ -162,7 +162,8 @@
         <form id="changeInfoEmployeeForm" method="POST" th:if="${session.role == 'EMPLOYEE'}">
             <div class="form-group">
                 <label for="emp_name">Họ và tên</label>
-                <input type="text" id="emp_name" name="emp_name" th:value="${employee.employee_name}" class="form-control"
+                <input type="text" id="emp_name" name="emp_name" th:value="${employee.employee_name}"
+                       class="form-control"
                        readonly>
             </div>
 

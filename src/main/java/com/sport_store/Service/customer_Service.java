@@ -6,6 +6,7 @@ import com.sport_store.Entity.Accounts;
 import com.sport_store.Entity.Customers;
 import com.sport_store.Repository.account_Repository;
 import com.sport_store.Repository.customer_Repository;
+import com.sport_store.Repository.employee_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,14 @@ import java.util.stream.Collectors;
 public class customer_Service {
     private final customer_Repository customer_repository;
     private final account_Repository account_repository;
+    private final employee_Repository employee_repository;
 
     public void create_customer(Customers customer) {
 
-        if (customer_repository.findByEmail(customer.getCustomer_email()) != null) {
+        if (customer_repository.findByEmail(customer.getCustomer_email()) != null && employee_repository.getEmployeeByEmail(customer.getCustomer_email()) != null) {
             throw new RuntimeException("Email đã tồn tại");
         }
-        if (customer_repository.findByPhone(customer.getCustomer_phone()) != null) {
+        if (customer_repository.findByPhone(customer.getCustomer_phone()) != null && employee_repository.existsByEmployeePhone(customer.getCustomer_phone())) {
             throw new RuntimeException("Số điện thoại đã tồn tại");
         }
         customer_repository.save(customer);
@@ -53,9 +55,6 @@ public class customer_Service {
         customer_repository.save(customer);
     }
 
-    public boolean existByEmail(String email) {
-        return customer_repository.findByEmail(email) != null;
-    }
 
     public List<customerInfo_response> getCustomerInfoList() {
         List<Customers> customers = customer_repository.findAll();
@@ -83,7 +82,7 @@ public class customer_Service {
                 .collect(Collectors.toList());
     }
 
-    public Customers finbyId(String id){
+    public Customers findCustomerByID(String id) {
         return customer_repository.findById(id).orElse(null);
     }
 }

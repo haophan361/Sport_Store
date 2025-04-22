@@ -13,63 +13,52 @@
                             Account
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button"
-                                    onclick="window.location.href='/web/form_login'">
+                            <a class="dropdown-item"
+                               th:href="@{/web/form_login}">
                                 Sign in
-                            </button>
-                            <button class="dropdown-item" type="button"
-                                    onclick="window.location.href='/web/form_register'">
+                            </a>
+                            <a class="dropdown-item"
+                               th:href="@{/web/form_register}">
                                 Sign up
-                            </button>
+                            </a>
                         </div>
                     </div>
                     <div class="btn-group mx-2" th:if="${session.role=='ADMIN'}">
-<!--                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">-->
-                        <button type="button" class="btn btn-sm btn-light" onclick="window.location.href='/admin/dashboard'">
+                        <button type="button" class="btn btn-sm btn-light"
+                                onclick="window.location.href='/admin/dashboard'">
                             <b> Quản lý cửa hàng </b>
                         </button>
-<!--                        <div class="dropdown-menu dropdown-menu-right">-->
-<!--                            <button class="dropdown-item" type="button"-->
-<!--                                    onclick="window.location.href='/admin/dashboard'">-->
-<!--                                Quản lý nhập hàng-->
-<!--                            </button>-->
-<!--                        </div>-->
                     </div>
                     <div class="btn-group mx-2" th:if="${session.isLoggedIn==1}">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
                             <b th:text="${session.name}"></b>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button th:if="${session.role!='ADMIN'}" class="dropdown-item" type="button"
-                                    onclick="window.location.href='/form/changeInfoCustomer'">Cập nhật thông tin cá nhân
-                            </button>
-                            <button th:if="${session.role=='CUSTOMER'}" class="dropdown-item" type="button"
-                                    onclick="window.location.href='/customer/bills'">Lịch sử đơn hàng
-                            </button>
-                            <button class="dropdown-item" type="button"
-                                    onclick="window.location.href='/form/changePassword'">Đổi mật khẩu
-                            </button>
-                            <button class="dropdown-item" type="button" onclick="logout()">Đăng xuất</button>
+                            <a th:if="${session.role!='ADMIN'}" class="dropdown-item"
+                               th:href="@{/form/changeInfoCustomer}">Cập nhật thông tin cá nhân
+                            </a>
+                            <a th:if="${session.role=='CUSTOMER'}" class="dropdown-item"
+                               th:href="@{/customer/bills}">Lịch sử đơn hàng
+                            </a>
+                            <a class="dropdown-item" type="button"
+                               th:href="@{/form/changePassword}">Đổi mật khẩu
+                            </a>
+                            <a class="dropdown-item" onclick="logout()">Đăng xuất</a>
                         </div>
                     </div>
                 </div>
                 <div class="d-inline-flex align-items-center d-block d-lg-none">
-                    <a href="" class="btn px-0 ml-2">
-                        <i class="fas fa-heart text-dark"></i>
-                        <span class="badge text-dark border border-dark rounded-circle"
-                              style="padding-bottom: 2px;">0</span>
-                    </a>
-                    <a href="" class="btn px-0 ml-2">
+                    <a th:href="@{/customer/cart}" class="btn px-0 ml-2">
                         <i class="fas fa-shopping-cart text-dark"></i>
-                        <span class="badge text-dark border border-dark rounded-circle"
-                              style="padding-bottom: 2px;">0</span>
+                        <span class="badge text-dark border border-dark rounded-circle" th:text="${session.cart_size}"
+                              style="padding-bottom: 2px;"></span>
                     </a>
                 </div>
             </div>
         </div>
         <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
             <div class="col-lg-4">
-                <a href="" class="text-decoration-none">
+                <a th:href="@{/}" class="text-decoration-none">
                     <span class="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
                     <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
                 </a>
@@ -101,14 +90,12 @@
                 </a>
                 <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light"
                      id="navbar-vertical" style="width: calc(100% - 30px); z-index: 999;">
-                    <div class="navbar-nav w-100">
+                    <div th:each="category: ${all_category}" class="navbar-nav w-100">
                         <!--/*@thymesVar id="all_category" type="com.sport_store.Entity.Categories"*/-->
-                        <div th:each="category: ${all_category}" class="nav-item dropdown dropright">
-                            <a th:href="@{'/web/shop?category_id='+${category.category_id}}"
-                               class="nav-link dropdown-toggle" data-toggle="dropdown">
-                                <span th:text="${category.category_name}"></span>
-                            </a>
-                        </div>
+                        <a th:href="@{'/web/shop?category_id='+${category.category_id}}"
+                           class="nav-item nav-link">
+                            <span th:text="${category.category_name}"></span>
+                        </a>
                     </div>
                 </nav>
             </div>
@@ -129,10 +116,11 @@
                                th:classappend="${url=='shop' ? ' active' :''}">Shop</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                            <a href="" class="btn px-0 ml-3">
+                            <a th:href="@{/customer/cart}" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle"
-                                      style="padding-bottom: 2px;">0</span>
+                                      th:text="${session.cart_size}"
+                                      style="padding-bottom: 2px;"></span>
                             </a>
                         </div>
                     </div>
