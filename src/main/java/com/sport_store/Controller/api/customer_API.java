@@ -31,9 +31,14 @@ public class customer_API {
 
     @PutMapping("/customer/changeInfoCustomer")
     public ResponseEntity<?> changeInfoUser(@RequestBody updateCustomer_request request, HttpServletRequest httpServletRequest) {
-        customer_service.updateCustomer(request);
-        load_user_session.refreshUser(httpServletRequest.getSession());
-        return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật thông tin người dùng thành công"));
+        try {
+            customer_service.updateCustomer(request);
+            load_user_session.refreshUser(httpServletRequest.getSession());
+            return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật thông tin người dùng thành công"));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 
 
@@ -63,7 +68,7 @@ public class customer_API {
                 return ResponseEntity.ok(Collections.singletonMap("message", "Danh sách khách hàng trống"));
             }
             return ResponseEntity.ok(customers);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException("Không lấy được danh sách khách hàng" + e.getMessage());
         }
     }

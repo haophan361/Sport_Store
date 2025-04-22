@@ -47,7 +47,7 @@ function renderEmployees(employees) {
                 <td>${e.address}</td>
                 <td>${e.gender ? 'Nam' : 'Nữ'}</td>
                 <td>${e.online ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-secondary">Offline</span>'}</td>
-                <td>${e.active ? '<span class="badge badge-primary">Hoạt động</span>' : '<span class="badge badge-danger">Không hoạt động</span>'}</td>
+                <td>${e.active ? '<span class="badge badge-primary">Đã kích hoạt</span>' : '<span class="badge badge-danger">Bị vô hiệu hóa</span>'}</td>
             </tr>
         `;
         tbody.append(row);
@@ -98,15 +98,22 @@ function saveEmployee() {
             form[0].reset();
             fetchEmployees();
             // Hiển thị thông báo thành công
-            alert(response.message || 'Tạo nhân viên thành công!');
+            bootbox.alert({
+                title: "Thông báo",
+                message: response.message || 'Tạo nhân viên thành công!'
+            });
         },
         error: function (xhr, status, error) {
             // Hiển thị thông báo lỗi
             let errorMsg = 'Lỗi khi tạo nhân viên!';
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMsg = xhr.responseJSON.message;
+            if (xhr.responseText) {
+                errorMsg = xhr.responseText;
             }
-            alert(errorMsg);
+
+            bootbox.alert({
+                title: "Báo Lỗi",
+                message: errorMsg
+            });
         }
     });
 }

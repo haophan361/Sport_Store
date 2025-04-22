@@ -30,7 +30,7 @@ function renderCustomers(customers) {
                     <td>${customer.phone || 'N/A'}</td>
                     <td>${customer.dateOfBirth || 'N/A'}</td>
                     <td>${customer.online ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-secondary">Offline</span>'}</td>
-                    <td>${customer.active ? '<span class="badge badge-primary">Hoạt động</span>' : '<span class="badge badge-danger">Không hoạt động</span>'}</td>
+                    <td>${customer.active ? '<span class="badge badge-primary">Đã kích hoạt</span>' : '<span class="badge badge-danger">Bị vô hiệu hóa</span>'}</td>
                 </tr>
             `;
         tbody.append(row);
