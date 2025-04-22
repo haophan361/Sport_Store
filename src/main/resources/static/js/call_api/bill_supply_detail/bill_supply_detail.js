@@ -26,6 +26,11 @@ function loadBillDetailSupply(bill_supply_id) {
                     <td>${d.quantity}</td>
                     <td>${formatCurrency(d.cost)}</td>
                     <td>${formatCurrency(total)}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-danger btn-delete-detail" data-id="${d.detail_id}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
                 </tr>
                 `;
             });
