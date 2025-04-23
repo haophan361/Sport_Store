@@ -5,6 +5,9 @@ function loadBillDetailSupply(bill_supply_id) {
             if (!Array.isArray(bill_supply_details)) {
                 bill_supply_details = [];
             }
+            if ($.fn.DataTable.isDataTable('#billSupplyDetailTable')) {
+                $('#billSupplyDetailTable').DataTable().clear().destroy();
+            }
             document.getElementById("selected-bill-id").textContent = bill_supply_id;
 
             const tbody = document.getElementById("bill-detail-body");
@@ -34,10 +37,6 @@ function loadBillDetailSupply(bill_supply_id) {
             document.getElementById("nhapkho-content").style.display = "none";
             document.getElementById("bill-detail-section").style.display = "block";
             document.getElementById("detail-total-amount").textContent = formatCurrency(total_bill);
-
-            if ($.fn.DataTable.isDataTable('#billSupplyDetailTable')) {
-                $('#billSupplyDetailTable').DataTable().clear().destroy();
-            }
 
             $('#billSupplyDetailTable').DataTable({
                 pageLength: 10,

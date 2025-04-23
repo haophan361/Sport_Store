@@ -14,6 +14,9 @@ function fetchProduct() {
 // ==================== TẢI SẢN PHẨM ====================
 function loadProducts(data) {
     const tbody = document.getElementById("product-list");
+    if ($.fn.DataTable.isDataTable('#productTable')) {
+        $('#productTable').DataTable().clear().destroy();
+    }
     tbody.innerHTML = "";
     data.forEach(p => {
         const row = `
@@ -27,25 +30,12 @@ function loadProducts(data) {
                 ${p.active === true ? 'Đang bán' : 'Ngừng bán'}
               </span>
             </td>
-            <td class="text-center">
-                    <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" data-toggle="modal" data-target="#addProductModal">
-                    <i class="bi bi-pencil-square"></i>
-                  </button>
-                  <button class="btn btn-sm btn-outline-danger" title="Xoá">
-                    <i class="bi bi-trash"></i>
-                  </button>
-            </td>
-            
+            <td></td>
           </tr>
         `;
         tbody.insertAdjacentHTML("beforeend", row);
     });
-
-    if ($.fn.DataTable.isDataTable('#selectedOptionTable')) {
-        $('#selectedOptionTable').DataTable().clear().destroy();
-    }
-
-    $('#selectedOptionTable').DataTable({
+    $('#productTable').DataTable({
         pageLength: 10,
         language: {
             search: "Tìm kiếm:",
@@ -89,4 +79,3 @@ $(document).on("click", "#product-list tr", function () {
     document.getElementById("selected_product_id").value = productId
     fetchColor()
 });
-

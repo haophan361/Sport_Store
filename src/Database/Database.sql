@@ -108,26 +108,6 @@ CREATE TABLE `carts`(
     FOREIGN KEY (option_id) REFERENCES product_options(option_id)
 );
 
-CREATE TABLE `comments`(
-	`comment_id` VARCHAR(100) PRIMARY KEY,
-    `comment_content` NVARCHAR(500),
-    `comment_rate` INT,
-    `comment_datetime` DATETIME,
-    `is_update` TINYINT(1),
-    `customer_id` VARCHAR(100),
-    `product_id` VARCHAR(100),
-    FOREIGN KEY (product_id) REFERENCES products(product_id),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
-);
-
-CREATE TABLE `coupons`(
-	`coupon_id` VARCHAR(50) PRIMARY KEY,
-    `coupon_percentage` INT,
-    `coupon_start_date` DATETIME,
-    `coupon_expiration_date` DATETIME,
-    `coupon_attempts_left` INT
-);
-
 CREATE TABLE `bills`(
 	`bill_id` VARCHAR(100) PRIMARY KEY,
     `bill_total_cost` DECIMAL(10,2) DEFAULT 0,	
@@ -138,10 +118,8 @@ CREATE TABLE `bills`(
     `is_active` TINYINT(1),
     `receiver_id` VARCHAR(100),
     `employee_id` VARCHAR(100),
-    `coupon_id` VARCHAR(50),
     FOREIGN KEY(receiver_id) REFERENCES receiver_info(receiver_id),
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
-    FOREIGN KEY (coupon_id) REFERENCES coupons(coupon_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );  
    
 CREATE TABLE `bill_details`(
@@ -162,7 +140,7 @@ CREATE TABLE `bill_supplies`(
     `supplier_phone` VARCHAR(10),
     `supplier_address` VARCHAR(300),
     `bill_supply_cost` DECIMAL(10,2),
-    `bill_supply_date` DATETIME
+    `bill_supply_date` DATETIME	
 );
 
 CREATE TABLE `bill_supply_details`(

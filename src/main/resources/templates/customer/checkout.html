@@ -36,155 +36,57 @@
     <div class="row px-xl-5">
         <div class="col-12">
             <nav class="breadcrumb bg-light mb-30">
-                <a class="breadcrumb-item text-dark" href="#">Home</a>
-                <a class="breadcrumb-item text-dark" href="#">Shop</a>
-                <span class="breadcrumb-item active">Checkout</span>
+                <a class="breadcrumb-item text-dark" th:href="@{/}">Home</a>
+                <a class="breadcrumb-item text-dark" th:href="@{/web/shop}">Shop</a>
+                <span class="breadcrumb-item active">Thanh toán</span>
             </nav>
         </div>
     </div>
 </div>
 <!-- Breadcrumb End -->
 
-
 <!-- Checkout Start -->
 <div class="container-fluid">
     <div class="row px-xl-5">
         <div class="col-lg-8">
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Billing Address</span>
+            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Thông tin nhận hàng</span>
             </h5>
             <div class="bg-light p-30 mb-5">
                 <div class="row">
-                    <input type="hidden" id="customerId" th:value="${customerId}">
-                    <input type="hidden" id="appliedCouponId" th:value="${appliedCoupon != null ? appliedCoupon.coupon_id : ''}">
                     <div class="col-md-12 form-group">
-                        <label>Select Receiver Information</label>
-                        <select class="form-control" id="receiverSelect">
-                            <option value="">-- Select Receiver --</option>
-                            <option th:each="receiver : ${receivers}" 
-                                    th:value="${receiver.receiver_id}" 
-                                    th:text="${receiver.receiver_name + ' - ' + receiver.receiver_phone + ' - ' + 
-                                             receiver.receiver_city + ' ' + receiver.receiver_district + ' ' + 
-                                             receiver.receiver_ward + ' ' + receiver.receiver_street}">
-                            </option>
-                        </select>
+                        <label>Chọn thông tin nhận hàng</label>
+                        <select class="form-control" id="receiverSelect"></select>
                     </div>
                     <div class="col-md-12 form-group">
-                        <button type="button" class="btn btn-primary" onclick="form_addInfo_Receiver()">Add New Receiver Information</button>
-                    </div>
-                </div>
-            </div>
-            <div class="collapse mb-5" id="shipping-address">
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Shipping Address</span>
-                </h5>
-                <div class="bg-light p-30">
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label>First Name</label>
-                            <input class="form-control" type="text" placeholder="John">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Last Name</label>
-                            <input class="form-control" type="text" placeholder="Doe">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>E-mail</label>
-                            <input class="form-control" type="text" placeholder="example@email.com">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Mobile No</label>
-                            <input class="form-control" type="text" placeholder="+123 456 789">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address Line 1</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address Line 2</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Country</label>
-                            <select class="custom-select">
-                                <option selected>United States</option>
-                                <option>Afghanistan</option>
-                                <option>Albania</option>
-                                <option>Algeria</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>City</label>
-                            <input class="form-control" type="text" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>State</label>
-                            <input class="form-control" type="text" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>ZIP Code</label>
-                            <input class="form-control" type="text" placeholder="123">
-                        </div>
+                        <button type="button" class="btn btn-primary" onclick="form_addInfo_Receiver()">Thêm thông tin
+                            nhận hàng
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-4">
             <h5 class="section-title position-relative text-uppercase mb-3"><span
-                    class="bg-secondary pr-3">Order Total</span></h5>
-            <div class="bg-light p-30 mb-5">
-                <div class="border-bottom">
-                    <h6 class="mb-3">Products</h6>
-                    <div th:each="cart: ${carts}" class="d-flex justify-content-between" th:data-product-option-id="${cart.product_options.option_id.toString()}">
-                        <p th:text="${cart.product_options.products.product_name + ' ' + 
-                                   cart.product_options.colors.color + ' ' + 
-                                   cart.product_options.option_size + ' x ' + 
-                                   cart.cart_quantity}"></p>
-                        <p th:text="${cart.product_options.option_cost * cart.cart_quantity + '.000 VNĐ'}"></p>
-                    </div>
-                </div>
-                <div class="border-bottom pt-3 pb-2">
-                    <div class="d-flex justify-content-between mb-3">
-                        <h6>Subtotal</h6>
-                        <h6 th:text="${totalAmount + '00 VNĐ'}"></h6>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <h6 class="font-weight-medium">Shipping</h6>
-                        <h6 class="font-weight-medium">Free</h6>
-                    </div>
-                    <div th:if="${appliedCoupon}" class="d-flex justify-content-between">
-                        <h6 class="font-weight-medium">Coupon Discount (<span th:text="${appliedCoupon.coupon_id}"></span> - <span th:text="${appliedCoupon.coupon_percentage}"></span>%)</h6>
-                        <h6 class="font-weight-medium" th:text="${discountAmount + '00 VNĐ'}"></h6>
-                    </div>
-                </div>
-                <div class="pt-2">
-                    <div class="d-flex justify-content-between mt-2">
-                        <h5>Total</h5>
-                        <h5 th:text="${finalTotal + '00 VNĐ'}"></h5>
-                    </div>
-                </div>
-            </div>
+                    class="bg-secondary pr-3">Hóa đơn</span></h5>
+            <div id="cartCheckout" class="bg-light p-30 mb-5"></div>
             <div class="mb-5">
                 <h5 class="section-title position-relative text-uppercase mb-3"><span
-                        class="bg-secondary pr-3">Payment</span></h5>
+                        class="bg-secondary pr-3">Phương thức than toán</span></h5>
                 <div class="bg-light p-30">
                     <div class="form-group">
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                            <label class="custom-control-label" for="paypal">Paypal</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                            <label class="custom-control-label" for="directcheck">Direct Check</label>
+                            <input type="radio" class="custom-control-input" name="payment" value="0" id="directCheck">
+                            <label class="custom-control-label" for="directCheck">Thanh toán khi nhận hàng</label>
                         </div>
                     </div>
                     <div class="form-group mb-4">
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                            <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
+                            <input type="radio" class="custom-control-input" name="payment" value="1" id="bankTransfer">
+                            <label class="custom-control-label" for="bankTransfer">Thanh toán trước</label>
                         </div>
                     </div>
-                    <button id="placeOrderBtn" class="btn btn-block btn-primary font-weight-bold py-3">Place Order</button>
+                    <button id="placeOrderBtn" class="btn btn-block btn-primary font-weight-bold py-3">Đặt hàng
+                    </button>
                 </div>
             </div>
         </div>
@@ -192,272 +94,81 @@
 </div>
 <!-- Checkout End -->
 
-
-<!-- Footer Start -->
-<div class="container-fluid bg-dark text-secondary mt-5 pt-5">
-    <div class="row px-xl-5 pt-5">
-        <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
-            <h5 class="text-secondary text-uppercase mb-4">Get In Touch</h5>
-            <p class="mb-4">No dolore ipsum accusam no lorem. Invidunt sed clita kasd clita et et dolor sed dolor. Rebum
-                tempor no vero est magna amet no</p>
-            <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-            <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-            <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
-        </div>
-        <div class="col-lg-8 col-md-12">
-            <div class="row">
-                <div class="col-md-4 mb-5">
-                    <h5 class="text-secondary text-uppercase mb-4">Quick Shop</h5>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Shop</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Shop Detail</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Shopping Cart</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Checkout</a>
-                        <a class="text-secondary" href="#"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-5">
-                    <h5 class="text-secondary text-uppercase mb-4">My Account</h5>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Our Shop</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Shop Detail</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Shopping Cart</a>
-                        <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Checkout</a>
-                        <a class="text-secondary" href="#"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-5">
-                    <h5 class="text-secondary text-uppercase mb-4">Newsletter</h5>
-                    <p>Duo stet tempor ipsum sit amet magna ipsum tempor est</p>
-                    <form action="">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Your Email Address">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary">Sign Up</button>
-                            </div>
-                        </div>
-                    </form>
-                    <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
-                    <div class="d-flex">
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row border-top mx-xl-5 py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
-        <div class="col-md-6 px-xl-0">
-            <p class="mb-md-0 text-center text-md-left text-secondary">
-                &copy; <a class="text-primary" href="#">Domain</a>. All Rights Reserved. Designed
-                by
-                <a class="text-primary" href="https://htmlcodex.com">HTML Codex</a>
-                <br>Distributed By: <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-            </p>
-        </div>
-        <div class="col-md-6 px-xl-0 text-center text-md-right">
-            <img class="img-fluid" src="img/payments.png" alt="">
-        </div>
-    </div>
-</div>
-<!-- Footer End -->
-
-
 <!-- Back to Top -->
 <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
-<!-- JavaScript Libraries -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/lib/easing/easing.min.js}"></script>
-<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
-
-<!-- Contact Javascript File -->
-<script th:src="@{/mail/jqBootstrapValidation.min.js}"></script>
-<script th:src="@{/mail/contact.js}"></script>
-<script th:src="@{/js/call_api/cart/cart.js}"></script>
-
-<!-- Checkout Javascript -->
-<script>
-    $(document).ready(function() {
-        $('#placeOrderBtn').click(function() {
-            const receiverId = $('#receiverSelect').val();
-            if (!receiverId) {
-                alert('Please select a receiver information');
-                return;
-            }
-            
-            const customerId = $('#customerId').val();
-            if (!customerId) {
-                alert('Please login to place order');
-                window.location.href = '/login';
-                return;
-            }
-            
-            // Get cart items from the page
-            const cartItems = [];
-            $('.d-flex.justify-content-between').each(function() {
-                const productText = $(this).find('p:first').text();
-                const quantityMatch = productText.match(/x (\d+)$/);
-                if (quantityMatch) {
-                    const quantity = parseInt(quantityMatch[1]);
-                    // We need to get the product option ID from somewhere
-                    // This is a placeholder - you need to add the actual product option ID
-                    const productOptionId = $(this).data('product-option-id');
-                    if (productOptionId) {
-                        cartItems.push({
-                            product_option_id: productOptionId,
-                            quantity: quantity
-                        });
-                    }
-                }
-            });
-            
-            if (cartItems.length === 0) {
-                alert('Your cart is empty');
-                return;
-            }
-            
-            $.ajax({
-                url: '/api/bills/create',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    customer_id: customerId,
-                    receiver_id: receiverId,
-                    cart_items: cartItems,
-                    coupon_id: $('#appliedCouponId').val() || null
-                }),
-                success: function(response) {
-                    if (response && response.bill_id) {
-                        window.location.href = '/orderconfirmation/' + response.bill_id;
-                    } else {
-                        alert('Error creating order. Please try again.');
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Error response:', xhr.responseText);
-                    alert('Error placing order: ' + (xhr.responseJSON ? xhr.responseJSON.error : 'Unknown error'));
-                }
-            });
-        });
-    });
-</script>
 
 <!-- Add Receiver Modal -->
 <div class="modal fade" id="addReceiverModal" tabindex="-1" aria-labelledby="addReceiverModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addReceiverModalLabel">Add New Receiver Information</h5>
+                <h5 class="modal-title" id="addReceiverModalLabel">Thêm thông tin nhận hàng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="addReceiverForm">
                     <div class="mb-3">
-                        <label for="receiver_name" class="form-label">Full Name</label>
+                        <label for="receiver_name" class="form-label">Họ và tên</label>
                         <input type="text" class="form-control" id="receiver_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="receiver_phone" class="form-label">Phone Number</label>
+                        <label for="receiver_phone" class="form-label">Số diện thoại</label>
                         <input type="text" class="form-control" id="receiver_phone" required>
                     </div>
+
                     <div class="mb-3">
-                        <label for="cityName" class="form-label">City</label>
-                        <input type="text" class="form-control" id="cityName" required>
+                        <label for="cities">Tỉnh/Thành phố</label>
+                        <select id="cities" class="form-control" required>
+                            <option name="city" value="" selected>Tỉnh/thành phố</option>
+                        </select>
+                        <input type="hidden" id="cityName" name="city" value="">
                     </div>
+
                     <div class="mb-3">
-                        <label for="districtName" class="form-label">District</label>
-                        <input type="text" class="form-control" id="districtName" required>
+                        <label for="districts">Quận/Huyện</label>
+                        <select id="districts" class="form-control" required>
+                            <option value="" selected>Quận/huyện</option>
+                        </select>
+                        <input type="hidden" id="districtName" name="district" value="">
                     </div>
+
                     <div class="mb-3">
-                        <label for="wardName" class="form-label">Ward</label>
-                        <input type="text" class="form-control" id="wardName" required>
+                        <label for="wards">Phường/Xã</label>
+                        <select id="wards" class="form-control" required>
+                            <option value="" selected>Phường/xã</option>
+                        </select>
+                        <input type="hidden" id="wardName" name="ward" value="">
                     </div>
+
                     <div class="mb-3">
-                        <label for="street" class="form-label">Street</label>
+                        <label for="street" class="form-label">Tên đường, Số nhà</label>
                         <input type="text" class="form-control" id="street" required>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="add_infoReceiver()">Add</button>
+                <button type="button" class="btn btn-primary" onclick="add_infoReceiver()">Thêm</button>
             </div>
         </div>
     </div>
 </div>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+<script th:src="@{/lib/easing/easing.min.js}"></script>
+<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
 
-<!-- JavaScript for Receiver Information -->
-<script>
-    function form_addInfo_Receiver() {
-        // Clear form fields
-        document.getElementById('receiver_name').value = '';
-        document.getElementById('receiver_phone').value = '';
-        document.getElementById('cityName').value = '';
-        document.getElementById('districtName').value = '';
-        document.getElementById('wardName').value = '';
-        document.getElementById('street').value = '';
-        
-        // Show modal
-        var modal = new bootstrap.Modal(document.getElementById('addReceiverModal'));
-        modal.show();
-    }
-    
-    function add_infoReceiver() {
-        // Get form values
-        const formData = {
-            name: document.getElementById('receiver_name').value,
-            phone: document.getElementById('receiver_phone').value,
-            city: document.getElementById('cityName').value,
-            district: document.getElementById('districtName').value,
-            ward: document.getElementById('wardName').value,
-            street: document.getElementById('street').value
-        };
-        
-        // Validate form
-        if (!formData.name || !formData.phone || !formData.city || !formData.district || !formData.ward) {
-            alert('Please fill in all required fields');
-            return;
-        }
-        
-        // Call API
-        fetch('/customer/add_infoReceiver', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert(data.message);
-            // Close modal
-            var modal = bootstrap.Modal.getInstance(document.getElementById('addReceiverModal'));
-            modal.hide();
-            // Reload page to show new receiver
-            window.location.reload();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error adding receiver information');
-        });
-    }
-</script>
+<!-- Contact Javascript File -->
+<script th:src="@{/mail/jqBootstrapValidation.min.js}"></script>
+<script th:src="@{/mail/contact.js}"></script>
 
 <!-- Template Javascript -->
 <script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/call_api/customer/changeInfoUser.js}"></script>
 <script th:src="@{/js/call_api/order/order.js}"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
+
 </body>
 
 </html>

@@ -1,0 +1,12 @@
+/* src/main/resources/static/css/statistics.css */
+.canvas {
+    max-height: 400px;
+}
+
+.input-group .form-control {
+    margin-right: 10px;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
