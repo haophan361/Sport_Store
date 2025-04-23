@@ -1,3 +1,4 @@
+
 function saveColor() {
     const color = document.getElementById("new_color_name").value
     apiRequest("/admin/insert_color", "POST", {}, color, null, null, "include",
@@ -6,6 +7,8 @@ function saveColor() {
             fetchColor()
         })
 }
+
+let selectedColorId = null;
 
 function fetchColor() {
     fetch("/getAllColor")
@@ -18,9 +21,22 @@ function fetchColor() {
                 const div = document.createElement("div");
                 div.className = "dropdown-item d-flex justify-content-between align-items-center";
                 div.innerHTML = `
-            <span>${item.color}</span>
-            <i class="fas fa-trash-alt text-danger" style="cursor:pointer;" onclick="deleteColor(${item.color_id})"></i>
-          `;
+          <span>${item.color}</span>
+          <i class="fas fa-trash-alt text-danger" style="cursor:pointer;" onclick="deleteColor(${item.color_id})"></i>
+        `;
+
+                div.onclick = function (e) {
+                    if (e.target.tagName === "I") return;
+
+                    const btn = div.closest(".dropdown").querySelector(".dropdown-toggle");
+                    btn.innerText = item.color;
+
+                    selectedColorId = item.color_id;
+
+                    const hiddenInput = document.getElementById("colorId");
+                    if (hiddenInput) hiddenInput.value = item.color_id;
+                };
+
                 dropdown.appendChild(div);
             });
 
