@@ -20,11 +20,11 @@ public class brand_Service {
         brand_repository.save(brands);
     }
 
-    public void deleteBrand(String brand_id) {
+    public void deleteBrand(Integer brand_id) {
         brand_repository.deleteById(brand_id);
     }
 
-    public Brands getBrand(String brand_id) {
+    public Brands getBrand(Integer brand_id) {
         return brand_repository.findById(brand_id).orElse(null);
 
     }

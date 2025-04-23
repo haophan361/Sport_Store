@@ -24,7 +24,7 @@ public class brand_API {
     }
 
     @PostMapping("admin/delete_brand")
-    public ResponseEntity<?> delete_brand(@RequestBody String brand_id) {
+    public ResponseEntity<?> delete_brand(@RequestBody Integer brand_id) {
         brand_service.deleteBrand(brand_id);
         return ResponseEntity.ok(Collections.singletonMap("message", "Xóa thương hiệu thành công"));
     }

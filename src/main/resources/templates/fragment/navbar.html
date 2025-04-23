@@ -22,15 +22,16 @@
                         </div>
                     </div>
                     <div class="btn-group mx-2" th:if="${session.role=='ADMIN'}">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
-                            <b> Quản lý</b>
+<!--                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">-->
+                        <button type="button" class="btn btn-sm btn-light" onclick="window.location.href='/admin/dashboard'">
+                            <b> Quản lý cửa hàng </b>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button"
-                                    onclick="window.location.href='/admin/dashboard'">
-                                Quản lý nhập hàng
-                            </button>
-                        </div>
+<!--                        <div class="dropdown-menu dropdown-menu-right">-->
+<!--                            <button class="dropdown-item" type="button"-->
+<!--                                    onclick="window.location.href='/admin/dashboard'">-->
+<!--                                Quản lý nhập hàng-->
+<!--                            </button>-->
+<!--                        </div>-->
                     </div>
                     <div class="btn-group mx-2" th:if="${session.isLoggedIn==1}">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
@@ -39,6 +40,9 @@
                         <div class="dropdown-menu dropdown-menu-right">
                             <button th:if="${session.role!='ADMIN'}" class="dropdown-item" type="button"
                                     onclick="window.location.href='/form/changeInfoCustomer'">Cập nhật thông tin cá nhân
+                            </button>
+                            <button th:if="${session.role=='CUSTOMER'}" class="dropdown-item" type="button"
+                                    onclick="window.location.href='/customer/bills'">Lịch sử đơn hàng
                             </button>
                             <button class="dropdown-item" type="button"
                                     onclick="window.location.href='/form/changePassword'">Đổi mật khẩu

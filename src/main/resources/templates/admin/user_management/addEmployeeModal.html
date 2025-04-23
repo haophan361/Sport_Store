@@ -1,0 +1,58 @@
+<div th:fragment="addEmployeeModal">
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addEmployeeModalLabel">Thêm Nhân Viên Mới</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="employee-form">
+                        <div class="form-group">
+                            <label for="employee_name">Tên nhân viên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="employee_name" required placeholder="Nhập tên nhân viên">
+                            <div class="invalid-feedback">Tên nhân viên không được để trống.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee_email">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="employee_email" required placeholder="Nhập email">
+                            <div class="invalid-feedback">Email không hợp lệ.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee_phone">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="employee_phone" required pattern="[0-9]{10}" placeholder="Nhập số điện thoại (10 số)">
+                            <div class="invalid-feedback">Số điện thoại phải là 10 chữ số.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee_address">Địa chỉ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="employee_address" required placeholder="Nhập địa chỉ">
+                            <div class="invalid-feedback">Địa chỉ không được để trống.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee_date_of_birth">Ngày sinh <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="employee_date_of_birth" required>
+                            <div class="invalid-feedback">Ngày sinh không được để trống.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee_gender">Giới tính <span class="text-danger">*</span></label>
+                            <select class="form-control" id="employee_gender" required>
+                                <option value="" disabled selected>Chọn giới tính</option>
+                                <option value="true">Nam</option>
+                                <option value="false">Nữ</option>
+                            </select>
+                            <div class="invalid-feedback">Vui lòng chọn giới tính.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Mật khẩu <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" required minlength="5" placeholder="Nhập mật khẩu (tối thiểu 5 ký tự)">
+                            <div class="invalid-feedback">Mật khẩu phải có ít nhất 5 ký tự.</div>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveEmployee()">Lưu Nhân Viên</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
