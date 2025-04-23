@@ -10,6 +10,8 @@ function saveBrand() {
 
 }
 
+let selectedBrandId = null; 
+
 function fetchBrand() {
     fetch("/getAllBrand")
         .then((response) => response.json())
@@ -24,9 +26,25 @@ function fetchBrand() {
                     <span>${item.brand_name}</span>
                     <i class="fas fa-trash-alt text-danger" style="cursor:pointer;" onclick="deleteBrand(${item.brand_id})"></i>
                 `;
+
+                // Gán sự kiện click chọn thương hiệu
+                div.onclick = function (e) {
+                    if (e.target.tagName === "I") return; // Bỏ qua nếu click vào icon
+
+                    const btn = div.closest(".dropdown").querySelector(".dropdown-toggle");
+                    btn.innerText = item.brand_name;
+
+                    selectedBrandId = item.brand_id;
+
+                    // Nếu có input ẩn lưu brand_id
+                    const hiddenInput = document.getElementById("brandId");
+                    if (hiddenInput) hiddenInput.value = item.brand_id;
+                };
+
                 dropdown.appendChild(div);
             });
 
+            // Dòng thêm mới
             const addNew = document.createElement("div");
             addNew.className = "dropdown-item text-primary";
             addNew.setAttribute("data-toggle", "modal");
@@ -35,6 +53,7 @@ function fetchBrand() {
             dropdown.appendChild(addNew);
         });
 }
+
 
 function deleteBrand(brandId) {
     if (confirm("Bạn có chắc muốn xóa thương hiệu này?")) {
