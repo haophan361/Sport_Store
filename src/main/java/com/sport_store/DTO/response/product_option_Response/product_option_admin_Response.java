@@ -20,9 +20,9 @@ public class product_option_admin_Response {
     private int quantity;
     private int discount;
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime start;
+    private LocalDateTime time_start;
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime end;
+    private LocalDateTime time_end;
     private String image;
     private boolean active;
 

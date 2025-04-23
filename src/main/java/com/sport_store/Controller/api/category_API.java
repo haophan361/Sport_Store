@@ -23,9 +23,13 @@ public class category_API {
     }
 
     @PostMapping("/admin/delete_category")
-    public ResponseEntity<?> delete_category(@RequestBody int category_id) {
-        category_service.deleteCategory(category_id);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Xóa loại sản phẩm thành công"));
+    public ResponseEntity<?> delete_category(@RequestParam int category_id) throws Exception {
+        try {
+            category_service.deleteCategory(category_id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Xóa loại sản phẩm thành công"));
+        } catch (Exception e) {
+            throw new Exception("Không thể xóa loại sản phẩm này do " + e.getMessage());
+        }
     }
 
     @GetMapping("/getAllCategory")

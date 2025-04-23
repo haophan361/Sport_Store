@@ -62,7 +62,7 @@ public class product_option_Service {
                     .divide(new BigDecimal(100), 0, RoundingMode.FLOOR);
             return price.subtract(discount_price);
         }
-        return null;
+        return price;
     }
 
     public List<Product_Options> Get_productOption(String product_id, String color) {

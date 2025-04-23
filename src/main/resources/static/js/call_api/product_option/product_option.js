@@ -20,24 +20,28 @@ function displayProductOptions(productId) {
             const tbody = document.getElementById('product-option-list');
             const container = document.getElementById("product-option-content");
             tbody.innerHTML = '';
-
             options.forEach(option => {
+                let discount_time = ""
+                if (option.discount > 0) {
+                    discount_time = `${option.time_start} - ${option.time_end}`;
+                }
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${option.option_id}</td>
-                    <td>${option.color || "Không rõ"}</td>
+                    <td>${option.color}</td>
                     <td>${option.size}</td>
                     <td>${option.quantity}</td>
                     <td>${option.cost + ".000 VNĐ"}</td>
                     <td>${option.discount + "%"}</td>
+                    <td>${discount_time}</td>
                     <td><img src="${option.image}" width="50" alt="Hình ảnh mẫu sản phẩm"></td>
                     <td><input type="checkbox" ${option.active ? 'checked' : ''}></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" data-toggle="modal" data-target="#addProductModal">
-                        <i class="bi bi-pencil-square"></i>
+                            <i class="bi bi-pencil-square"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" title="Xoá">
-                        <i class="bi bi-trash"></i>
+                        <button class="btn btn-sm btn-outline-danger" title="Xoá" onclick="deleteOption('${option.option_id}')">
+                            <i class="bi bi-trash"></i>
                         </button>
                     </td>
                 `;
@@ -83,5 +87,32 @@ function saveProductOption() {
         null, null, "include", function () {
             $('#addOptionModal').modal('hide');
             displayProductOptions(document.getElementById("selected_product_id").value);
+        })
+}
+
+function deleteOption(option_id) {
+    bootbox.confirm(
+        {
+            title: "Xác nhận xóa thông tin",
+            message: "Bạn có muốn hủy đơn hàng này không",
+            buttons:
+                {
+                    confirm:
+                        {
+                            label: 'Xác nhận',
+                        },
+                    cancel:
+                        {
+                            label: 'Hủy',
+                        }
+                },
+            callback: function (result) {
+                if (result) {
+                    apiRequest("/admin/delete_product_option?option=" + encodeURIComponent(option_id), "PUT", {},
+                        null, null, null, "include", function () {
+                            displayProductOptions(document.getElementById("selected_product_id").value);
+                        })
+                }
+            }
         })
 }

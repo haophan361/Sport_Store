@@ -4,10 +4,7 @@ import com.sport_store.Entity.Colors;
 import com.sport_store.Service.color_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,5 +25,14 @@ public class color_API {
         return color_service.getAllColors();
     }
 
+    @DeleteMapping("/admin/delete_color")
+    public ResponseEntity<?> delete_Color(@RequestParam int color_id) throws Exception {
+        try {
+            color_service.deleteColor(color_id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Xóa màu sắc thành công"));
+        } catch (Exception e) {
+            throw new Exception("Không thể xóa màu do " + e.getMessage());
+        }
+    }
 
 }

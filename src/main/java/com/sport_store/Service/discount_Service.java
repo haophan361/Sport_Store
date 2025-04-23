@@ -26,7 +26,11 @@ public class discount_Service {
     }
 
     public void deleteDiscount(int discount_id) {
-        discount_repository.deleteById(discount_id);
+        Discounts discount = discount_repository.findById(discount_id).orElse(null);
+        if (discount != null) {
+            discount.set_active(false);
+            discount_repository.save(discount);
+        }
     }
 
     public List<Discounts> getAllDiscounts() {

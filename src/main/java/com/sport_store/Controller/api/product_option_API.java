@@ -27,10 +27,10 @@ public class product_option_API {
         return ResponseEntity.ok(Collections.singletonMap("message", "Thêm mẫu sản phẩm thành công"));
     }
 
-    @PostMapping("/admin/delete_product_option")
-    public ResponseEntity<?> delete_product_options(@RequestBody int option_id) {
+    @PutMapping("/admin/delete_product_option")
+    public ResponseEntity<?> delete_product_options(@RequestParam int option_id) {
         product_option_service.delete_product_option(option_id);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Xóa mẫu sản phẩm thành công"));
+        return ResponseEntity.ok(Collections.singletonMap("message", "Ẩn mẫu sản phẩm thành công"));
     }
 
     @GetMapping("/getProductOption")
@@ -55,8 +55,8 @@ public class product_option_API {
                     .quantity(option.getOption_quantity())
                     .cost(decimalFormat.format(option.getOption_cost()))
                     .discount(discountPercentage)
-                    .start(startDate)
-                    .end(endDate)
+                    .time_start(startDate)
+                    .time_end(endDate)
                     .image(option.getColors().getProduct_img().getFirst().getImages().getImage_url())
                     .active(option.is_active())
                     .build();

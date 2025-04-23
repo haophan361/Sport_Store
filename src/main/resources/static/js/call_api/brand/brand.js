@@ -1,5 +1,3 @@
-
-
 function saveBrand() {
     const brand_name = document.getElementById("new_brand_name").value
     apiRequest("/admin/insert_brand", "POST", {}, brand_name,
@@ -37,11 +35,28 @@ function fetchBrand() {
 }
 
 function deleteBrand(brandId) {
-    if (confirm("Bạn có chắc muốn xóa thương hiệu này?")) {
-        fetch(`/admin/delete_brand/${brandId}`, { method: "DELETE" })
-            .then(res => {
-                if (res.ok) fetchBrand();
-                else alert("Xoá thất bại");
-            });
-    }
+    bootbox.confirm(
+        {
+            title: "Xác nhận xóa",
+            message: "Bạn có chắc muốn xóa thương hiệu này?",
+            buttons:
+                {
+                    confirm:
+                        {
+                            label: 'Xác nhận',
+                        },
+                    cancel:
+                        {
+                            label: 'Hủy',
+                        }
+                },
+            callback: function (result) {
+                if (result) {
+                    apiRequest("/admin/delete_brand?brand_id=" + encodeURIComponent(brandId), "DELETE", {},
+                        null, null, null, "include", function () {
+                            fetchBrand()
+                        })
+                }
+            }
+        })
 }

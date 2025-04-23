@@ -67,6 +67,7 @@ public class product_Service {
                     root.join("product_options", JoinType.LEFT);
             product_options.on(criteriaBuilder.conjunction());
             List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.equal(root.get("is_active"), true));
             predicates.add(criteriaBuilder.like(root.get("product_name"), "%" + name + "%"));
             if (category_id != null) {
                 predicates.add(criteriaBuilder.equal(root.get("categories").get("category_id"), category_id));
@@ -74,6 +75,7 @@ public class product_Service {
             if (brand_id != null) {
                 predicates.add(root.get("brands").get("brand_id").in(brand_id));
             }
+            predicates.add(criteriaBuilder.equal(product_options.get("is_active"), true));
             if (size != null && !size.isEmpty()) {
                 predicates.add(product_options.get("option_size").in(size));
             }
