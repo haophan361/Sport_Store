@@ -15,4 +15,7 @@ public interface employee_Repository extends JpaRepository<Employees, String> {
 
     @Query("SELECT count(e)>0 FROM Employees e WHERE e.employee_phone = :phone")
     boolean existsByEmployeePhone(String phone);
+
+    @Query("SELECT count(e)>0 FROM Employees e WHERE e.employee_id != :id AND e.employee_phone = :phone")
+    boolean existsByEmployeePhoneExceptId(String phone, String id);
 }
