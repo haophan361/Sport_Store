@@ -1,6 +1,7 @@
 package com.sport_store.Service;
 
 import com.sport_store.DTO.request.product_option_Request.productOption_request;
+import com.sport_store.DTO.request.product_option_Request.productOption_update_Request;
 import com.sport_store.Entity.*;
 import com.sport_store.Repository.product_option_Repository;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,27 @@ public class product_option_Service {
                 .build();
         product_option_repository.save(product_option);
         product_img_service.save_Product_Img(product, color, images);
+    }
+
+    @Transactional
+    public void updateProductOption(productOption_update_Request request, MultipartFile[] files) {
+        Product_Options product_option = getProduct_Option(request.getProduct_option_id());
+        product_option.setOption_size(request.getSize());
+        product_option.setOption_cost(request.getOption_price());
+        Discounts discount = discount_service.getDiscount(request.getDiscount_id());
+        product_option.setDiscounts(discount);
+        Colors color = color_service.findColorById(request.getColor_id());
+        product_option.setColors(color);
+        if (files != null) {
+            List<Images> images = new ArrayList<>();
+            for (MultipartFile file : files) {
+                String image_url = image_service.upload(file);
+                Images image = image_service.saveImage(image_url);
+                images.add(image);
+            }
+            product_img_service.save_Product_Img(product_option.getProducts(), color, images);
+            product_img_service.deleteProductImg(color.getProduct_img());
+        }
     }
 
     public BigDecimal Get_newPrice(Discounts discount, BigDecimal price) {

@@ -1,5 +1,3 @@
-
-
 function saveDiscount() {
     const form_Discount = {
         discount_percentage: document.getElementById("new_discount_percentage").value,
@@ -31,7 +29,7 @@ function fetchDiscount() {
                 btn.innerText = "Không giảm giá";
                 selectedDiscountId = null;
 
-                const hiddenInput = document.getElementById("discountId");
+                const hiddenInput = document.getElementById("discount_id");
                 if (hiddenInput) hiddenInput.value = "";
             };
             dropdown.appendChild(noDiscount);
@@ -41,6 +39,7 @@ function fetchDiscount() {
                 div.className = "dropdown-item d-flex justify-content-between align-items-center";
                 div.innerHTML = `
           <span>${item.discount_percentage}%</span>
+          <span>Từ ${item.discount_start_date} ${item.discount_end_date}</span>
           <i class="fas fa-trash-alt text-danger" style="cursor:pointer;" onclick="deleteDiscount(${item.discount_id})"></i>
         `;
 
@@ -52,8 +51,10 @@ function fetchDiscount() {
 
                     selectedDiscountId = item.discount_id;
 
-                    const hiddenInput = document.getElementById("discountId");
-                    if (hiddenInput) hiddenInput.value = item.discount_id;
+                    const hiddenInput = document.getElementById("discount_id");
+                    if (hiddenInput) {
+                        hiddenInput.value = item.discount_id;
+                    }
                 };
 
                 dropdown.appendChild(div);

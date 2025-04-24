@@ -20,7 +20,7 @@ public class brand_API {
         return ResponseEntity.ok(Collections.singletonMap("message", "Thêm thương hiệu thành công"));
     }
 
-    @PostMapping("admin/delete_brand")
+    @DeleteMapping("admin/delete_brand")
     public ResponseEntity<?> delete_brand(@RequestParam int brand_id) throws Exception {
         try {
             brand_service.deleteBrand(brand_id);

@@ -30,7 +30,15 @@ function loadProducts(data) {
                 ${p.active === true ? 'Đang bán' : 'Ngừng bán'}
               </span>
             </td>
-            <td></td>
+            <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" data-toggle="modal"
+                         onclick="getProductOptionById('${p.product_id}')" data-target="#addOptionModal">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Xoá" onclick="deleteProduct('${p.product_id}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
           </tr>
         `;
         tbody.insertAdjacentHTML("beforeend", row);
@@ -58,7 +66,6 @@ function saveProduct() {
         description: tinymce.get("product_detail").getContent(),
         category_id: document.getElementById("category_id").value,
         brand_id: document.getElementById("brand_id").value,
-        discount_id: document.getElementById("discount_id").value,
         active: document.getElementById("is_active").checked ? 1 : 0
     };
     apiRequest("/admin/insert_product", "POST", {'Content-type': 'application/json'}, JSON.stringify(newProduct),
@@ -69,6 +76,11 @@ function saveProduct() {
             fetchProduct();
         })
 }
+
+function deleteProduct(product_id) {
+
+}
+
 
 $(document).on("click", "#product-list tr", function () {
     const productId = $(this).data("product-id");

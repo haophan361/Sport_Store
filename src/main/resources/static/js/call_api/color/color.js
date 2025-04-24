@@ -1,4 +1,3 @@
-
 function saveColor() {
     const color = document.getElementById("new_color_name").value
     apiRequest("/admin/insert_color", "POST", {}, color, null, null, "include",
@@ -33,8 +32,10 @@ function fetchColor() {
 
                     selectedColorId = item.color_id;
 
-                    const hiddenInput = document.getElementById("colorId");
-                    if (hiddenInput) hiddenInput.value = item.color_id;
+                    const hiddenInput = document.getElementById("color_id");
+                    if (hiddenInput) {
+                        hiddenInput.value = item.color_id;
+                    }
                 };
 
                 dropdown.appendChild(div);

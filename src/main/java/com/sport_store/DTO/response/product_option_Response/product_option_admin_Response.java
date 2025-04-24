@@ -19,6 +19,7 @@ public class product_option_admin_Response {
     private String cost;
     private int quantity;
     private int discount;
+    private boolean discount_active;
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     private LocalDateTime time_start;
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)

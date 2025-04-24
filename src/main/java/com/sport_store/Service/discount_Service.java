@@ -34,7 +34,8 @@ public class discount_Service {
     }
 
     public List<Discounts> getAllDiscounts() {
-        return discount_repository.findAll();
+        LocalDateTime now = LocalDateTime.now();
+        return discount_repository.findAllActiveDiscount(now);
     }
 
     public Discounts getDiscount(int discount_id) {

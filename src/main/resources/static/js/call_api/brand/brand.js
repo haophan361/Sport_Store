@@ -8,7 +8,7 @@ function saveBrand() {
 
 }
 
-let selectedBrandId = null; 
+let selectedBrandId = null;
 
 function fetchBrand() {
     fetch("/getAllBrand")
@@ -25,18 +25,18 @@ function fetchBrand() {
                     <i class="fas fa-trash-alt text-danger" style="cursor:pointer;" onclick="deleteBrand(${item.brand_id})"></i>
                 `;
 
-                // Gán sự kiện click chọn thương hiệu
                 div.onclick = function (e) {
-                    if (e.target.tagName === "I") return; // Bỏ qua nếu click vào icon
+                    if (e.target.tagName === "I") return;
 
                     const btn = div.closest(".dropdown").querySelector(".dropdown-toggle");
                     btn.innerText = item.brand_name;
 
                     selectedBrandId = item.brand_id;
 
-                    // Nếu có input ẩn lưu brand_id
-                    const hiddenInput = document.getElementById("brandId");
-                    if (hiddenInput) hiddenInput.value = item.brand_id;
+                    const hiddenInput = document.getElementById("brand_id");
+                    if (hiddenInput) {
+                        hiddenInput.value = item.brand_id;
+                    }
                 };
 
                 dropdown.appendChild(div);
