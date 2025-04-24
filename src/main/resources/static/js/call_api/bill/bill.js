@@ -8,14 +8,14 @@ function renderBill(data) {
         let statusHTML = '';
         if (b.active && b.confirmation_date == null) {
             statusHTML = '<span class="order-status status-pending">Chưa xác nhận</span>';
-        } else if (b.active && b.confirmation_date != null) {
+        } else if (b.active && b.confirmation_date != null && b.receive_date == null) {
             statusHTML = '<span class="order-status status-confirmed">Đã xác nhận</span>';
         } else if (!b.active && b.employee_id != null) {
             statusHTML = '<span class="order-status status-canceled-staff">Đơn bị hủy bởi nhân viên</span>';
         } else if (!b.active && b.employee_id == null) {
             statusHTML = '<span class="order-status status-canceled-customer">Đơn bị hủy bởi khách hàng</span>';
         } else if (b.receive_date != null) {
-            statusHTML = '<span class="order-status status-success">Hoàn thành</span>';
+            statusHTML = '<span class="order-status status-completed">Hoàn thành</span>';
         }
 
         const paymentStatus = b.status_payment ? 'Đã thanh toán' : 'Chưa thanh toán';

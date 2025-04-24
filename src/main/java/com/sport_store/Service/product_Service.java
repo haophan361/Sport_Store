@@ -42,6 +42,19 @@ public class product_Service {
         product_repository.save(product);
     }
 
+    public void update_Product(product_request request) {
+        Products products = product_repository.findById(request.getProduct_id()).orElse(null);
+        if (products != null) {
+            products.setProduct_name(request.getProduct_name());
+            products.setProduct_detail(request.getDescription());
+            products.setBrands(brand_service.getBrand(request.getBrand_id()));
+            products.setCategories(category_service.getCategory(request.getCategory_id()));
+            products.set_active(request.isActive());
+            product_repository.save(products);
+        }
+
+    }
+
     public void delete_Product(String product_id) {
         Products product = product_repository.findById(product_id).orElse(null);
         if (product != null) {
@@ -67,6 +80,7 @@ public class product_Service {
                     root.join("product_options", JoinType.LEFT);
             product_options.on(criteriaBuilder.conjunction());
             List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.equal(root.get("is_active"), true));
             predicates.add(criteriaBuilder.like(root.get("product_name"), "%" + name + "%"));
             if (category_id != null) {
                 predicates.add(criteriaBuilder.equal(root.get("categories").get("category_id"), category_id));
@@ -74,6 +88,7 @@ public class product_Service {
             if (brand_id != null) {
                 predicates.add(root.get("brands").get("brand_id").in(brand_id));
             }
+            predicates.add(criteriaBuilder.equal(product_options.get("is_active"), true));
             if (size != null && !size.isEmpty()) {
                 predicates.add(product_options.get("option_size").in(size));
             }

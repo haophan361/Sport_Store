@@ -12,54 +12,74 @@ function saveCategory() {
 
 }
 
-let selectedCategoryId = null; 
+let selectedCategoryId = null;
 
 function fetchCategory() {
-  fetch("/getAllCategory")
-    .then((response) => response.json())
-    .then((data) => {
-      const dropdown = document.getElementById("customCategoryDropdown");
-      dropdown.innerHTML = "";
+    fetch("/getAllCategory")
+        .then((response) => response.json())
+        .then((data) => {
+            const dropdown = document.getElementById("customCategoryDropdown");
+            dropdown.innerHTML = "";
 
-      data.forEach((item) => {
-        const div = document.createElement("div");
-        div.className = "dropdown-item d-flex justify-content-between align-items-center";
-        div.innerHTML = `
+            data.forEach((item) => {
+                const div = document.createElement("div");
+                div.className = "dropdown-item d-flex justify-content-between align-items-center";
+                div.innerHTML = `
           <span>${item.category_name}</span>
           <i class="fas fa-trash-alt text-danger" style="cursor:pointer;" onclick="deleteCategory(${item.category_id})"></i>
         `;
 
-        div.onclick = function (e) {
-          if (e.target.tagName === "I") return; 
+                div.onclick = function (e) {
+                    if (e.target.tagName === "I") return;
 
-          const btn = div.closest(".dropdown").querySelector(".dropdown-toggle");
-          btn.innerText = item.category_name;
+                    const btn = div.closest(".dropdown").querySelector(".dropdown-toggle");
+                    btn.innerText = item.category_name;
 
 
-          selectedCategoryId = item.category_id;
+                    selectedCategoryId = item.category_id;
+                    const hiddenInput = document.getElementById("category_id");
+                    if (hiddenInput) {
+                        hiddenInput.value = item.category_id;
+                    }
+                };
 
-          const hiddenInput = document.getElementById("categoryId");
-          if (hiddenInput) hiddenInput.value = item.category_id;
-        };
+                dropdown.appendChild(div);
+            });
 
-        dropdown.appendChild(div);
-      });
-
-      const addNew = document.createElement("div");
-      addNew.className = "dropdown-item text-primary";
-      addNew.setAttribute("data-toggle", "modal");
-      addNew.setAttribute("data-target", "#addCategoryModal");
-      addNew.innerHTML = `<i class="fa fa-plus"></i> Thêm Loại mới`;
-      dropdown.appendChild(addNew);
-    });
+            const addNew = document.createElement("div");
+            addNew.className = "dropdown-item text-primary";
+            addNew.setAttribute("data-toggle", "modal");
+            addNew.setAttribute("data-target", "#addCategoryModal");
+            addNew.innerHTML = `<i class="fa fa-plus"></i> Thêm Loại mới`;
+            dropdown.appendChild(addNew);
+        });
 }
 
 function deleteCategory(categoryId) {
-  if (confirm("Bạn có chắc muốn xóa loại sản phẩm này?")) {
-      fetch(`/admin/delete_category/${categoryId}`, { method: "DELETE" })
-          .then(res => {
-              if (res.ok) fetchCategory();
-              else alert("Xoá thất bại");
-          });
-  }
+    bootbox.confirm(
+        {
+            title: "Xác nhận xóa",
+            message: "Bạn có chắc muốn loại sản phẩm này?",
+            buttons:
+                {
+                    confirm:
+                        {
+                            label: 'Xác nhận',
+                        },
+                    cancel:
+                        {
+                            label: 'Hủy',
+                        }
+                },
+            callback: function (result) {
+                if (result) {
+                    apiRequest("/admin/delete_category?category_id=" + encodeURIComponent(categoryId), "DELETE", {},
+                        null, null, null, "include", function () {
+                            fetchCategory()
+                        })
+                }
+            }
+        })
 }
+
+

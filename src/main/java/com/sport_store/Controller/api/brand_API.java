@@ -4,10 +4,7 @@ import com.sport_store.Entity.Brands;
 import com.sport_store.Service.brand_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,10 +20,15 @@ public class brand_API {
         return ResponseEntity.ok(Collections.singletonMap("message", "Thêm thương hiệu thành công"));
     }
 
-    @PostMapping("admin/delete_brand")
-    public ResponseEntity<?> delete_brand(@RequestBody int brand_id) {
-        brand_service.deleteBrand(brand_id);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Xóa thương hiệu thành công"));
+    @DeleteMapping("admin/delete_brand")
+    public ResponseEntity<?> delete_brand(@RequestParam int brand_id) throws Exception {
+        try {
+            brand_service.deleteBrand(brand_id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Xóa thương hiệu thành công"));
+        } catch (Exception e) {
+            throw new Exception("Không thể xóa thương hiệu do " + e.getMessage());
+        }
+
     }
 
     @GetMapping("/getAllBrand")

@@ -4,7 +4,7 @@ import com.sport_store.Entity.Bill_Details;
 import com.sport_store.Entity.Bill_Supplies;
 import com.sport_store.Entity.Bills;
 import com.sport_store.Repository.bill_Repository;
-import com.sport_store.Repository.bill_details_Repository;
+import com.sport_store.Repository.bill_detail_Repository;
 import com.sport_store.Repository.bill_supply_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class dashboard_Service {
     private final bill_Repository bill_repository;
     private final bill_supply_Repository bill_supplies_repository;
-    private final bill_details_Repository bill_details_repository;
+    private final bill_detail_Repository bill_detail_repository;
 
     public Map<String, BigDecimal> getMonthlyRevenue(LocalDateTime start, LocalDateTime end) {
         List<Bills> bills = bill_repository.findByBillPurchaseDateBetween(start, end);
@@ -43,7 +43,7 @@ public class dashboard_Service {
 
     // Thống kê lượng mua sản phẩm
     public Map<String, Integer> getProductPurchaseQuantities(LocalDateTime start, LocalDateTime end) {
-        List<Bill_Details> details = bill_details_repository.findByBillsBillPurchaseDateBetween(start, end);
+        List<Bill_Details> details = bill_detail_repository.findByBillsBillPurchaseDateBetween(start, end);
         return details.stream()
                 .collect(Collectors.groupingBy(
                         Bill_Details::getProduct_name,
@@ -72,7 +72,7 @@ public class dashboard_Service {
 
     // Thống kê lượng mua sản phẩm
     public Map<String, Integer> getAllProductPurchaseQuantities() {
-        List<Bill_Details> details = bill_details_repository.findAllBillsBillPurchase();
+        List<Bill_Details> details = bill_detail_repository.findAllBillsBillPurchase();
         return details.stream()
                 .collect(Collectors.groupingBy(
                         Bill_Details::getProduct_name,

@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class productOption_request {
-    private int option_id;
+public class productOption_update_Request {
+    private int product_option_id;
     private int color_id;
     private String size;
     @NotNull(message = "Giá bán sản phẩm không được để trống")
@@ -22,7 +22,6 @@ public class productOption_request {
     private BigDecimal option_price;
     @NotNull(message = "Số lượng sản phẩm không được để trống")
     @Min(value = 0, message = "Số lượng sản phẩm không được nhỏ hơn 0")
-    private String product_id;
     private int discount_id;
     private boolean active;
 }
