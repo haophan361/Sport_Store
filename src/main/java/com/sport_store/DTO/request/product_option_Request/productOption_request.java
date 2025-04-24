@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class productOption_request {
+    private int option_id;
     private int color_id;
     private String size;
     @NotNull(message = "Giá bán sản phẩm không được để trống")

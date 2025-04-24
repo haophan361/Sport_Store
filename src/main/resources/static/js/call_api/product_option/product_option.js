@@ -41,7 +41,7 @@ function displayProductOptions(productId) {
                     <td><input type="checkbox" ${option.active ? 'checked' : ''} onclick="return false;"></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary me-1" title="Chỉnh sửa" data-toggle="modal"
-                         onclick="getProductOptionById('${option.option_id}')" data-target="#addOptionModal">
+                         onclick="getProductOptionById('${option.option_id}')">
                             <i class="bi bi-pencil-square"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger" title="Xoá" onclick="deleteOption('${option.option_id}')">
@@ -78,26 +78,28 @@ function saveProductOption() {
         discount_id: document.getElementById("discount_id").value,
         active: document.getElementById("newOptionIsActive").checked ? 1 : 0
     };
-    const productOption = new Blob([JSON.stringify(productOptionData)], {type: "application/json"});
-    const form_productOption = new FormData()
-    form_productOption.append("product_option_request", productOption);
-    const option_image_input = document.getElementById("new_option_image");
-    if (option_image_input.files.length > 0) {
-        for (let i = 0; i < option_image_input.files.length; i++) {
-            form_productOption.append("image_url", option_image_input.files[i]);
-        }
+    let url = "/admin/insert_product_option"
+    let method = "POST"
+    const form = document.getElementById("productOptionForm")
+    if (form.getAttribute("data-mode") === "edit" && document.getElementById("option_id").value) {
+        productOptionData.option_id = document.getElementById("option_id").value
+        url = "/admin/update_product_option"
+        method = "PUT"
     }
-    apiRequest("/admin/insert_product_option", "POST", {}, form_productOption,
-        null, null, "include", function () {
+    apiRequest(url, method, {'Content-type': 'application/json'},
+        JSON.stringify(productOptionData), null, null, "include", function () {
             $('#addOptionModal').modal('hide');
             displayProductOptions(document.getElementById("selected_product_id").value);
+            form.removeAttribute("data-mode");
+            form.reset()
+            document.getElementById("option_id").value = null
         })
 }
 
 function deleteOption(option_id) {
     bootbox.confirm(
         {
-            title: "Xác nhận xóa thông tin",
+            title: "Xác nhận xóa mẫu sản phẩm",
             message: "Bạn có muốn hủy đơn hàng này không",
             buttons:
                 {
@@ -135,10 +137,7 @@ function getProductOptionById(option_id) {
 
 function renderUpdateProductOption(data) {
     const form = document.getElementById("productOptionForm");
-
-    document.getElementById("color_id").value = data.color_id;
-    document.getElementById("discount_id").value = data.discount_id;
-
+    document.getElementById("option_id").value = data.product_option_id;
     document.getElementById("new_option_size").value = data.size;
     document.getElementById("new_price").value = data.price;
 
@@ -189,7 +188,6 @@ function renderUpdateProductOption(data) {
     const imagePreview = document.getElementById("imagePreview");
     imagePreview.innerHTML = '';
     if (data.img_url) {
-        // If image_url is an array
         if (Array.isArray(data.img_url)) {
             data.img_url.forEach(url => {
                 const img = document.createElement("img");
@@ -199,33 +197,8 @@ function renderUpdateProductOption(data) {
                 img.style.height = "100px";
                 imagePreview.appendChild(img);
             });
-        } else {
-            const img = document.createElement("img");
-            img.src = data.img_url;
-            img.className = "img-thumbnail m-1";
-            img.style.width = "100px";
-            img.style.height = "100px";
-            imagePreview.appendChild(img);
         }
     }
-
-    const submitButton = form.querySelector("button[type='button']");
-    if (submitButton) {
-        submitButton.textContent = "Cập nhật";
-        submitButton.setAttribute("data-mode", "update");
-    }
-
-    // Set a hidden input to indicate we're in update mode
-    let updateModeInput = document.getElementById("update_mode");
-    if (!updateModeInput) {
-        updateModeInput = document.createElement("input");
-        updateModeInput.type = "hidden";
-        updateModeInput.id = "update_mode";
-        updateModeInput.name = "update_mode";
-        form.appendChild(updateModeInput);
-    }
-    updateModeInput.value = "true";
-
-    // Show the modal
+    document.getElementById("productOptionForm").setAttribute("data-mode", "edit");
     $('#addOptionModal').modal('show');
 }

@@ -1,7 +1,6 @@
 package com.sport_store.Controller.api;
 
 import com.sport_store.DTO.request.product_option_Request.productOption_request;
-import com.sport_store.DTO.request.product_option_Request.productOption_update_Request;
 import com.sport_store.DTO.response.product_option_Response.product_option_admin_Response;
 import com.sport_store.DTO.response.product_option_Response.product_option_update_Response;
 import com.sport_store.Entity.Product_Img;
@@ -10,7 +9,6 @@ import com.sport_store.Service.product_option_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -25,9 +23,15 @@ public class product_option_API {
     private final DecimalFormat decimalFormat = new DecimalFormat("#.###");
 
     @PostMapping("/admin/insert_product_option")
-    public ResponseEntity<?> insert_product_options(@RequestPart("product_option_request") productOption_request request, @RequestPart(value = "image_url", required = false) MultipartFile[] files) {
-        product_option_service.Save_productOption(request, files);
+    public ResponseEntity<?> insert_product_options(@RequestBody productOption_request request) {
+        product_option_service.Save_productOption(request);
         return ResponseEntity.ok(Collections.singletonMap("message", "Thêm mẫu sản phẩm thành công"));
+    }
+
+    @PutMapping("/admin/update_product_option")
+    public ResponseEntity<?> updateProductOption(@RequestBody productOption_request request) {
+        product_option_service.updateProductOption(request);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật mẫu sản phẩm thành công"));
     }
 
     @PutMapping("/admin/delete_product_option")
@@ -77,10 +81,12 @@ public class product_option_API {
         for (Product_Img product_img : option.getColors().getProduct_img()) {
             img_url.add(product_img.getImages().getImage_url());
         }
+        Integer discount_id = null;
         int discountPercentage = 0;
         LocalDateTime startDate = null;
         LocalDateTime endDate = null;
         if (option.getDiscounts() != null) {
+            discount_id = option.getDiscounts().getDiscount_id();
             discountPercentage = option.getDiscounts().getDiscount_percentage();
             startDate = option.getDiscounts().getDiscount_start_date();
             endDate = option.getDiscounts().getDiscount_end_date();
@@ -91,7 +97,7 @@ public class product_option_API {
                 .color_id(option.getColors().getColor_id())
                 .color(option.getColors().getColor())
                 .size(option.getOption_size())
-                .discount_id(option.getDiscounts().getDiscount_id())
+                .discount_id(discount_id)
                 .discount_percentage(discountPercentage)
                 .start(startDate)
                 .end(endDate)
@@ -100,10 +106,5 @@ public class product_option_API {
                 .build();
     }
 
-    @PutMapping("/admin/updateProductOption")
-    public ResponseEntity<?> updateProductOption(@RequestPart("productOption_update_Request") productOption_update_Request request,
-                                                 @RequestPart(value = "image_url", required = false) MultipartFile[] files) {
-        product_option_service.updateProductOption(request, files);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật mẫu sản phẩm thành công"));
-    }
+
 }

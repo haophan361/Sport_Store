@@ -1,17 +1,17 @@
 package com.sport_store.Service;
 
 import com.sport_store.DTO.request.product_option_Request.productOption_request;
-import com.sport_store.DTO.request.product_option_Request.productOption_update_Request;
-import com.sport_store.Entity.*;
+import com.sport_store.Entity.Colors;
+import com.sport_store.Entity.Discounts;
+import com.sport_store.Entity.Product_Options;
+import com.sport_store.Entity.Products;
 import com.sport_store.Repository.product_option_Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -27,22 +27,9 @@ public class product_option_Service {
     private final color_Service color_service;
 
     @Transactional
-    public void Save_productOption(productOption_request request, MultipartFile[] files) {
+    public void Save_productOption(productOption_request request) {
         Products product = product_service.getProductById(request.getProduct_id());
-        Colors color = product_option_repository.getColorByProductId_Colors(request.getProduct_id(), request.getColor_id());
-        List<Images> images = new ArrayList<>();
-        if (color != null && !color.getProduct_img().isEmpty()) {
-            for (Product_Img product_img : color.getProduct_img()) {
-                images.add(product_img.getImages());
-            }
-        } else {
-            for (MultipartFile file : files) {
-                String image_url = image_service.upload(file);
-                Images image = image_service.saveImage(image_url);
-                images.add(image);
-            }
-            color = color_service.findColorById(request.getColor_id());
-        }
+        Colors color = color_service.findColorById(request.getColor_id());
         Product_Options product_option = Product_Options
                 .builder()
                 .option_size(request.getSize())
@@ -54,28 +41,19 @@ public class product_option_Service {
                 .discounts(discount_service.getDiscount(request.getDiscount_id()))
                 .build();
         product_option_repository.save(product_option);
-        product_img_service.save_Product_Img(product, color, images);
     }
 
     @Transactional
-    public void updateProductOption(productOption_update_Request request, MultipartFile[] files) {
-        Product_Options product_option = getProduct_Option(request.getProduct_option_id());
+    public void updateProductOption(productOption_request request) {
+        Product_Options product_option = getProduct_Option(request.getOption_id());
         product_option.setOption_size(request.getSize());
         product_option.setOption_cost(request.getOption_price());
+        product_option.set_active(request.isActive());
         Discounts discount = discount_service.getDiscount(request.getDiscount_id());
         product_option.setDiscounts(discount);
         Colors color = color_service.findColorById(request.getColor_id());
         product_option.setColors(color);
-        if (files != null) {
-            List<Images> images = new ArrayList<>();
-            for (MultipartFile file : files) {
-                String image_url = image_service.upload(file);
-                Images image = image_service.saveImage(image_url);
-                images.add(image);
-            }
-            product_img_service.save_Product_Img(product_option.getProducts(), color, images);
-            product_img_service.deleteProductImg(color.getProduct_img());
-        }
+        product_option_repository.save(product_option);
     }
 
     public BigDecimal Get_newPrice(Discounts discount, BigDecimal price) {

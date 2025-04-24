@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -79,8 +80,8 @@ public class image_Service {
         return image_repository.save(image);
     }
 
-    public void deleteImage(int image_id) {
-        image_repository.deleteById(image_id);
+    public void deleteImage(List<Images> images) {
+        image_repository.deleteAll(images);
     }
 
 }

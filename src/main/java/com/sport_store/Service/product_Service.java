@@ -42,6 +42,19 @@ public class product_Service {
         product_repository.save(product);
     }
 
+    public void update_Product(product_request request) {
+        Products products = product_repository.findById(request.getProduct_id()).orElse(null);
+        if (products != null) {
+            products.setProduct_name(request.getProduct_name());
+            products.setProduct_detail(request.getDescription());
+            products.setBrands(brand_service.getBrand(request.getBrand_id()));
+            products.setCategories(category_service.getCategory(request.getCategory_id()));
+            products.set_active(request.isActive());
+            product_repository.save(products);
+        }
+
+    }
+
     public void delete_Product(String product_id) {
         Products product = product_repository.findById(product_id).orElse(null);
         if (product != null) {
