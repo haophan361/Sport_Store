@@ -6,7 +6,7 @@ import com.sport_store.DTO.response.cart_Response.cart_checkout_Response;
 import com.sport_store.Entity.Bills;
 import com.sport_store.Entity.Carts;
 import com.sport_store.Entity.Customers;
-import com.sport_store.Service.bills_Service;
+import com.sport_store.Service.bill_Service;
 import com.sport_store.Service.cart_Service;
 import com.sport_store.Service.customer_Service;
 import com.sport_store.Service.product_option_Service;
@@ -17,26 +17,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-public class bills_API {
-    private final bills_Service bill_service;
+public class bill_API {
+    private final bill_Service bill_service;
     private final cart_Service cart_service;
     private final customer_Service customer_service;
     private final product_option_Service product_option_service;
     private final LoadUser loadUser;
 
     @PostMapping("/customer/order")
-    public ResponseEntity<?> createBill(@RequestBody bill_order_Request request, HttpSession session) {
+    public ResponseEntity<Map<String, String>> createBill(@RequestBody bill_order_Request request, HttpSession session) {
         Customers customers = customer_service.get_myInfo();
         List<Carts> carts = cart_service.findAllCartsByCustomers(customers);
-        bill_service.create_bill(customers, request.getReceiver_id(), carts, request.isPayment_method());
+        Bills bill = bill_service.create_bill(customers, request.getReceiver_id(), carts, request.isPayment_method());
         loadUser.refreshCart(session);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Tạo hóa đơn mua hàng thành công"));
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Tạo hóa đơn mua hành thành công");
+        response.put("data", bill.getBill_id());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/customer/getBill")
@@ -70,7 +72,16 @@ public class bills_API {
         Bills bill = bill_service.get_bill_by_id(bill_id);
         bill.set_active(false);
         bill_service.updateBill(bill);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Hóa đơn hàng thành công"));
+        return ResponseEntity.ok(Collections.singletonMap("message", "Hủy hóa đơn hàng thành công"));
+    }
+
+    @PutMapping("/customer/confirm_receive")
+    public ResponseEntity<?> confirmReceive(@RequestParam String bill_id) {
+        Bills bill = bill_service.get_bill_by_id(bill_id);
+        bill.setBill_receive_date(LocalDateTime.now());
+        bill.setBill_status_payment(true);
+        bill_service.updateBill(bill);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Xác nhận thành công"));
     }
 
     @GetMapping("/customer/getCartCheckout")
@@ -94,5 +105,4 @@ public class bills_API {
         }
         return responses;
     }
-
 } 

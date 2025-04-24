@@ -22,7 +22,7 @@
         <hr class="sidebar-divider">
         <div class="sidebar-heading">GIAO DIỆN</div>
         <li class="nav-item">
-            <a class="nav-link" href="/employee/manageOrder">
+            <a class="nav-link" th:href="@{/employee/manageOrder}">
                 <i class="fas fa-boxes"></i><span>Xử lý hóa đơn</span>
             </a>
         </li>
@@ -45,50 +45,52 @@
 
             <!-- Main Content -->
             <div class="container-fluid">
-                <h1 class="h4 mb-4 text-primary font-weight-bold">Chi tiết đơn hàng #<span th:text="${billId}"></span></h1>
+                <h1 class="h4 mb-4 text-primary font-weight-bold">Chi tiết đơn hàng
+                    <span id="bill-id" th:text="${bill.bill_id}"></span>
+                </h1>
 
                 <!-- Thay thế phần table hiện tại -->
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table id="orderDetailTable" class="table table-bordered">
                         <thead>
-                            <tr>
-                                <th>Mã chi tiết</th>
-                                <th>Mã tùy chọn</th>
-                                <th>Tên sản phẩm</th>
-                                <th>Đơn giá</th>
-                                <th>Số lượng</th>
-                                <th>Thành tiền</th>
-                            </tr>
+                        <tr>
+                            <th>Mã chi tiết</th>
+                            <th>Mã tùy chọn</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Màu sắc</th>
+                            <th>Size</th>
+                            <th>Hàng tồn</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                        </tr>
                         </thead>
-                        <tbody>
-                            <tr th:each="detail : ${billDetails}">
-                                <td th:text="${detail.bill_detail_id}"></td>
-                                <td th:text="${detail.option_id}"></td>
-                                <td th:text="${detail.product_name}"></td>
-                                <td th:text="${#numbers.formatDecimal(detail.product_cost, 0, 'COMMA', 2, 'POINT')} + ' VNĐ'"></td>
-                                <td th:text="${detail.product_quantity}"></td>
-                                <td th:text="${#numbers.formatDecimal(detail.product_cost * detail.product_quantity, 0, 'COMMA', 2, 'POINT')} + ' VNĐ'"></td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="5" class="text-right font-weight-bold">Tổng cộng:</td>
-                                <td class="font-weight-bold" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' VNĐ'"></td>
-                            </tr>
-                        </tfoot>
+                        <tbody id="orderDetail-list"></tbody>
                     </table>
+                    <p>
+                        <strong>Tổng cộng:</strong>
+                        <span id="order-total"></span>
+                    </p>
                 </div>
-
-                        <!-- Buttons -->
-                        <div class="text-center mt-4">
-                            <button class="btn btn-success mr-2" onclick="confirmOrder()">
-                                <i class="fas fa-check mr-1"></i> Xác nhận đơn hàng
-                            </button>
-                            <button class="btn btn-danger" onclick="cancelOrder()">
-                                <i class="fas fa-times mr-1"></i> Hủy đơn hàng
-                            </button>
-                        </div>
-                    </div>
+                <div>
+                    <p>
+                        <strong>Trạng thái đơn hàng</strong>
+                        <span th:if="${bill.is_active && bill.employees == null}">Chưa xác nhận</span>
+                        <span th:if="${bill.is_active && bill.employees != null && bill.bill_receive_date==null}">Đã xác nhận</span>
+                        <span th:if="${!bill.is_active && bill.employees != null}">Đơn hàng bị hủy bởi nhân viên</span>
+                        <span th:if="${!bill.is_active && bill.employees == null}">Đơn hàng bị hủy bởi khách hàng</span>
+                        <span th:if="${bill.bill_receive_date !=null}">Hoàn thành</span>
+                    </p>
+                </div>
+                <!-- Buttons -->
+                <div th:if="${session.role=='EMPLOYEE' && bill.bill_confirm_date==null && bill.is_active}"
+                     class="text-center mt-4">
+                    <button class="btn btn-success mr-2" th:attr="onclick=|employee_confirmOrder('${bill.bill_id}')|">
+                        <i class="fas fa-check mr-1"></i> Xác nhận đơn hàng
+                    </button>
+                    <button class="btn btn-danger" th:attr="onclick=|employee_cancelOrder('${bill.bill_id}')|">
+                        <i class="fas fa-times mr-1"></i> Hủy đơn hàng
+                    </button>
                 </div>
             </div>
         </div>
@@ -100,6 +102,8 @@
 <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="/js/sb-admin-2.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+<script th:src="@{/js/call_api/employee/manage_bill_detail.js}"></script>
+<script th:src="@{/js/call_api/apiRequest_Func.js}"></script>
 </body>
 </html>

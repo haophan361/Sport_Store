@@ -11,15 +11,17 @@
                     <input type="hidden" id="selected_product_id">
                     <div class="modal-body">
 
-                          <div class="form-group col-md-6">
+                        <div class="form-group col-md-6">
                             <label>Màu (color)</label>
                             <div class="dropdown">
-                              <button class="btn btn-light dropdown-toggle w-100 text-left" type="button" data-toggle="dropdown">
-                                -- Chọn Màu --
-                              </button>
-                              <div id="customColorDropdown" class="dropdown-menu w-100"></div>
+                                <button class="btn btn-light dropdown-toggle w-100 text-left" type="button"
+                                        data-toggle="dropdown">
+                                    -- Chọn Màu --
+                                </button>
+                                <div id="customColorDropdown" class="dropdown-menu w-100"></div>
+                                <input type="hidden" id="color_id" name="color_id" value=""/>
                             </div>
-                          </div>                       
+                        </div>
 
                         <div class="form-group">
                             <label>Kích thước</label>
@@ -29,29 +31,26 @@
                             <label>Giá</label>
                             <input type="number" id="new_price" class="form-control" required>
                         </div>
-                        
-                        <div class="form-group col-md-6">
-                        <label>Mã giảm giá</label>
-                        <div class="dropdown">
-                            <button class="btn btn-light dropdown-toggle w-100 text-left" type="button" data-toggle="dropdown">
-                            -- Chọn Mã giảm giá --
-                            </button>
-                            <div id="customDiscountDropdown" class="dropdown-menu w-100"></div>
-                        </div>
-                        </div>
-                        
-                          
+
                         <div class="form-group">
-                            <label>Hình ảnh</label>
-                            <input type="file" class="form-control-file" id="new_option_image" accept="image/*"
-                                   multiple>
+                            <label>Mã giảm giá</label>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle w-100 text-left" type="button"
+                                        data-toggle="dropdown">
+                                    -- Chọn Mã giảm giá --
+                                </button>
+                                <div id="customDiscountDropdown" class="dropdown-menu w-100"></div>
+                                <input type="hidden" id="discount_id" name="discount_id" value=""/>
+                            </div>
                         </div>
+
                         <div id="imagePreview" class="mt-2 d-flex flex-wrap gap-2"></div>
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="newOptionIsActive" checked>
                             <label class="form-check-label">Kích hoạt</label>
                         </div>
                     </div>
+                    <input type="hidden" id="option_id" name="option_id" value=""/>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-info" onclick="saveProductOption()">Lưu Mẫu Sản Phẩm
                         </button>

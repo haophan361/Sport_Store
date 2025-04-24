@@ -29,6 +29,12 @@
                             <b> Quản lý cửa hàng </b>
                         </button>
                     </div>
+                    <div class="btn-group mx-2" th:if="${session.role=='EMPLOYEE'}">
+                        <button type="button" class="btn btn-sm btn-light"
+                                onclick="window.location.href='/employee/manageOrder'">
+                            <b> Quản lý hóa đơn </b>
+                        </button>
+                    </div>
                     <div class="btn-group mx-2" th:if="${session.isLoggedIn==1}">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
                             <b th:text="${session.name}"></b>

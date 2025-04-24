@@ -50,6 +50,11 @@
             background-color: #e2e3e5;
             color: #383d41;
         }
+
+        .status-completed {
+            background-color: #e2e3e5;
+            color: #2c9faf;
+        }
     </style>
 </head>
 
@@ -75,6 +80,11 @@
                                 th:attr="onclick=|cancelBill('${bill.bill_id}')|">
                             <i class="fa fa-times"></i> Hủy đơn
                         </button>
+                        <button th:if="${bill.is_active && bill.bill_confirm_date != null && bill.bill_receive_date==null}"
+                                class="btn btn-danger ml-2"
+                                th:attr="onclick=|confirmReceive('${bill.bill_id}')|">
+                            <i class="fa fa-check-circle"></i> Xác nhận nhận hàng
+                        </button>
                     </div>
                 </div>
 
@@ -89,13 +99,13 @@
                                 <p><strong>Ngày đặt hàng:</strong> <span
                                         th:text="${#temporals.format(bill.bill_purchase_date, 'dd-MM-yyyy HH:mm')}"></span>
                                 </p>
-                                <p th:if="${bill.bill_confirm_date != null}">
+                                <p>
                                     <strong>Ngày xác nhận:</strong> <span
-                                        th:text="${#temporals.format(bill.bill_confirm_date, 'dd-MM-yyyy HH:mm')}"></span>
+                                        th:text="${bill.bill_confirm_date}!=null ? ${#temporals.format(bill.bill_confirm_date, 'dd-MM-yyyy HH:mm')} : '' "></span>
                                 </p>
-                                <p th:if="${bill.bill_receive_date != null}">
+                                <p>
                                     <strong>Ngày nhận:</strong> <span
-                                        th:text="${#temporals.format(bill.bill_receive_date, 'dd-MM-yyyy HH:mm')}"></span>
+                                        th:text="${bill.bill_receive_date}!=null ?  ${#temporals.format(bill.bill_receive_date, 'dd-MM-yyyy HH:mm')} : '' "></span>
                                 </p>
                                 <p>
                                     <strong>Trạng thái thanh toán:</strong>
@@ -105,16 +115,13 @@
                                     <strong>Trạng thái đơn hàng:</strong>
                                     <span th:if="${bill.is_active && bill.employees == null}"
                                           class="order-status status-pending">Chưa xác nhận</span>
-                                    <span th:if="${bill.is_active && bill.employees != null}"
+                                    <span th:if="${bill.is_active && bill.employees != null && bill.bill_receive_date==null}"
                                           class="order-status status-confirmed">Đã xác nhận</span>
                                     <span th:if="${!bill.is_active && bill.employees != null}"
                                           class="order-status status-canceled-staff">Đơn hàng bị hủy bởi nhân viên</span>
                                     <span th:if="${!bill.is_active && bill.employees == null}"
                                           class="order-status status-canceled-customer">Đơn hàng bị hủy bởi khách hàng</span>
-                                </p>
-                                <p th:if="${bill.employees != null}">
-                                    <strong>Nhân viên xử lý:</strong> <span
-                                        th:text="${bill.employees.employee_name}"></span>
+                                    <span th:if="${bill.bill_receive_date}" class="order-status status-completed">Hoàn thành</span>
                                 </p>
                             </div>
                         </div>
@@ -128,10 +135,23 @@
                                 <p><strong>Họ tên:</strong> <span th:text="${bill.receivers.receiver_name}"></span></p>
                                 <p><strong>Số điện thoại:</strong> <span
                                         th:text="${bill.receivers.receiver_phone}"></span></p>
-                                <p><strong>Địa chỉ:</strong> <span th:text="${bill.receivers.receiver_street + ', ' +
-                                                          bill.receivers.receiver_ward + ', ' + 
-                                                          bill.receivers.receiver_district + ', ' + 
-                                                          bill.receivers.receiver_city}"></span></p>
+                                <p><strong>Địa chỉ:</strong></p>
+                                <p>
+                                    <strong>Tỉnh/Thành phố:</strong>
+                                    <span th:text="${bill.receivers.receiver_city}"></span>
+                                </p>
+                                <p>
+                                    <strong>Quận/Huyện:</strong>
+                                    <span th:text="${bill.receivers.receiver_district}"></span>
+                                </p>
+                                <p>
+                                    <strong>Phường/Xã:</strong>
+                                    <span th:text="${bill.receivers.receiver_ward}"></span>
+                                </p>
+                                <p>
+                                    <strong>Tên đường, Số nhà:</strong>
+                                    <span th:text="${bill.receivers.receiver_street}"></span>
+                                </p>
                             </div>
                         </div>
                     </div>

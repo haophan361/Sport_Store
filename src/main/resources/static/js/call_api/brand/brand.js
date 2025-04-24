@@ -1,5 +1,3 @@
-
-
 function saveBrand() {
     const brand_name = document.getElementById("new_brand_name").value
     apiRequest("/admin/insert_brand", "POST", {}, brand_name,
@@ -9,6 +7,8 @@ function saveBrand() {
         })
 
 }
+
+let selectedBrandId = null;
 
 function fetchBrand() {
     fetch("/getAllBrand")
@@ -24,9 +24,25 @@ function fetchBrand() {
                     <span>${item.brand_name}</span>
                     <i class="fas fa-trash-alt text-danger" style="cursor:pointer;" onclick="deleteBrand(${item.brand_id})"></i>
                 `;
+
+                div.onclick = function (e) {
+                    if (e.target.tagName === "I") return;
+
+                    const btn = div.closest(".dropdown").querySelector(".dropdown-toggle");
+                    btn.innerText = item.brand_name;
+
+                    selectedBrandId = item.brand_id;
+
+                    const hiddenInput = document.getElementById("brand_id");
+                    if (hiddenInput) {
+                        hiddenInput.value = item.brand_id;
+                    }
+                };
+
                 dropdown.appendChild(div);
             });
 
+            // Dòng thêm mới
             const addNew = document.createElement("div");
             addNew.className = "dropdown-item text-primary";
             addNew.setAttribute("data-toggle", "modal");
@@ -36,12 +52,30 @@ function fetchBrand() {
         });
 }
 
+
 function deleteBrand(brandId) {
-    if (confirm("Bạn có chắc muốn xóa thương hiệu này?")) {
-        fetch(`/admin/delete_brand/${brandId}`, { method: "DELETE" })
-            .then(res => {
-                if (res.ok) fetchBrand();
-                else alert("Xoá thất bại");
-            });
-    }
+    bootbox.confirm(
+        {
+            title: "Xác nhận xóa",
+            message: "Bạn có chắc muốn xóa thương hiệu này?",
+            buttons:
+                {
+                    confirm:
+                        {
+                            label: 'Xác nhận',
+                        },
+                    cancel:
+                        {
+                            label: 'Hủy',
+                        }
+                },
+            callback: function (result) {
+                if (result) {
+                    apiRequest("/admin/delete_brand?brand_id=" + encodeURIComponent(brandId), "DELETE", {},
+                        null, null, null, "include", function () {
+                            fetchBrand()
+                        })
+                }
+            }
+        })
 }

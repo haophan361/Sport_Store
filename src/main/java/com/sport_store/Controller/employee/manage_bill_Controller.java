@@ -1,4 +1,4 @@
-package com.sport_store.Controller.controller;
+package com.sport_store.Controller.employee;
 
 import com.sport_store.Entity.Bills;
 import com.sport_store.Service.bill_Service;
@@ -8,20 +8,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 @Controller
 @RequiredArgsConstructor
-public class bill_Controller {
+public class manage_bill_Controller {
     private final bill_Service bill_service;
 
-    @GetMapping("/customer/bills")
-    public String customerBills() {
-        return "customer/bill";
+    @GetMapping("/employee/manageOrder")
+    public String manageOrder() {
+        return "employee/manageOrder";
     }
 
-    @GetMapping("/customer/orderConfirmation")
-    public String orderConfirmation(@RequestParam String bill_id, Model model) {
+    @GetMapping("/employee/orderDetail")
+    public String orderDetail(Model model, @RequestParam String bill_id) {
         Bills bill = bill_service.get_bill_by_id(bill_id);
         model.addAttribute("bill", bill);
-        return "customer/orderConfirmation";
+        return "employee/orderDetail";
     }
 }

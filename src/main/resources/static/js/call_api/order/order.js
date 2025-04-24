@@ -22,8 +22,33 @@ function placeOrder() {
         payment_method: parseInt(selectedValue) === 1
     }
 
-    apiRequest("/customer/order", "POST", {'Content-type': 'application/json'},
-        JSON.stringify(formData), null, null, "include");
+    fetch("/customer/order", {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(formData),
+        credentials: "include"
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Lỗi khi tạo hóa đơn: " + response.status);
+            }
+            return response.json();
+        })
+        .then(json => {
+            bootbox.alert({
+                title: "Thông báo",
+                message: json.message,
+                backdrop: true,
+                callback: function () {
+                    window.location.href = "/customer/orderConfirmation?bill_id="
+                        + encodeURIComponent(json.data);
+                }
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            bootbox.alert({title: "Lỗi", message: err.message, backdrop: true});
+        });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
