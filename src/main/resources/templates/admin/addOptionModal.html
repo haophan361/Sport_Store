@@ -31,20 +31,18 @@
                             <label>Giá</label>
                             <input type="number" id="new_price" class="form-control" required>
                         </div>
-
-                        <div class="form-group">
-                            <label>Giảm giá</label>
-                            <div class="dropdown">
-                                <button class="btn btn-light dropdown-toggle w-100 text-left" type="button"
-                                        data-toggle="dropdown">
-                                    -- Chọn giảm giá --
-                                </button>
-                                <div id="customDiscountDropdown" class="dropdown-menu w-100"></div>
-                                <input type="hidden" id="discount_id" name="discount_id" value=""/>
-                            </div>
+                        
+                        <div class="form-group col-md-6">
+                        <label>Mã giảm giá</label>
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle w-100 text-left" type="button" data-toggle="dropdown">
+                            -- Chọn Mã giảm giá --
+                            </button>
+                            <div id="customDiscountDropdown" class="dropdown-menu w-100"></div>
                         </div>
-
-
+                        </div>
+                        
+                          
                         <div class="form-group">
                             <label>Hình ảnh</label>
                             <input type="file" class="form-control-file" id="new_option_image" accept="image/*"

@@ -46,23 +46,6 @@ document.getElementById("search-product-keyword")?.addEventListener("keydown", f
 });
 
 
-document.getElementById("new_option_image").addEventListener("change", function () {
-  const preview = document.getElementById("imagePreview");
-  preview.innerHTML = "";
-
-  Array.from(this.files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.className = "img-thumbnail m-1";
-          img.style.width = "100px";
-          img.style.height = "100px";
-          preview.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-  });
-});
 
 // ==================== SỰ KIỆN CLICK VÀO DÒNG ====================
 document.addEventListener("DOMContentLoaded", () => {
