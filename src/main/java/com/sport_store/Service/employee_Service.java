@@ -114,7 +114,7 @@ public class employee_Service {
         if (employee == null) {
             throw new RuntimeException("Không tìm thấy nhân viên.");
         }
-        if (employee_repository.existsByEmployeePhone(request.getEmployee_phone())) {
+        if (employee_repository.existsByEmployeePhoneExceptId(request.getEmployee_phone(), employee.getEmployee_id())) {
             throw new RuntimeException("Số điện thoại đã được sử dụng bởi nhân viên khác.");
         }
         employee.setEmployee_address(request.getEmployee_address());
