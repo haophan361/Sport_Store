@@ -129,4 +129,16 @@ public class account_API {
         account_service.changePassword(account, request.getNew_password());
         return ResponseEntity.ok(Collections.singletonMap("message", "Cập nhật mật khẩu mới thành công"));
     }
+
+    @PutMapping("/admin/activateAccount")
+    public ResponseEntity<?> activateAccount(@RequestParam String email) {
+        account_service.activateAccount(email);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Kích hoạt tài khoản thành công"));
+    }
+
+    @PutMapping("/admin/deactivateAccount")
+    public ResponseEntity<?> deactivateAccount(@RequestParam String email) {
+        account_service.deactivateAccount(email);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Vô hiệu hóa tài khoản thành công"));
+    }
 }

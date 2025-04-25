@@ -51,4 +51,16 @@ public class account_Service {
     public void updateOnline() {
         account_repository.updateIsOnline();
     }
+
+    public void activateAccount(String email) {
+        Accounts account = account_repository.findAccountsByEmail(email);
+        account.set_active(true);
+        account_repository.save(account);
+    }
+
+    public void deactivateAccount(String email) {
+        Accounts account = account_repository.findAccountsByEmail(email);
+        account.set_active(false);
+        account_repository.save(account);
+    }
 }

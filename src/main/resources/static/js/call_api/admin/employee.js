@@ -31,6 +31,60 @@ function fetchEmployees() {
     });
 }
 
+function activateAccount(email) {
+    bootbox.confirm(
+        {
+            title: "Xác nhận",
+            message: "Bạn có muốn kích hoạt tài khoản này không?",
+            buttons:
+                {
+                    confirm:
+                        {
+                            label: 'Xác nhận',
+                        },
+                    cancel:
+                        {
+                            label: 'Hủy',
+                        }
+                },
+            callback: function (result) {
+                if (result) {
+                    apiRequest("/admin/activateAccount?email=" + email, "PUT", {},
+                        null, null, null, "include", function () {
+                            fetchEmployees()
+                        })
+                }
+            }
+        })
+}
+
+function deactivateAccount(email) {
+    bootbox.confirm(
+        {
+            title: "Xác nhận",
+            message: "Bạn có muốn khóa tài khoản này không?",
+            buttons:
+                {
+                    confirm:
+                        {
+                            label: 'Xác nhận',
+                        },
+                    cancel:
+                        {
+                            label: 'Hủy',
+                        }
+                },
+            callback: function (result) {
+                if (result) {
+                    apiRequest("/admin/deactivateAccount?email=" + email, "PUT", {},
+                        null, null, null, "include", function () {
+                            fetchEmployees()
+                        })
+                }
+            }
+        })
+}
+
 function renderEmployees(employees) {
     const tbody = $('#employee-list');
     tbody.empty();
@@ -48,6 +102,8 @@ function renderEmployees(employees) {
                 <td>${e.gender ? 'Nam' : 'Nữ'}</td>
                 <td>${e.online ? '<span class="badge badge-success">Online</span>' : '<span class="badge badge-secondary">Offline</span>'}</td>
                 <td>${e.active ? '<span class="badge badge-primary">Đã kích hoạt</span>' : '<span class="badge badge-danger">Bị vô hiệu hóa</span>'}</td>
+                <td>${e.active ? `<button class="btn btn-danger" onclick="deactivateAccount('${e.email}')">Khóa tài khoản</button>` 
+                                : `<button class="btn btn-primary" onclick="activateAccount('${e.email}')">Kích hoạt</button>`}</td>
             </tr>
         `;
         tbody.append(row);
