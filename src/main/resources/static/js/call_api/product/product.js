@@ -168,4 +168,5 @@ function getProductOption(product_id) {
     document.getElementById("selected_product_id").value = product_id
     $("#sanpham-content").hide();
     $("#product-option-content").show();
+    fetchColor()
 }
