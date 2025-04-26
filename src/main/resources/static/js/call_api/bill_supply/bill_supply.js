@@ -114,6 +114,7 @@ function displaySelectedOption() {
             `;
         tbody.insertAdjacentHTML("beforeend", row);
     })
+    document.getElementById("total-product-count").innerText = list_option.length;
 }
 
 function fetchBillSupply() {

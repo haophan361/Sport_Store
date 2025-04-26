@@ -136,7 +136,7 @@ public class product_Service {
                     }
                 }
             }
-            return criteriaBuilder.conjunction();
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
         return product_repository.findAll(specification, pageable);
     }

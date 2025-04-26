@@ -100,7 +100,7 @@ function deleteOption(option_id) {
     bootbox.confirm(
         {
             title: "Xác nhận xóa mẫu sản phẩm",
-            message: "Bạn có muốn hủy đơn hàng này không",
+            message: "Bạn có muốn xóa mẫu sản phẩm này không",
             buttons:
                 {
                     confirm:
