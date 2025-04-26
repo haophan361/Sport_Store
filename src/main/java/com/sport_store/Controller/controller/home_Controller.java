@@ -41,7 +41,7 @@ public class home_Controller {
     @GetMapping("/web/shop")
     public String shop(Model model, @RequestParam(value = "keyword", defaultValue = "") String keyword,
                        @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                       @RequestParam(value = "category", required = false) Integer category_id,
+                       @RequestParam(value = "category_id", required = false) Integer category_id,
                        @RequestParam(value = "list_brand", required = false) List<Integer> brands,
                        @RequestParam(value = "list_option_size", required = false) List<String> option_size,
                        @RequestParam(value = "cost_segment", required = false) List<Integer> cost_segment,
@@ -88,7 +88,7 @@ public class home_Controller {
         UriComponents uri = UriComponentsBuilder
                 .fromPath(request.getRequestURI())
                 .queryParam("keyword", keyword)
-                .queryParam("category", category_id)
+                .queryParam("category_id", category_id)
                 .queryParam("list_brand", brands)
                 .queryParam("list_option_size", option_size)
                 .queryParam("cost_segment", cost_segment)

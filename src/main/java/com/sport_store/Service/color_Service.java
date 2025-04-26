@@ -67,7 +67,16 @@ public class color_Service {
 
     }
 
+    @Transactional
     public void deleteColor(int color_id) {
+        Colors color = findColorById(color_id);
+        List<Images> images = new ArrayList<>();
+        for (Product_Img product_img : color.getProduct_img()) {
+            images.add(product_img.getImages());
+        }
+        
+        product_img_service.deleteProductImg(color.getProduct_img());
+        image_service.deleteImage(images);
         color_repository.deleteById(color_id);
     }
 
