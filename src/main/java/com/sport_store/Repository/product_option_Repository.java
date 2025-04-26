@@ -15,10 +15,7 @@ public interface product_option_Repository extends JpaRepository<Product_Options
     @Query("SELECT o FROM Product_Options o WHERE o.products.product_id= :product_id AND o.colors.color= :color")
     List<Product_Options> getOptionProductByColors(String product_id, String color);
 
-    @Query("SELECT o.colors FROM Product_Options o WHERE o.colors.color_id= :color_id AND o.products.product_id= :product_id")
-    Colors getColorByProductId_Colors(String product_id, int color_id);
-
-    @Query("SELECT DISTINCT o.colors FROM Product_Options o WHERE o.products.product_id= :product_id")
+    @Query("SELECT DISTINCT o.colors FROM Product_Options o WHERE o.products.product_id= :product_id AND o.is_active=true")
     List<Colors> getColorByProductId(String product_id);
 
     @Query("SELECT o FROM Product_Options o WHERE o.products.product_id = :product_id ORDER BY o.colors.color_id")

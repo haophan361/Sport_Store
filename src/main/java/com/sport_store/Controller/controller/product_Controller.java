@@ -35,7 +35,7 @@ public class product_Controller {
         List<String> sizes = new ArrayList<>();
         List<Colors> colors = product_option_service.getColorsByProductId(product_id);
         for (Product_Options option : product.getProduct_options()) {
-            if (option.getColors().getColor().equals(color)) {
+            if (option.getColors().getColor().equals(color) && option.is_active()) {
                 sizes.add(option.getOption_size());
             }
         }

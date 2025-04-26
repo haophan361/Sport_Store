@@ -56,7 +56,7 @@ public class customer_Controller {
 
     @GetMapping("/web/admin")
     public String showWebAdminPage() {
-        return "web/admin";  // ánh xạ tới resources/templates/web/admin.html
+        return "web/admin";
     }
 
     @GetMapping("/form/changeInfoCustomer")
