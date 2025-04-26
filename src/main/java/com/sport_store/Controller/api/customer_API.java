@@ -7,7 +7,6 @@ import com.sport_store.DTO.response.customer_response.customerInfo_response;
 import com.sport_store.Service.authentication_Service;
 import com.sport_store.Service.cookie_Service;
 import com.sport_store.Service.customer_Service;
-import com.sport_store.Service.mail_Service;
 import com.sport_store.Util.LoadUser;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +24,6 @@ import java.util.List;
 public class customer_API {
     private final customer_Service customer_service;
     private final LoadUser load_user_session;
-    private final mail_Service mail_service;
     private final authentication_Service authentication_service;
     private final cookie_Service cookie_service;
 
@@ -40,7 +38,6 @@ public class customer_API {
         }
 
     }
-
 
     @PostMapping("/web/checkCode_Register")
     public ResponseEntity<?> checkCode_Register(@CookieValue(value = "token_verifyEmail") String token_verifyEmail, @RequestBody String code, HttpServletResponse httpServletResponse) {
@@ -60,7 +57,6 @@ public class customer_API {
     }
 
     @GetMapping("/admin/customers")
-    //@PreAuthorize("hasRole('ADMIN')") // Restrict to admins
     public ResponseEntity<?> getCustomerInfoList() {
         try {
             List<customerInfo_response> customers = customer_service.getCustomerInfoList();

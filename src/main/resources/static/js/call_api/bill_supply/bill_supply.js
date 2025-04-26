@@ -5,7 +5,7 @@ function formatCurrency(number) {
 }
 
 function fetchProductOption_BillSupply() {
-    fetch("/getOption_BillSupply")
+    fetch("/admin/getOption_BillSupply")
         .then(response => {
             if (response.ok) {
                 return response.json()
@@ -118,7 +118,7 @@ function displaySelectedOption() {
 }
 
 function fetchBillSupply() {
-    fetch("/getAllBillSupply")
+    fetch("/admin/getAllBillSupply")
         .then(response => {
             if (response.ok) {
                 return response.json()

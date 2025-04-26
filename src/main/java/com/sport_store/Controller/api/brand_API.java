@@ -31,7 +31,7 @@ public class brand_API {
 
     }
 
-    @GetMapping("/getAllBrand")
+    @GetMapping("/admin/getAllBrand")
     public List<Brands> getAllBrand() {
         return brand_service.getAllBrand();
     }

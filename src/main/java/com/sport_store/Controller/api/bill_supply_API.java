@@ -30,7 +30,7 @@ public class bill_supply_API {
         return ResponseEntity.ok(Collections.singletonMap("message", "Thêm hóa đơn nhập hàng thành công"));
     }
 
-    @GetMapping("/getAllBillSupply")
+    @GetMapping("/admin/getAllBillSupply")
     public List<bill_supply_Response> getAllBillSupply() {
         List<Bill_Supplies> bill_supplies = bill_supply_service.getAllBillSupply();
         List<bill_supply_Response> responses = new ArrayList<>();
@@ -49,7 +49,7 @@ public class bill_supply_API {
         return responses;
     }
 
-    @GetMapping("/getOption_BillSupply")
+    @GetMapping("/admin/getOption_BillSupply")
     public List<product_option_bill_supply_Response> getOption_BillSupply() {
         List<Product_Options> options = product_option_service.getAllProduct_Option();
         List<product_option_bill_supply_Response> responses = new ArrayList<>();
