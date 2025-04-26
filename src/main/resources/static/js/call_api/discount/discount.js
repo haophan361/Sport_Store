@@ -15,7 +15,7 @@ function saveDiscount() {
 let selectedDiscountId = null;
 
 function fetchDiscount() {
-    fetch("/getAllDiscount")
+    fetch("/admin/getAllDiscount")
         .then((response) => response.json())
         .then((data) => {
             const dropdown = document.getElementById("customDiscountDropdown");

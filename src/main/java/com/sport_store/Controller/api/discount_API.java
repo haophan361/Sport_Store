@@ -33,7 +33,7 @@ public class discount_API {
         }
     }
 
-    @GetMapping("/getAllDiscount")
+    @GetMapping("/admin/getAllDiscount")
     public List<discount_Response> getAllDiscount() {
         List<Discounts> discounts = discount_service.getAllDiscounts();
         List<discount_Response> responses = new ArrayList<>();

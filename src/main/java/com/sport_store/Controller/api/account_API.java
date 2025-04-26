@@ -117,7 +117,7 @@ public class account_API {
         }
     }
 
-    @PutMapping("/user/changePassword")
+    @PutMapping(value = {"/customer/changePassword", "/employee/changePassword", "/admin/changePassword"})
     public ResponseEntity<?> changePassword(@RequestBody changePassword_request request) {
         Accounts account = account_service.get_myAccountInfo();
         if (!passwordEncoder.matches(request.getOld_password(), account.getPassword())) {
