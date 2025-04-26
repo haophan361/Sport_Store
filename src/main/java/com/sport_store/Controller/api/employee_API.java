@@ -26,7 +26,6 @@ public class employee_API {
     private final com.sport_store.Service.customer_Service customer_Service;
 
     @GetMapping("/admin/employees")
-    //@PreAuthorize("hasRole('ADMIN')") // Restrict to admins
     public ResponseEntity<?> getEmployeeInfoList() {
         try {
             List<employeeInfo_response> employees = employee_service.getEmployeeInfoList();
@@ -40,7 +39,6 @@ public class employee_API {
     }
 
     @PostMapping("/admin/employees")
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createEmployee(@Valid @RequestBody create_employee request) {
         try {
             boolean result = employee_service.createEmployee(request);

@@ -53,6 +53,9 @@ public class Security_Config {
                                 "/mail/**",
                                 "/admin/**",
                                 "/employee/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/employee/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/customer/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(cookieAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

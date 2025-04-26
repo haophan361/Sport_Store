@@ -11,7 +11,7 @@ function saveBrand() {
 let selectedBrandId = null;
 
 function fetchBrand() {
-    fetch("/getAllBrand")
+    fetch("/admin/getAllBrand")
         .then((response) => response.json())
         .then((data) => {
             const dropdown = document.getElementById("customBrandDropdown");

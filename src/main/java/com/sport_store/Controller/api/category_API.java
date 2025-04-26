@@ -32,7 +32,7 @@ public class category_API {
         }
     }
 
-    @GetMapping("/getAllCategory")
+    @GetMapping("/admin/getAllCategory")
     public List<Categories> getAllCategory() {
         return category_service.getAllCategories();
     }

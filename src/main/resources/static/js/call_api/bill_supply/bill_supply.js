@@ -5,7 +5,7 @@ function formatCurrency(number) {
 }
 
 function fetchProductOption_BillSupply() {
-    fetch("/getOption_BillSupply")
+    fetch("/admin/getOption_BillSupply")
         .then(response => {
             if (response.ok) {
                 return response.json()
@@ -114,10 +114,11 @@ function displaySelectedOption() {
             `;
         tbody.insertAdjacentHTML("beforeend", row);
     })
+    document.getElementById("total-product-count").innerText = list_option.length;
 }
 
 function fetchBillSupply() {
-    fetch("/getAllBillSupply")
+    fetch("/admin/getAllBillSupply")
         .then(response => {
             if (response.ok) {
                 return response.json()

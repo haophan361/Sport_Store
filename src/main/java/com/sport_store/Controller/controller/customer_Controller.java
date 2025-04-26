@@ -54,11 +54,6 @@ public class customer_Controller {
         return "user/request_forgetPassword";
     }
 
-    @GetMapping("/web/admin")
-    public String showWebAdminPage() {
-        return "web/admin";  // ánh xạ tới resources/templates/web/admin.html
-    }
-
     @GetMapping("/form/changeInfoCustomer")
     public String getForm_UpdateInfoUser(Model model, HttpSession session) {
         String email = (String) session.getAttribute("email");

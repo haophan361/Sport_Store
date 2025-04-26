@@ -15,7 +15,7 @@ function saveCategory() {
 let selectedCategoryId = null;
 
 function fetchCategory() {
-    fetch("/getAllCategory")
+    fetch("/admin/getAllCategory")
         .then((response) => response.json())
         .then((data) => {
             const dropdown = document.getElementById("customCategoryDropdown");
