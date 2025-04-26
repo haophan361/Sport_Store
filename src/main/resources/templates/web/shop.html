@@ -140,18 +140,14 @@
                             <!-- Sort Options -->
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                                        data-toggle="dropdown">Sắp xếp
+                                        data-toggle="dropdown"
+                                        th:text="${sort == true ? 'Giá tăng dần' : (sort == false ? 'Giá giảm dần' : 'Sắp xếp')}">
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item sort-option" data-sort="false"
-                                       th:classappend="${sort != null and sort == false} ? 'active' : ''">Giá giảm
-                                        dần</a>
-                                    <a class="dropdown-item sort-option" data-sort="true"
-                                       th:classappend="${sort != null and sort == true} ? 'active' : ''">Giá tăng
-                                        dần</a>
+                                    <a class="dropdown-item sort-option" data-sort="false">Giá giảm dần</a>
+                                    <a class="dropdown-item sort-option" data-sort="true">Giá tăng dần</a>
                                 </div>
                             </div>
-
                             <!-- Page Size Options -->
                             <div class="btn-group ml-2">
                                 <button type="button"

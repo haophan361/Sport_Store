@@ -81,6 +81,7 @@ public class image_Service {
     }
 
     public void deleteImage(List<Images> images) {
+
         image_repository.deleteAll(images);
     }
 

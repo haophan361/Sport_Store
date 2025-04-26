@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('searchButton').click();
         }
     });
-
     const sortOptions = document.querySelectorAll('.sort-option');
     sortOptions.forEach(option => {
         option.addEventListener('click', function () {
