@@ -50,9 +50,7 @@ public class Security_Config {
                                 "/lib/**",
                                 "/scss/**",
                                 "/img/**",
-                                "/mail/**",
-                                "/admin/**",
-                                "/employee/**").permitAll()
+                                "/mail/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/employee/**").hasAnyRole("ADMIN", "EMPLOYEE")
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")
