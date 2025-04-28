@@ -74,70 +74,73 @@ public class product_Service {
     public Page<Products> getProduct(String name, Integer category_id, List<Integer> brand_id, List<String> size,
                                      int page, int page_size, List<Integer> cost_segment, Boolean sort_asc) {
         Pageable pageable = PageRequest.of(page - 1, page_size);
-        Specification<Products> specification = (root, criteriaQuery, criteriaBuilder) -> {
-            root.fetch("product_options", JoinType.LEFT);
-            Join<Products, Product_Options> product_options =
-                    root.join("product_options", JoinType.LEFT);
-            product_options.on(criteriaBuilder.conjunction());
+        Specification<Products> spec = combinedSpecification(name, category_id, brand_id, size, cost_segment, sort_asc);
+        return product_repository.findAll(spec, pageable);
+    }
+
+    private Specification<Products> combinedSpecification(String name, Integer category_id, List<Integer> brand_id,
+                                                          List<String> size, List<Integer> cost_segment, Boolean sort_asc) {
+        return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
             predicates.add(criteriaBuilder.equal(root.get("is_active"), true));
             predicates.add(criteriaBuilder.like(root.get("product_name"), "%" + name + "%"));
+
             if (category_id != null) {
                 predicates.add(criteriaBuilder.equal(root.get("categories").get("category_id"), category_id));
             }
-            if (brand_id != null) {
+
+            if (brand_id != null && !brand_id.isEmpty()) {
                 predicates.add(root.get("brands").get("brand_id").in(brand_id));
             }
-            predicates.add(criteriaBuilder.equal(product_options.get("is_active"), true));
+
+            Join<Products, Product_Options> optionsJoin = root.join("product_options", JoinType.INNER);
+            predicates.add(criteriaBuilder.equal(optionsJoin.get("is_active"), true));
+
             if (size != null && !size.isEmpty()) {
-                predicates.add(product_options.get("option_size").in(size));
+                predicates.add(optionsJoin.get("option_size").in(size));
             }
+
             if (cost_segment != null && !cost_segment.isEmpty()) {
-                List<Predicate> costPredicate = new ArrayList<>();
+                List<Predicate> costPredicates = new ArrayList<>();
                 for (Integer segment : cost_segment) {
+                    Predicate costPredicate;
                     switch (segment) {
-                        case 1: {
-                            costPredicate.add(criteriaBuilder.lt(product_options.get("option_cost"), BigDecimal.valueOf(500)));
+                        case 1:
+                            costPredicate = criteriaBuilder.lessThan(optionsJoin.get("option_cost"), BigDecimal.valueOf(500));
                             break;
-                        }
-                        case 2: {
-                            costPredicate.add(criteriaBuilder.between(product_options.get("option_cost"), BigDecimal.valueOf(500),
-                                    BigDecimal.valueOf(1000)));
+                        case 2:
+                            costPredicate = criteriaBuilder.between(optionsJoin.get("option_cost"), BigDecimal.valueOf(500), BigDecimal.valueOf(1000));
                             break;
-                        }
-                        case 3: {
-                            costPredicate.add(criteriaBuilder.between(product_options.get("option_cost"), BigDecimal.valueOf(1000),
-                                    BigDecimal.valueOf(2000)));
+                        case 3:
+                            costPredicate = criteriaBuilder.between(optionsJoin.get("option_cost"), BigDecimal.valueOf(1000), BigDecimal.valueOf(2000));
                             break;
-                        }
-                        case 4: {
-                            costPredicate.add(criteriaBuilder.between(product_options.get("option_cost"), BigDecimal.valueOf(2000),
-                                    BigDecimal.valueOf(3000)));
+                        case 4:
+                            costPredicate = criteriaBuilder.between(optionsJoin.get("option_cost"), BigDecimal.valueOf(2000), BigDecimal.valueOf(3000));
                             break;
-                        }
-                        case 5: {
-                            costPredicate.add(criteriaBuilder.gt(product_options.get("option_cost"), BigDecimal.valueOf(3000)));
+                        case 5:
+                            costPredicate = criteriaBuilder.greaterThan(optionsJoin.get("option_cost"), BigDecimal.valueOf(3000));
                             break;
-                        }
+                        default:
+                            costPredicate = criteriaBuilder.conjunction();
+                            break;
                     }
+                    costPredicates.add(costPredicate);
                 }
-                predicates.add(criteriaBuilder.or(costPredicate.toArray(new Predicate[0])));
+                predicates.add(criteriaBuilder.or(costPredicates.toArray(new Predicate[0])));
             }
-            if ((size != null && !size.isEmpty()) || (cost_segment != null && !cost_segment.isEmpty())) {
-                product_options.on(predicates.toArray(new Predicate[0]));
-            }
-            if (criteriaQuery != null) {
-                criteriaQuery.distinct(true);
-                if (sort_asc != null) {
-                    if (sort_asc) {
-                        criteriaQuery.orderBy(criteriaBuilder.asc(product_options.get("option_cost")));
-                    } else {
-                        criteriaQuery.orderBy(criteriaBuilder.desc(product_options.get("option_cost")));
-                    }
+
+            if (sort_asc != null) {
+                if (sort_asc) {
+                    query.orderBy(criteriaBuilder.asc(optionsJoin.get("option_cost")));
+                } else {
+                    query.orderBy(criteriaBuilder.desc(optionsJoin.get("option_cost")));
                 }
             }
+
+            query.distinct(true);
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
-        return product_repository.findAll(specification, pageable);
     }
 }

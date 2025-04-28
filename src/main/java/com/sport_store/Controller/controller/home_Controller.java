@@ -45,7 +45,7 @@ public class home_Controller {
                        @RequestParam(value = "list_brand", required = false) List<Integer> brands,
                        @RequestParam(value = "list_option_size", required = false) List<String> option_size,
                        @RequestParam(value = "cost_segment", required = false) List<Integer> cost_segment,
-                       @RequestParam(value = "page_size", defaultValue = "10") int page_size,
+                       @RequestParam(value = "page_size", defaultValue = "9") int page_size,
                        @RequestParam(value = "sort", required = false) Boolean sort_asc,
                        HttpServletRequest request) {
         Page<Products> products = product_service.getProduct(keyword, category_id, brands, option_size,

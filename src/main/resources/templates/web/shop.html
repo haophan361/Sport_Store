@@ -157,7 +157,7 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a class="dropdown-item page-size-option"
-                                       th:each="pageSize : ${#numbers.sequence(10, 30, 10)}"
+                                       th:each="pageSize : ${#numbers.sequence(9, 27, 9)}"
                                        th:data-size="${pageSize}"
                                        th:classappend="${page_size == pageSize} ? 'active' : ''"
                                        th:text="${pageSize}">
