@@ -44,7 +44,7 @@ function displayProductOptions(productId) {
                          onclick="getProductOptionById('${option.option_id}')">
                             <i class="bi bi-pencil-square"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" title="Xoá" onclick="deleteOption('${option.option_id}')">
+                        <button class="btn btn-sm btn-outline-danger" title="Ẩn sản phẩm" onclick="deleteOption('${option.option_id}')">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
