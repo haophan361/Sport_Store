@@ -35,7 +35,7 @@ function loadProducts(data) {
                      onclick="getProductById('${p.product_id}')">
                         <i class="bi bi-pencil-square"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-danger" title="Xoá" onclick="deleteProduct('${p.product_id}')">
+                    <button class="btn btn-sm btn-outline-danger" title="Ẩn sản phẩm" onclick="deleteProduct('${p.product_id}')">
                         <i class="bi bi-trash"></i>
                     </button>
                 </td>
