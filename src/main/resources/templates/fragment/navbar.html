@@ -115,7 +115,7 @@
                                th:classappend="${url=='shop' ? ' active' :''}">Shop</a>
                         </div>
                         <div th:if="${session.role == 'CUSTOMER'}" class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                            <a th:href="@{/customer/cart}" class="btn px-0 ml-3">
+                            <a th:href="@{/customer/cart}" class="btn px-0 ml-3" title="Giỏ hàng">
                                 <i class="fas fa-shopping-cart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle"
                                       th:text="${session.cart_size}"
